@@ -79,3 +79,7 @@ R2_ENDPOINT=https://<account_id>.r2.cloudflarestorage.com
 ---
 
 See `.env.development.example` for required environment variables.
+
+## Credits
+
+Built on infrastructure originally developed by [Sam Liu](https://github.com/samliu) at [Hack Club](https://github.com/hackclub/fallout).
