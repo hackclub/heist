@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_12_190137) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_01_195527) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -120,6 +120,49 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_12_190137) do
     t.index ["status"], name: "index_ships_on_status"
   end
 
+  create_table "stream_appearances", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "role", default: 0, null: false
+    t.bigint "stream_session_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["stream_session_id", "user_id"], name: "index_stream_appearances_on_stream_session_id_and_user_id", unique: true
+    t.index ["stream_session_id"], name: "index_stream_appearances_on_stream_session_id"
+    t.index ["user_id"], name: "index_stream_appearances_on_user_id"
+  end
+
+  create_table "stream_segments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.datetime "discarded_at"
+    t.datetime "ends_at", null: false
+    t.integer "kind", default: 0, null: false
+    t.string "label", null: false
+    t.datetime "starts_at", null: false
+    t.bigint "stream_session_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discarded_at"], name: "index_stream_segments_on_discarded_at"
+    t.index ["stream_session_id", "starts_at"], name: "index_stream_segments_on_stream_session_id_and_starts_at"
+    t.index ["stream_session_id"], name: "index_stream_segments_on_stream_session_id"
+  end
+
+  create_table "stream_sessions", force: :cascade do |t|
+    t.datetime "actual_ends_at"
+    t.datetime "actual_starts_at"
+    t.datetime "created_at", null: false
+    t.datetime "discarded_at"
+    t.datetime "ends_at", null: false
+    t.boolean "is_live", default: false, null: false
+    t.datetime "starts_at", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.string "youtube_url"
+    t.index ["actual_starts_at"], name: "index_stream_sessions_on_actual_starts_at"
+    t.index ["discarded_at"], name: "index_stream_sessions_on_discarded_at"
+    t.index ["is_live"], name: "index_stream_sessions_on_is_live"
+    t.index ["starts_at"], name: "index_stream_sessions_on_starts_at"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "avatar", null: false
     t.datetime "created_at", null: false
@@ -153,4 +196,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_12_190137) do
   add_foreign_key "projects", "users"
   add_foreign_key "ships", "projects"
   add_foreign_key "ships", "users", column: "reviewer_id"
+  add_foreign_key "stream_appearances", "stream_sessions"
+  add_foreign_key "stream_appearances", "users"
+  add_foreign_key "stream_segments", "stream_sessions"
 end
