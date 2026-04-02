@@ -478,7 +478,10 @@ GEM
     opentelemetry-semantic_conventions (1.36.0)
       opentelemetry-api (~> 1.0)
     ostruct (0.6.3)
-    pagy (9.4.0)
+    pagy (43.4.4)
+      json
+      uri
+      yaml
     paper_trail (17.0.0)
       activerecord (>= 7.1)
       request_store (~> 1.4)
@@ -700,6 +703,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yaml (0.4.0)
     zeitwerk (2.7.4)
 
 PLATFORMS
@@ -736,7 +740,7 @@ DEPENDENCIES
   opentelemetry-exporter-otlp
   opentelemetry-instrumentation-all
   opentelemetry-sdk
-  pagy (~> 9.0)
+  pagy (~> 43.4)
   paper_trail (~> 17.0)
   pg (~> 1.5)
   pg_search (~> 2.3)
