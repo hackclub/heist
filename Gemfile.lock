@@ -261,7 +261,7 @@ GEM
     minitest (6.0.3)
       drb (~> 2.0)
       prism (~> 1.5)
-    mission_control-jobs (0.6.0)
+    mission_control-jobs (1.1.0)
       actioncable (>= 7.1)
       actionpack (>= 7.1)
       activejob (>= 7.1)
@@ -733,7 +733,7 @@ DEPENDENCIES
   jbuilder
   kamal
   letter_opener
-  mission_control-jobs (~> 0.6)
+  mission_control-jobs (~> 1.1)
   okcomputer (~> 1.19)
   opentelemetry-exporter-otlp
   opentelemetry-instrumentation-all
