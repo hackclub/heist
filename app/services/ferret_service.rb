@@ -2,20 +2,32 @@ require "faraday"
 require "json"
 
 module FerretService
+  TRACER = OpenTelemetry.tracer_provider.tracer("ferret-service")
+
   module_function
 
   def search(query, **options)
-    params = options.slice(:limit, :min_hours, :exclude_zero_hours, :country, :ysws_name, :ysws_exclude)
-    params[:q] = query if query.present?
+    TRACER.in_span("FerretService.search") do |span|
+      span.set_attribute("ferret.query", query.to_s)
 
-    response = connection.get("/search.json", params)
+      params = options.slice(:limit, :min_hours, :exclude_zero_hours, :country, :ysws_name, :ysws_exclude)
+      params[:q] = query if query.present?
 
-    unless response.success?
-      Rails.logger.warn("Ferret search failed with status #{response.status}")
-      return nil
+      response = connection.get("/search.json", params)
+
+      span.set_attribute("ferret.response_status", response.status)
+
+      unless response.success?
+        span.set_attribute("exception.slug", "err-ferret-search-failed")
+        span.set_attribute("error", true)
+        Rails.logger.warn("Ferret search failed with status #{response.status}")
+        return nil
+      end
+
+      results = JSON.parse(response.body)
+      span.set_attribute("ferret.result_count", results.is_a?(Array) ? results.length : 0)
+      results
     end
-
-    JSON.parse(response.body)
   rescue StandardError => e
     Rails.logger.error("Ferret search error: #{e.class}: #{e.message}")
     nil

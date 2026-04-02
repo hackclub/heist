@@ -4,6 +4,8 @@ require "json"
 module HcaService
   class Error < StandardError; end
 
+  TRACER = OpenTelemetry.tracer_provider.tracer("hca-service")
+
   module_function
 
   def host
@@ -38,23 +40,29 @@ module HcaService
   end
 
   def exchange_code_for_token(code, redirect_uri)
-    response = connection.post("/oauth/token") do |req|
-      req.headers["Content-Type"] = "application/x-www-form-urlencoded"
-      req.body = {
-        grant_type: "authorization_code",
-        code: code,
-        redirect_uri: redirect_uri,
-        client_id: ENV.fetch("HCA_CLIENT_ID", nil),
-        client_secret: ENV.fetch("HCA_CLIENT_SECRET", nil)
-      }.to_query
-    end
+    TRACER.in_span("HcaService.exchange_code_for_token") do |span|
+      response = connection.post("/oauth/token") do |req|
+        req.headers["Content-Type"] = "application/x-www-form-urlencoded"
+        req.body = {
+          grant_type: "authorization_code",
+          code: code,
+          redirect_uri: redirect_uri,
+          client_id: ENV.fetch("HCA_CLIENT_ID", nil),
+          client_secret: ENV.fetch("HCA_CLIENT_SECRET", nil)
+        }.to_query
+      end
 
-    unless response.success?
-      Rails.logger.error("HCA token exchange failed: #{response.status} - #{response.body}")
-      return nil
-    end
+      span.set_attribute("hca.response_status", response.status)
 
-    JSON.parse(response.body)
+      unless response.success?
+        span.set_attribute("exception.slug", "err-hca-token-exchange-failed")
+        span.set_attribute("error", true)
+        Rails.logger.error("HCA token exchange failed: #{response.status} - #{response.body}")
+        return nil
+      end
+
+      JSON.parse(response.body)
+    end
   rescue StandardError => e
     Rails.logger.error("HCA token exchange error: #{e.class}: #{e.message}")
     nil
@@ -63,17 +71,23 @@ module HcaService
   def me(access_token)
     raise ArgumentError, "access_token is required" if access_token.blank?
 
-    response = connection.get("/api/v1/me") do |req|
-      req.headers["Authorization"] = "Bearer #{access_token}"
-      req.headers["Accept"] = "application/json"
-    end
+    TRACER.in_span("HcaService.me") do |span|
+      response = connection.get("/api/v1/me") do |req|
+        req.headers["Authorization"] = "Bearer #{access_token}"
+        req.headers["Accept"] = "application/json"
+      end
 
-    unless response.success?
-      Rails.logger.warn("HCA /me fetch failed with status #{response.status}")
-      return nil
-    end
+      span.set_attribute("hca.response_status", response.status)
 
-    JSON.parse(response.body)
+      unless response.success?
+        span.set_attribute("exception.slug", "err-hca-me-failed")
+        span.set_attribute("error", true)
+        Rails.logger.warn("HCA /me fetch failed with status #{response.status}")
+        return nil
+      end
+
+      JSON.parse(response.body)
+    end
   rescue StandardError => e
     Rails.logger.warn("HCA /me fetch error: #{e.class}: #{e.message}")
     nil
