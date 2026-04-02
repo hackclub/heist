@@ -40,3 +40,6 @@
 
 # macOS
 .DS_Store
+
+# Local agent / task planning prompts (not project documentation)
+/stream-*-prompt.md
