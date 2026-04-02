@@ -82,4 +82,4 @@ See `.env.development.example` for required environment variables.
 
 ## Credits
 
-Built on infrastructure originally developed by [Sam Liu](https://github.com/samliu) at [Hack Club](https://github.com/hackclub/fallout).
+Built on infrastructure originally developed by [Sam Liu].
