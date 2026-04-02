@@ -37,6 +37,7 @@ class User < ApplicationRecord
   has_many :reviewed_ships, class_name: "Ship", foreign_key: :reviewer_id, dependent: :nullify, inverse_of: :reviewer
 
   encrypts :hca_token
+  encrypts :hackatime_token
 
   validates :avatar, :display_name, :email, :timezone, presence: true
   validates :slack_id, presence: true
@@ -72,6 +73,22 @@ class User < ApplicationRecord
 
   def staff?
     admin? || reviewer?
+  end
+
+  def has_hackatime?
+    hackatime_token.present? && hackatime_uid.present?
+  end
+
+  def hackatime_projects(start_date: nil, end_date: nil)
+    return [] unless has_hackatime?
+
+    HackatimeService.fetch_projects(hackatime_uid, start_date: start_date, end_date: end_date)
+  end
+
+  def hackatime_total_seconds(project_names: nil, start_date: nil, end_date: nil)
+    return 0 unless has_hackatime?
+
+    HackatimeService.fetch_total_seconds(hackatime_uid, project_names: project_names, start_date: start_date, end_date: end_date)
   end
 
   def self.exchange_hca_token(code, redirect_uri)

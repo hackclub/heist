@@ -110,6 +110,10 @@ Rails.application.routes.draw do
   get "auth/hca/callback" => "auth#create", as: :hca_callback
   delete "auth/signout" => "auth#destroy", as: :signout
 
+  get "auth/hackatime/start" => "hackatime_auth#start", as: :hackatime_start
+  get "auth/hackatime/callback" => "hackatime_auth#callback", as: :hackatime_callback
+  delete "auth/hackatime/disconnect" => "hackatime_auth#disconnect", as: :hackatime_disconnect
+
   get "sorry" => "bans#show", as: :sorry
 
   get "home" => "home#index", as: :home
