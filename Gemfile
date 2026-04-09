@@ -100,7 +100,7 @@ gem "redcarpet", "~> 3.6"
 
 gem "aws-sdk-s3", require: false
 
-gem "pagy", "~> 43.4"
+gem "pagy", "~> 43.5"
 gem "pg_search", "~> 2.3"
 
 gem "okcomputer", "~> 1.19"
