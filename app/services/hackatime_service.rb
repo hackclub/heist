@@ -1,7 +1,12 @@
+# typed: true
+# frozen_string_literal: true
+
 require "faraday"
 require "json"
 
 module HackatimeService
+  extend T::Sig
+
   BASE_URL = "https://hackatime.hackclub.com"
   API_PATH = "/api/v1"
   EXCLUDED_PROJECTS = [ "Other", "<<LAST_PROJECT>>" ].freeze
@@ -25,6 +30,7 @@ module HackatimeService
     "#{host}/oauth/authorize?#{params.to_query}"
   end
 
+  sig { params(code: String, redirect_uri: String).returns(T.nilable(T::Hash[String, T.untyped])) }
   def exchange_code_for_token(code, redirect_uri)
     TRACER.in_span("HackatimeService.exchange_code_for_token") do |span|
       response = connection.post("/oauth/token") do |req|
