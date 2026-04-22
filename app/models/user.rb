@@ -7,6 +7,8 @@
 #  discarded_at        :datetime
 #  display_name        :string           not null
 #  email               :string           not null
+#  hackatime_token     :text
+#  hackatime_uid       :string
 #  hca_token           :text
 #  is_adult            :boolean          default(FALSE), not null
 #  is_banned           :boolean          default(FALSE), not null
@@ -26,7 +28,7 @@ class User < ApplicationRecord
   include Discardable
   include PgSearch::Model
 
-  has_paper_trail
+  has_paper_trail skip: [ :hca_token, :hackatime_token ]
 
   pg_search_scope :search, against: [ :display_name, :email ], using: { tsearch: { prefix: true } }
 
