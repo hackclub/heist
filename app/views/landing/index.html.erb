@@ -23,7 +23,8 @@
         Join the <span class="heist-tagline__accent">operation</span>.
       </p>
 
-      <%= form_with url: signin_path, method: :get, local: true, class: "heist-join" do |f| %>
+      <%= form_with url: signin_path, method: :get, local: true, class: "heist-join",
+                    data: { turbo: false } do |f| %>
         <%= f.email_field :email,
               placeholder: "email@email.com",
               autocomplete: "email",
