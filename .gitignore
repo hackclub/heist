@@ -43,3 +43,6 @@
 
 # Local agent / task planning prompts (not project documentation)
 /stream-*-prompt.md
+
+# Personal Claude Code workspace settings
+/.claude/settings.local.json
