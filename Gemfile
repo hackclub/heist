@@ -104,7 +104,7 @@ gem "redcarpet", "~> 3.6"
 
 gem "aws-sdk-s3", require: false
 
-gem "pagy", "~> 43.4"
+gem "pagy", "~> 9.0"
 gem "pg_search", "~> 2.3"
 
 gem "okcomputer", "~> 1.19"
@@ -115,3 +115,6 @@ gem "opentelemetry-instrumentation-all"
 
 # Gradual static + runtime type checking for Ruby [https://sorbet.org]
 gem "sorbet-runtime"
+
+gem "addressable", ">= 2.9.0"
+gem "rack-session", ">= 2.1.2"

@@ -8,124 +8,115 @@
 # pkg:gem/parallel#lib/parallel/version.rb:2
 module Parallel
   class << self
-    # pkg:gem/parallel#lib/parallel.rb:254
+    # pkg:gem/parallel#lib/parallel.rb:243
     def all?(*args, &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:249
+    # pkg:gem/parallel#lib/parallel.rb:238
     def any?(*args, &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:245
+    # pkg:gem/parallel#lib/parallel.rb:234
     def each(array, options = T.unsafe(nil), &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:259
+    # pkg:gem/parallel#lib/parallel.rb:248
     def each_with_index(array, options = T.unsafe(nil), &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:318
+    # pkg:gem/parallel#lib/parallel.rb:307
     def filter_map(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/parallel#lib/parallel.rb:314
+    # pkg:gem/parallel#lib/parallel.rb:303
     def flat_map(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/parallel#lib/parallel.rb:239
+    # pkg:gem/parallel#lib/parallel.rb:228
     def in_processes(options = T.unsafe(nil), &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:223
+    # pkg:gem/parallel#lib/parallel.rb:212
     def in_threads(options = T.unsafe(nil)); end
 
-    # pkg:gem/parallel#lib/parallel.rb:263
+    # pkg:gem/parallel#lib/parallel.rb:252
     def map(source, options = T.unsafe(nil), &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:310
+    # pkg:gem/parallel#lib/parallel.rb:299
     def map_with_index(array, options = T.unsafe(nil), &block); end
 
     # Number of physical processor cores on the current system.
     #
-    # pkg:gem/parallel#lib/parallel.rb:323
+    # pkg:gem/parallel#lib/parallel.rb:312
     def physical_processor_count; end
 
     # Number of processors seen by the OS or value considering CPU quota if the process is inside a cgroup,
     # used for process scheduling
     #
-    # pkg:gem/parallel#lib/parallel.rb:353
+    # pkg:gem/parallel#lib/parallel.rb:342
     def processor_count; end
 
-    # pkg:gem/parallel#lib/parallel.rb:357
+    # pkg:gem/parallel#lib/parallel.rb:346
     def worker_number; end
 
     # TODO: this does not work when doing threads in forks, so should remove and yield the number instead if needed
     #
-    # pkg:gem/parallel#lib/parallel.rb:362
+    # pkg:gem/parallel#lib/parallel.rb:351
     def worker_number=(worker_num); end
 
     private
 
-    # pkg:gem/parallel#lib/parallel.rb:395
+    # pkg:gem/parallel#lib/parallel.rb:384
     def add_progress_bar!(job_factory, options); end
 
-    # pkg:gem/parallel#lib/parallel.rb:734
+    # pkg:gem/parallel#lib/parallel.rb:699
     def available_processor_count; end
 
-    # pkg:gem/parallel#lib/parallel.rb:682
+    # pkg:gem/parallel#lib/parallel.rb:647
     def call_with_index(item, index, options, &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:614
+    # pkg:gem/parallel#lib/parallel.rb:579
     def create_workers(job_factory, options, &block); end
 
     # options is either a Integer or a Hash with :count
     #
-    # pkg:gem/parallel#lib/parallel.rb:672
+    # pkg:gem/parallel#lib/parallel.rb:637
     def extract_count_from_options(options); end
 
-    # pkg:gem/parallel#lib/parallel.rb:700
+    # pkg:gem/parallel#lib/parallel.rb:665
     def instrument_finish(item, index, result, options); end
 
     # yield results in the order of the input items
     # needs to use `options` to store state between executions
     # needs to use `done` index since a nil result would also be valid
     #
-    # pkg:gem/parallel#lib/parallel.rb:709
+    # pkg:gem/parallel#lib/parallel.rb:674
     def instrument_finish_in_order(item, index, result, options); end
 
-    # pkg:gem/parallel#lib/parallel.rb:729
+    # pkg:gem/parallel#lib/parallel.rb:694
     def instrument_start(item, index, options); end
 
-    # pkg:gem/parallel#lib/parallel.rb:368
+    # pkg:gem/parallel#lib/parallel.rb:357
     def physical_processor_count_windows; end
 
-    # pkg:gem/parallel#lib/parallel.rb:648
+    # pkg:gem/parallel#lib/parallel.rb:613
     def process_incoming_jobs(read, write, job_factory, options, &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:524
-    def ractor_build(use_port); end
-
-    # pkg:gem/parallel#lib/parallel.rb:545
-    def ractor_result(item, index, result, results, results_mutex, options); end
-
-    # pkg:gem/parallel#lib/parallel.rb:550
-    def ractor_stop(ractor); end
-
-    # pkg:gem/parallel#lib/parallel.rb:602
+    # pkg:gem/parallel#lib/parallel.rb:567
     def replace_worker(job_factory, workers, index, options, blk); end
 
-    # pkg:gem/parallel#lib/parallel.rb:389
+    # pkg:gem/parallel#lib/parallel.rb:378
     def run(command); end
 
-    # pkg:gem/parallel#lib/parallel.rb:693
+    # pkg:gem/parallel#lib/parallel.rb:658
     def with_instrumentation(item, index, options); end
 
-    # pkg:gem/parallel#lib/parallel.rb:420
+    # pkg:gem/parallel#lib/parallel.rb:409
     def work_direct(job_factory, options, &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:554
+    # pkg:gem/parallel#lib/parallel.rb:519
     def work_in_processes(job_factory, options, &blk); end
 
-    # pkg:gem/parallel#lib/parallel.rb:464
+    # pkg:gem/parallel#lib/parallel.rb:453
     def work_in_ractors(job_factory, options); end
 
-    # pkg:gem/parallel#lib/parallel.rb:439
+    # pkg:gem/parallel#lib/parallel.rb:428
     def work_in_threads(job_factory, options, &block); end
 
-    # pkg:gem/parallel#lib/parallel.rb:622
+    # pkg:gem/parallel#lib/parallel.rb:587
     def worker(job_factory, options, &block); end
   end
 end
@@ -135,103 +126,90 @@ class Parallel::Break < ::StandardError
   # pkg:gem/parallel#lib/parallel.rb:14
   def initialize(value = T.unsafe(nil)); end
 
-  # marshal_dump that is used for ruby exceptions
-  # avoid dumping the cause since nobody needs that and it can include undumpable exceptions
-  #
-  # pkg:gem/parallel#lib/parallel.rb:21
-  def _dump(_depth); end
-
   # pkg:gem/parallel#lib/parallel.rb:12
   def value; end
-
-  class << self
-    # marshal_load that is used for ruby exceptions
-    #
-    # pkg:gem/parallel#lib/parallel.rb:26
-    def _load(data); end
-  end
 end
 
 # pkg:gem/parallel#lib/parallel.rb:8
 class Parallel::DeadWorker < ::StandardError; end
 
-# pkg:gem/parallel#lib/parallel.rb:43
+# pkg:gem/parallel#lib/parallel.rb:32
 class Parallel::ExceptionWrapper
-  # pkg:gem/parallel#lib/parallel.rb:46
+  # pkg:gem/parallel#lib/parallel.rb:35
   def initialize(exception); end
 
-  # pkg:gem/parallel#lib/parallel.rb:44
+  # pkg:gem/parallel#lib/parallel.rb:33
   def exception; end
 end
 
-# pkg:gem/parallel#lib/parallel.rb:109
+# pkg:gem/parallel#lib/parallel.rb:98
 class Parallel::JobFactory
-  # pkg:gem/parallel#lib/parallel.rb:110
+  # pkg:gem/parallel#lib/parallel.rb:99
   def initialize(source, mutex); end
 
-  # pkg:gem/parallel#lib/parallel.rb:118
+  # pkg:gem/parallel#lib/parallel.rb:107
   def next; end
 
   # generate item that is sent to workers
   # just index is faster + less likely to blow up with unserializable errors
   #
-  # pkg:gem/parallel#lib/parallel.rb:147
+  # pkg:gem/parallel#lib/parallel.rb:136
   def pack(item, index); end
 
-  # pkg:gem/parallel#lib/parallel.rb:137
+  # pkg:gem/parallel#lib/parallel.rb:126
   def size; end
 
   # unpack item that is sent to workers
   #
-  # pkg:gem/parallel#lib/parallel.rb:152
+  # pkg:gem/parallel#lib/parallel.rb:141
   def unpack(data); end
 
   private
 
-  # pkg:gem/parallel#lib/parallel.rb:158
+  # pkg:gem/parallel#lib/parallel.rb:147
   def producer?; end
 
-  # pkg:gem/parallel#lib/parallel.rb:162
+  # pkg:gem/parallel#lib/parallel.rb:151
   def queue_wrapper(array); end
 end
 
-# pkg:gem/parallel#lib/parallel.rb:31
+# pkg:gem/parallel#lib/parallel.rb:20
 class Parallel::Kill < ::Parallel::Break; end
 
 # pkg:gem/parallel#lib/parallel.rb:6
 Parallel::Stop = T.let(T.unsafe(nil), Object)
 
-# pkg:gem/parallel#lib/parallel.rb:34
+# pkg:gem/parallel#lib/parallel.rb:23
 class Parallel::UndumpableException < ::StandardError
-  # pkg:gem/parallel#lib/parallel.rb:37
+  # pkg:gem/parallel#lib/parallel.rb:26
   def initialize(original); end
 
-  # pkg:gem/parallel#lib/parallel.rb:35
+  # pkg:gem/parallel#lib/parallel.rb:24
   def backtrace; end
 end
 
-# pkg:gem/parallel#lib/parallel.rb:167
+# pkg:gem/parallel#lib/parallel.rb:156
 class Parallel::UserInterruptHandler
   class << self
-    # pkg:gem/parallel#lib/parallel.rb:192
+    # pkg:gem/parallel#lib/parallel.rb:181
     def kill(thing); end
 
     # kill all these pids or threads if user presses Ctrl+c
     #
-    # pkg:gem/parallel#lib/parallel.rb:172
+    # pkg:gem/parallel#lib/parallel.rb:161
     def kill_on_ctrl_c(pids, options); end
 
     private
 
-    # pkg:gem/parallel#lib/parallel.rb:216
+    # pkg:gem/parallel#lib/parallel.rb:205
     def restore_interrupt(old, signal); end
 
-    # pkg:gem/parallel#lib/parallel.rb:201
+    # pkg:gem/parallel#lib/parallel.rb:190
     def trap_interrupt(signal); end
   end
 end
 
-# pkg:gem/parallel#lib/parallel.rb:168
+# pkg:gem/parallel#lib/parallel.rb:157
 Parallel::UserInterruptHandler::INTERRUPT_SIGNAL = T.let(T.unsafe(nil), Symbol)
 
 # pkg:gem/parallel#lib/parallel/version.rb:3
@@ -240,40 +218,40 @@ Parallel::VERSION = T.let(T.unsafe(nil), String)
 # pkg:gem/parallel#lib/parallel/version.rb:3
 Parallel::Version = T.let(T.unsafe(nil), String)
 
-# pkg:gem/parallel#lib/parallel.rb:62
+# pkg:gem/parallel#lib/parallel.rb:51
 class Parallel::Worker
-  # pkg:gem/parallel#lib/parallel.rb:66
+  # pkg:gem/parallel#lib/parallel.rb:55
   def initialize(read, write, pid); end
 
   # might be passed to started_processes and simultaneously closed by another thread
   # when running in isolation mode, so we have to check if it is closed before closing
   #
-  # pkg:gem/parallel#lib/parallel.rb:79
+  # pkg:gem/parallel#lib/parallel.rb:68
   def close_pipes; end
 
-  # pkg:gem/parallel#lib/parallel.rb:63
+  # pkg:gem/parallel#lib/parallel.rb:52
   def pid; end
 
-  # pkg:gem/parallel#lib/parallel.rb:63
+  # pkg:gem/parallel#lib/parallel.rb:52
   def read; end
 
-  # pkg:gem/parallel#lib/parallel.rb:72
+  # pkg:gem/parallel#lib/parallel.rb:61
   def stop; end
 
-  # pkg:gem/parallel#lib/parallel.rb:64
+  # pkg:gem/parallel#lib/parallel.rb:53
   def thread; end
 
-  # pkg:gem/parallel#lib/parallel.rb:64
+  # pkg:gem/parallel#lib/parallel.rb:53
   def thread=(_arg0); end
 
-  # pkg:gem/parallel#lib/parallel.rb:84
+  # pkg:gem/parallel#lib/parallel.rb:73
   def work(data); end
 
-  # pkg:gem/parallel#lib/parallel.rb:63
+  # pkg:gem/parallel#lib/parallel.rb:52
   def write; end
 
   private
 
-  # pkg:gem/parallel#lib/parallel.rb:102
+  # pkg:gem/parallel#lib/parallel.rb:91
   def wait; end
 end

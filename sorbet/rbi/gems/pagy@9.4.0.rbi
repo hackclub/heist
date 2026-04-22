@@ -6,14 +6,31 @@
 
 
 # Top superclass: it should define only what's common to all the subclasses
+# See Pagy::Backend API documentation: https://ddnexus.github.io/pagy/docs/api/backend
+# See Pagy::Countless API documentation: https://ddnexus.github.io/pagy/docs/api/calendar
+# See Pagy::Countless API documentation: https://ddnexus.github.io/pagy/docs/api/calendar
+# See Pagy::Countless API documentation: https://ddnexus.github.io/pagy/docs/api/calendar
+# See Pagy::Countless API documentation: https://ddnexus.github.io/pagy/docs/api/calendar
+# See Pagy::Countless API documentation: https://ddnexus.github.io/pagy/docs/api/calendar
+# See Pagy::Countless API documentation: https://ddnexus.github.io/pagy/docs/api/countless
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/arel
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/array
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/elasticsearch_rails
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/gearbox
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/i18n
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/meilisearch
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/overflow
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/searchkick
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/size
+# See the Pagy documentation: https://ddnexus.github.io/pagy/docs/extras/trim
+# See Pagy API documentation: https://ddnexus.github.io/pagy/docs/api/keyset
+# See Pagy API documentation: https://ddnexus.github.io/pagy/docs/api/keyset
 #
 # pkg:gem/pagy#lib/pagy/shared_methods.rb:3
 class Pagy
   include ::Pagy::SharedMethods
 
   # Merge and validate the options, do some simple arithmetic and set the instance variables
-  #
-  # @return [Pagy] a new instance of Pagy
   #
   # pkg:gem/pagy#lib/pagy.rb:31
   def initialize(**vars); end
@@ -35,23 +52,15 @@ class Pagy
 
   # Checks the @page <= @last
   #
-  # @raise [OverflowError]
-  #
   # pkg:gem/pagy#lib/pagy.rb:62
   def check_overflow; end
 
-  # Returns the value of attribute count.
-  #
   # pkg:gem/pagy#lib/pagy.rb:27
   def count; end
 
-  # Returns the value of attribute from.
-  #
   # pkg:gem/pagy#lib/pagy.rb:27
   def from; end
 
-  # Returns the value of attribute in.
-  #
   # pkg:gem/pagy#lib/pagy.rb:27
   def in; end
 
@@ -65,40 +74,26 @@ class Pagy
   # pkg:gem/pagy#lib/pagy.rb:70
   def label_for(page); end
 
-  # Returns the value of attribute last.
-  #
   # pkg:gem/pagy#lib/pagy.rb:27
   def last; end
 
-  # Returns the value of attribute next.
-  #
   # pkg:gem/pagy#lib/pagy.rb:27
   def next; end
 
-  # Returns the value of attribute offset.
-  #
   # pkg:gem/pagy#lib/pagy.rb:27
   def offset; end
 
-  # Returns the value of attribute last.
-  #
   # pkg:gem/pagy#lib/pagy.rb:28
   def pages; end
 
-  # Returns the value of attribute prev.
-  #
   # pkg:gem/pagy#lib/pagy.rb:27
   def prev; end
 
   # Return the array of page numbers and :gap e.g. [1, :gap, 8, "9", 10, :gap, 36]
   #
-  # @raise [VariableError]
-  #
   # pkg:gem/pagy#lib/pagy.rb:73
   def series(size: T.unsafe(nil), **_); end
 
-  # Returns the value of attribute to.
-  #
   # pkg:gem/pagy#lib/pagy.rb:27
   def to; end
 
@@ -110,6 +105,9 @@ class Pagy
   end
 end
 
+# Define a few generic methods to paginate a collection out of the box,
+# or any collection by overriding any of the `pagy_*` methods in your controller.
+# See also the extras if you need specialized methods to paginate Arrays or other collections
 # Define a dummy params method if it's not already defined in the including module
 #
 # pkg:gem/pagy#lib/pagy/backend.rb:8
@@ -201,8 +199,6 @@ module Pagy::I18n
   # pkg:gem/pagy#lib/pagy/i18n.rb:152
   def load(*locales); end
 
-  # Translate and pluralize the key with the locale DATA
-  #
   # pkg:gem/pagy#lib/pagy/i18n.rb:165
   def t(locale, key, **opts); end
 
@@ -289,18 +285,12 @@ module Pagy::SharedMethods
   # pkg:gem/pagy#lib/pagy/shared_methods.rb:22
   def assign_vars(default, vars); end
 
-  # Returns the value of attribute limit.
-  #
   # pkg:gem/pagy#lib/pagy/shared_methods.rb:6
   def limit; end
 
-  # Returns the value of attribute page.
-  #
   # pkg:gem/pagy#lib/pagy/shared_methods.rb:6
   def page; end
 
-  # Returns the value of attribute vars.
-  #
   # pkg:gem/pagy#lib/pagy/shared_methods.rb:6
   def vars; end
 end
@@ -332,23 +322,15 @@ Pagy::VERSION = T.let(T.unsafe(nil), String)
 class Pagy::VariableError < ::ArgumentError
   # Set the variables and prepare the message
   #
-  # @return [VariableError] a new instance of VariableError
-  #
   # pkg:gem/pagy#lib/pagy/exceptions.rb:9
   def initialize(pagy, variable, description, value); end
 
-  # Returns the value of attribute pagy.
-  #
   # pkg:gem/pagy#lib/pagy/exceptions.rb:6
   def pagy; end
 
-  # Returns the value of attribute value.
-  #
   # pkg:gem/pagy#lib/pagy/exceptions.rb:6
   def value; end
 
-  # Returns the value of attribute variable.
-  #
   # pkg:gem/pagy#lib/pagy/exceptions.rb:6
   def variable; end
 end
