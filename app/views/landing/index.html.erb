@@ -3,7 +3,7 @@
 
 <div class="heist-landing">
   <div class="heist-landing__grid" aria-hidden="true"></div>
-  <div class="heist-landing__glow" aria-hidden="true"></div>
+  <%= image_tag "landing/dark-layer.png", class: "heist-landing__ellipse", alt: "", "aria-hidden": true %>
 
   <%= link_to "LOG IN", signin_path, class: "heist-btn heist-btn--login" %>
 
@@ -35,43 +35,39 @@
 
     <aside class="heist-crts">
       <div class="heist-crt heist-crt--counter" role="status" aria-live="polite">
-        <div class="heist-crt__screen" style="background-image: url('<%= image_path "landing/screen-texture.png" %>');">
-          <p class="heist-crt__counter-text">
+        <%= image_tag "landing/crt1.png", class: "heist-crt__img", alt: "", "aria-hidden": true %>
+        <p class="heist-crt__counter-text">
+          <span class="heist-crt__counter-line">
             <span class="heist-crt__counter-number"><%= @active_hackers %></span>
-            people <span class="heist-crt__counter-accent">hacking</span><br>right now
-          </p>
-        </div>
-        <%= image_tag "landing/crt1-bezel.svg", class: "heist-crt__bezel", alt: "", "aria-hidden": true %>
+            people <span class="heist-crt__counter-accent">hacking</span>
+          </span>
+          <span class="heist-crt__counter-big">right now</span>
+        </p>
       </div>
 
       <div class="heist-crt heist-crt--scene">
-        <div class="heist-crt__screen heist-crt__screen--scene">
-          <%= image_tag "landing/pixel-scene.png", class: "heist-crt__art", alt: "", "aria-hidden": true %>
-        </div>
-        <%= image_tag "landing/crt2-bezel.svg", class: "heist-crt__bezel", alt: "", "aria-hidden": true %>
+        <%= image_tag "landing/crt2.png", class: "heist-crt__img", alt: "", "aria-hidden": true %>
       </div>
 
       <div class="heist-crt heist-crt--stream"
            data-controller="<%= @stream_live ? "" : "countdown" %>"
            <% unless @stream_live %>data-countdown-target-value="<%= @stream_starts_at.iso8601 %>"<% end %>>
-        <div class="heist-crt__screen heist-crt__screen--stream" style="background-image: url('<%= image_path "landing/screen-texture.png" %>');">
-          <% if @stream_live %>
-            <iframe class="heist-crt__embed"
-                    src="<%= @stream_embed_url %>"
-                    title="The Heist live stream"
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowfullscreen></iframe>
-          <% else %>
-            <div class="heist-crt__stream-label">
-              <span class="heist-crt__stream-dot" aria-hidden="true"></span>
-              STREAM
-            </div>
-            <div class="heist-crt__timer" aria-label="Time until stream starts">
-              <span data-countdown-target="days">--</span>:<span data-countdown-target="hours">--</span>:<span data-countdown-target="minutes">--</span>:<span data-countdown-target="seconds">--</span>
-            </div>
-          <% end %>
-        </div>
-        <%= image_tag "landing/crt3-bezel.svg", class: "heist-crt__bezel", alt: "", "aria-hidden": true %>
+        <%= image_tag "landing/crt3.png", class: "heist-crt__img", alt: "", "aria-hidden": true %>
+        <% if @stream_live %>
+          <iframe class="heist-crt__embed"
+                  src="<%= @stream_embed_url %>"
+                  title="The Heist live stream"
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allowfullscreen></iframe>
+        <% else %>
+          <div class="heist-crt__stream-label">
+            <span class="heist-crt__stream-dot" aria-hidden="true"></span>
+            STREAM
+          </div>
+          <div class="heist-crt__timer" aria-label="Time until stream starts">
+            <span data-countdown-target="days">--</span>:<span data-countdown-target="hours">--</span>:<span data-countdown-target="minutes">--</span>:<span data-countdown-target="seconds">--</span>
+          </div>
+        <% end %>
       </div>
     </aside>
   </div>
@@ -106,15 +102,16 @@
     pointer-events: none;
   }
 
-  .heist-landing__glow {
+  .heist-landing__ellipse {
     position: absolute;
-    top: -10%;
-    right: -20%;
-    width: 70%;
-    height: 110%;
-    background: radial-gradient(ellipse at center, rgba(110, 233, 110, 0.18) 0%, transparent 65%);
+    top: 10%;
+    right: 0;
+    width: 45%;
+    max-width: 600px;
+    height: auto;
     pointer-events: none;
-    filter: blur(10px);
+    z-index: 0;
+    opacity: 0.75;
   }
 
   .heist-landing__inner {
@@ -153,7 +150,8 @@
     position: absolute;
     top: 1.25rem;
     right: 1.25rem;
-    padding: 0.85rem 1.4rem;
+    padding: 0.7rem 2.4rem;
+    font-size: 0.85rem;
     background: var(--heist-amber);
     color: var(--heist-ink);
     border-radius: 2px;
@@ -165,8 +163,8 @@
     .heist-btn--login {
       top: 2rem;
       right: 2rem;
-      padding: 1rem 1.6rem;
-      font-size: 0.85rem;
+      padding: 0.8rem 3rem;
+      font-size: 0.95rem;
     }
   }
 
@@ -246,9 +244,9 @@
     display: flex;
     align-items: stretch;
     gap: 0.5rem;
-    max-width: 28rem;
+    max-width: 30rem;
     padding: 0.45rem;
-    border: 3px solid var(--heist-lime-soft);
+    border: 2px solid var(--heist-lime-soft);
     border-radius: 3px;
     background: rgba(220, 252, 174, 0.08);
     box-shadow: 0 0 0 1px rgba(220, 252, 174, 0.18), 0 0 24px rgba(220, 252, 174, 0.22);
@@ -257,13 +255,13 @@
   .heist-join__input {
     flex: 1;
     min-width: 0;
-    padding: 0.4rem 0.75rem;
+    padding: 0.4rem 0.9rem;
     border: none;
     outline: none;
     background: transparent;
     color: var(--heist-lime);
     font-family: "ModeSeven", ui-monospace, monospace;
-    font-size: 1.5rem;
+    font-size: 1.55rem;
     letter-spacing: 0.02em;
   }
 
@@ -272,13 +270,13 @@
   }
 
   .heist-btn--join {
-    padding: 0.5rem 1.1rem;
+    padding: 0.5rem 1.4rem;
     background: var(--heist-amber);
     color: var(--heist-ink);
     border: 0;
     border-radius: 2px;
     font-family: "ModeSeven", ui-monospace, monospace;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     box-shadow: 0 0 12px rgba(211, 159, 59, 0.35);
   }
 
@@ -287,129 +285,65 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
-    gap: 1.25rem 1rem;
+    gap: 0;
     align-items: center;
     justify-items: center;
-    margin-top: 3rem;
+    margin-top: 2rem;
   }
 
   @media (min-width: 900px) {
-    .heist-crts { margin-top: 6rem; }
+    .heist-crts { margin-top: 4rem; }
   }
 
   .heist-crt {
     position: relative;
-    width: 100%;
-    filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.5));
+    width: 150%;
+    margin: -25% -25% -25% -25%;
   }
 
   .heist-crt--counter {
     grid-column: 1 / 2;
     grid-row: 1 / 2;
-    aspect-ratio: 247 / 166;
-    transform: skewX(-4deg) rotate(-1.5deg);
   }
 
   .heist-crt--scene {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
-    aspect-ratio: 301.76 / 204;
-    transform: skewX(2.5deg);
   }
 
   .heist-crt--stream {
     grid-column: 1 / 3;
     grid-row: 2 / 3;
-    aspect-ratio: 524 / 332.945;
-    max-width: 95%;
+    width: 125%;
+    margin: -14% -12.5% -12.5% -12.5%;
   }
 
-  .heist-crt__bezel {
-    position: absolute;
-    inset: 0;
+  .heist-crt__img {
+    display: block;
     width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 2;
-  }
-
-  .heist-crt__screen {
-    position: absolute;
-    top: 5.7%;
-    left: 4.9%;
-    right: 4.5%;
-    bottom: 8.2%;
-    overflow: hidden;
-    border-radius: 10% / 16%;
-    background-color: #1F4624;
-    background-size: cover;
-    background-position: center;
-    background-blend-mode: multiply;
-    box-shadow:
-      inset 0 0 60px rgba(0, 0, 0, 0.6),
-      inset 0 0 14px rgba(0, 0, 0, 0.7);
-    color: var(--heist-green);
-    font-family: "ModeSeven", ui-monospace, monospace;
-    z-index: 1;
-  }
-
-  .heist-crt--scene .heist-crt__screen {
-    top: 5.75%;
-    left: 4.85%;
-    right: 4.47%;
-    bottom: 7.63%;
-    border-radius: 8% / 14%;
-  }
-
-  .heist-crt--stream .heist-crt__screen {
-    top: 5.81%;
-    left: 4.79%;
-    right: 4.39%;
-    bottom: 6.73%;
-    border-radius: 5% / 9%;
-  }
-
-  .heist-crt__screen::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(90, 180, 100, 0.18) 0%, transparent 65%);
-    pointer-events: none;
-  }
-
-  .heist-crt__screen::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.035) 0,
-      rgba(255, 255, 255, 0.035) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    pointer-events: none;
-    animation: heist-scan 8s linear infinite;
-  }
-
-  @keyframes heist-scan {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100%; }
+    height: auto;
   }
 
   .heist-crt__counter-text {
     position: absolute;
-    inset: 0;
+    top: 34%;
+    left: 31%;
+    right: 31%;
+    bottom: 38%;
     margin: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 8% 10%;
-    font-size: clamp(1rem, 2.2vw, 1.7rem);
+    font-size: clamp(0.65rem, 1.1vw, 1rem);
     line-height: 1.05;
     color: var(--heist-green);
     text-shadow: 0 0 6px rgba(194, 246, 120, 0.55);
     z-index: 2;
+    pointer-events: none;
+  }
+
+  .heist-crt__counter-line {
+    white-space: nowrap;
   }
 
   .heist-crt__counter-number {
@@ -418,53 +352,50 @@
   }
 
   .heist-crt__counter-accent {
-    color: var(--heist-yellow-soft);
+    color: var(--heist-amber);
+    text-shadow: 0 0 6px rgba(211, 159, 59, 0.45);
   }
 
-  .heist-crt__art {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    image-rendering: pixelated;
-    z-index: 1;
+  .heist-crt__counter-big {
+    font-size: 1.6em;
+    line-height: 1;
+    margin-top: 0.15em;
   }
 
   .heist-crt__stream-label {
     position: absolute;
-    top: 6%;
-    left: 5%;
+    top: 27%;
+    left: 23%;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     font-family: "ModeSeven", ui-monospace, monospace;
-    font-size: clamp(0.6rem, 1.1vw, 0.85rem);
+    font-size: clamp(0.85rem, 1.6vw, 1.2rem);
     letter-spacing: 0.08em;
-    color: var(--heist-yellow);
-    text-shadow: 0 0 6px rgba(225, 193, 95, 0.5);
+    color: var(--heist-amber);
+    text-shadow: 0 0 6px rgba(211, 159, 59, 0.5);
     z-index: 2;
   }
 
   .heist-crt__stream-dot {
     display: inline-block;
-    width: 0.65rem;
-    height: 0.65rem;
+    width: 0.75rem;
+    height: 0.75rem;
     border-radius: 50%;
-    background: var(--heist-yellow);
-    box-shadow: 0 0 8px var(--heist-yellow);
-    animation: heist-pulse 1.6s ease-in-out infinite;
+    background: var(--heist-amber);
+    box-shadow: 0 0 10px var(--heist-amber);
+    animation: heist-pulse 1.8s steps(1) infinite;
   }
 
   @keyframes heist-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
+    0%, 78% { opacity: 1; }
+    80%, 100% { opacity: 0.12; }
   }
 
   .heist-crt__timer {
     position: absolute;
-    bottom: 6%;
-    right: 6%;
+    bottom: 27%;
+    right: 22%;
     font-family: "ModeSeven", ui-monospace, monospace;
     font-size: clamp(1rem, 2.2vw, 1.75rem);
     letter-spacing: 0.12em;
@@ -475,17 +406,18 @@
 
   .heist-crt__embed {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    top: 20%;
+    left: 20%;
+    right: 20%;
+    bottom: 20%;
+    width: 60%;
+    height: 60%;
     border: 0;
     z-index: 2;
   }
 
   @media (max-width: 640px) {
-    .heist-crt--counter { transform: none; }
-    .heist-crt--scene { transform: none; }
-    .heist-crts { gap: 0.85rem; }
+    .heist-crts { gap: 0.5rem; }
   }
 
   @media (max-width: 899px) {
