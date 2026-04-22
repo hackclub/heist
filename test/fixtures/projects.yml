@@ -33,7 +33,7 @@ one:
   description: MyText
   demo_link: MyString
   repo_link: MyString
-  tags: MyString
+  tags: []
   is_unlisted: false
 
 two:
@@ -42,5 +42,5 @@ two:
   description: MyText
   demo_link: MyString
   repo_link: MyString
-  tags: MyString
+  tags: []
   is_unlisted: false
