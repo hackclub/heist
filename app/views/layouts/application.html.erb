@@ -17,6 +17,22 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <style>
+      @font-face {
+        font-family: "Blade Runner";
+        src: url("/static-assets/BLADRMF_.TTF") format("truetype");
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "ModeSeven";
+        src: url("/static-assets/Modeseven-L3n5.ttf") format("truetype");
+        font-display: swap;
+      }
+    </style>
+
+    <link rel="preload" as="font" type="font/ttf" href="/static-assets/BLADRMF_.TTF" crossorigin>
+    <link rel="preload" as="font" type="font/ttf" href="/static-assets/Modeseven-L3n5.ttf" crossorigin>
+
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -25,16 +41,18 @@
 
   <body>
     <main>
-      <% if user_signed_in? %>
-        <%= button_to "Sign Out", signout_path, method: :delete %>
-      <% else %>
-        <%= link_to "Sign In with Slack", signin_path %>
-      <% end %>
-      <% if notice %>
-        <p>Notice: <%= notice %></p>
-      <% end %>
-      <% if alert %>
-        <p>Alert: <%= alert %></p>
+      <% unless content_for?(:hide_default_chrome) %>
+        <% if user_signed_in? %>
+          <%= button_to "Sign Out", signout_path, method: :delete %>
+        <% else %>
+          <%= link_to "Sign In with Slack", signin_path %>
+        <% end %>
+        <% if notice %>
+          <p>Notice: <%= notice %></p>
+        <% end %>
+        <% if alert %>
+          <p>Alert: <%= alert %></p>
+        <% end %>
       <% end %>
       <%= yield %>
     </main>
