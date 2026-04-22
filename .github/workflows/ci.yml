@@ -53,6 +53,41 @@ jobs:
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
+  type_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Verify gem RBIs are in sync with Gemfile.lock
+        run: bundle exec tapioca gem --verify
+
+      - name: Sorbet static type check
+        run: bundle exec srb tc
+
+      # tapioca dsl --verify needs a live Postgres + the schema loaded so Rails
+      # can boot and introspect models. Enable this block once a postgres
+      # service is added to this job (mirror the pattern from the commented-out
+      # `test` job below).
+      #
+      # - name: Set up test database
+      #   env:
+      #     RAILS_ENV: test
+      #     DATABASE_URL: postgres://postgres:postgres@localhost:5432/heist_test
+      #   run: bin/rails db:prepare
+      #
+      # - name: Verify DSL RBIs are in sync with models
+      #   env:
+      #     RAILS_ENV: test
+      #     DATABASE_URL: postgres://postgres:postgres@localhost:5432/heist_test
+      #   run: bundle exec tapioca dsl --verify
+
   annotate_check:
     runs-on: ubuntu-latest
     steps:

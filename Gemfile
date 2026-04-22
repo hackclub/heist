@@ -61,6 +61,10 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
+  # Sorbet static type checker and RBI generator [https://sorbet.org, https://github.com/Shopify/tapioca]
+  gem "sorbet", require: false
+  gem "tapioca", "~> 0.19", require: false, platforms: %i[ ruby ]
+
   gem "dotenv-rails"
 end
 
@@ -108,3 +112,6 @@ gem "okcomputer", "~> 1.19"
 gem "opentelemetry-sdk"
 gem "opentelemetry-exporter-otlp"
 gem "opentelemetry-instrumentation-all"
+
+# Gradual static + runtime type checking for Ruby [https://sorbet.org]
+gem "sorbet-runtime"
