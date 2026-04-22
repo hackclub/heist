@@ -172,6 +172,9 @@ module GeneratedPathHelpersModule
   def root_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def rsvps_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def signin_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -172,6 +172,9 @@ module GeneratedUrlHelpersModule
   def root_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def rsvps_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def signin_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

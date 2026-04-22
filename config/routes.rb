@@ -106,6 +106,8 @@ Rails.application.routes.draw do
 
   root "landing#index"
 
+  resources :rsvps, only: [ :create ]
+
   get "auth/hca/start" => "auth#new", as: :signin
   get "auth/hca/callback" => "auth#create", as: :hca_callback
   delete "auth/signout" => "auth#destroy", as: :signout

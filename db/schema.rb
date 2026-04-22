@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_02_000011) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_22_222614) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -100,6 +100,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_000011) do
     t.index ["is_unlisted"], name: "index_projects_on_is_unlisted"
     t.index ["tags"], name: "index_projects_on_tags", using: :gin
     t.index ["user_id"], name: "index_projects_on_user_id"
+  end
+
+  create_table "rsvps", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.string "source"
+    t.datetime "updated_at", null: false
+    t.index "lower((email)::text)", name: "index_rsvps_on_lower_email", unique: true
   end
 
   create_table "ships", force: :cascade do |t|

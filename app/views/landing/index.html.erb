@@ -18,19 +18,26 @@
       </h1>
 
       <p class="heist-tagline">
-        We code <span class="heist-tagline__accent">1,000</span> hours.<br>
+        <span class="heist-tagline__accent">Together,</span> 1,000 hours.<br>
         <span class="heist-tagline__accent">Every</span> weekend.<br>
         Join the <span class="heist-tagline__accent">operation</span>.
       </p>
 
-      <%= form_with url: signin_path, method: :get, local: true, class: "heist-join",
+      <%= form_with url: rsvps_path, method: :post, class: "heist-join",
                     data: { turbo: false } do |f| %>
         <%= f.email_field :email,
               placeholder: "email@email.com",
               autocomplete: "email",
+              required: true,
               class: "heist-join__input",
               "aria-label": "Email" %>
         <%= f.submit "RSVP", class: "heist-btn heist-btn--join" %>
+      <% end %>
+
+      <% if params[:rsvp] == "ok" %>
+        <p class="heist-flash heist-flash--ok" role="status">You're in. We'll send the details when the heist begins.</p>
+      <% elsif params[:rsvp] == "error" %>
+        <p class="heist-flash heist-flash--error" role="alert"><%= params[:message].presence || "Couldn't record your RSVP — check the email and try again." %></p>
       <% end %>
     </section>
 
@@ -91,6 +98,12 @@
     background: radial-gradient(ellipse at 70% 50%, #13301C 0%, var(--heist-bg) 55%, var(--heist-bg-2) 100%);
     font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
     overflow-x: hidden;
+  }
+
+  .heist-landing img {
+    -webkit-user-drag: none;
+    user-select: none;
+    pointer-events: none;
   }
 
   .heist-landing__grid {
@@ -239,6 +252,27 @@
   .heist-tagline__accent {
     color: var(--heist-amber);
     text-shadow: 0 0 10px rgba(211, 159, 59, 0.3);
+  }
+
+  .heist-flash {
+    max-width: 30rem;
+    margin: 1rem 0 0;
+    padding: 0.6rem 0.9rem;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+  }
+
+  .heist-flash--ok {
+    color: var(--heist-lime);
+    border-left: 2px solid var(--heist-lime);
+    background: rgba(197, 241, 135, 0.08);
+  }
+
+  .heist-flash--error {
+    color: var(--heist-amber);
+    border-left: 2px solid var(--heist-amber);
+    background: rgba(211, 159, 59, 0.08);
   }
 
   .heist-join {

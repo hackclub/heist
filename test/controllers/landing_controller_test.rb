@@ -8,8 +8,9 @@ class LandingControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1.heist-title"
-    assert_select "a.heist-btn--login", text: /LOG IN/
+    assert_select "form.heist-join[action=?]", rsvps_path
     assert_select "input[type=email][name='email']"
+    assert_select "input[type=submit][value='RSVP']"
     assert_select ".heist-crt--counter"
     assert_select ".heist-crt--stream"
   end
