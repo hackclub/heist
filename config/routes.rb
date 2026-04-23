@@ -2,6 +2,7 @@
 #
 # Routes for application:
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
+#                               okcomputer        /okcomputer                                                                                       OkComputer::Engine
 #                               admin_root GET    /admin(.:format)                                                                                  admin/static_pages#index
 #                              admin_ships GET    /admin/reviews(.:format)                                                                          admin/ships#index
 #                          edit_admin_ship GET    /admin/reviews/:id/edit(.:format)                                                                 admin/ships#edit
@@ -15,9 +16,14 @@
 #                               admin_user GET    /admin/users/:id(.:format)                                                                        admin/users#show
 #                       rails_health_check GET    /up(.:format)                                                                                     rails/health#show
 #                                     root GET    /                                                                                                 landing#index
+#                                    rsvps POST   /rsvps(.:format)                                                                                  rsvps#create
 #                                   signin GET    /auth/hca/start(.:format)                                                                         auth#new
 #                             hca_callback GET    /auth/hca/callback(.:format)                                                                      auth#create
 #                                  signout DELETE /auth/signout(.:format)                                                                           auth#destroy
+#                          hackatime_start GET    /auth/hackatime/start(.:format)                                                                   hackatime_auth#start
+#                       hackatime_callback GET    /auth/hackatime/callback(.:format)                                                                hackatime_auth#callback
+#                     hackatime_disconnect DELETE /auth/hackatime/disconnect(.:format)                                                              hackatime_auth#disconnect
+#                                    sorry GET    /sorry(.:format)                                                                                  bans#show
 #                                     home GET    /home(.:format)                                                                                   home#index
 #                                 projects GET    /projects(.:format)                                                                               projects#index
 #                                          POST   /projects(.:format)                                                                               projects#create
@@ -29,6 +35,9 @@
 #                                          DELETE /projects/:id(.:format)                                                                           projects#destroy
 #                                     docs GET    /docs(.:format)                                                                                   markdown#show
 #                                      doc GET    /docs/*slug(.:format)                                                                             markdown#show
+#                          api_v1_projects GET    /api/v1/projects(.:format)                                                                        api/v1/projects#index
+#                           api_v1_project GET    /api/v1/projects/:id(.:format)                                                                    api/v1/projects#show
+#                    api_v1_stream_current GET    /api/v1/stream/current(.:format)                                                                  api/v1/stream#current
 #         turbo_recede_historical_location GET    /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
 #         turbo_resume_historical_location GET    /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
 #        turbo_refresh_historical_location GET    /refresh_historical_location(.:format)                                                            turbo/native/navigation#refresh
@@ -55,6 +64,12 @@
 #                       rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                                       active_storage/disk#show
 #                update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                               active_storage/disk#update
 #                     rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                                    active_storage/direct_uploads#create
+#
+# Routes for OkComputer::Engine:
+#            Prefix Verb        URI Pattern       Controller#Action
+#              root GET|OPTIONS /                 ok_computer/ok_computer#show {check: "default"}
+# okcomputer_checks GET|OPTIONS /all(.:format)    ok_computer/ok_computer#index
+#  okcomputer_check GET|OPTIONS /:check(.:format) ok_computer/ok_computer#show
 #
 # Routes for MissionControl::Jobs::Engine:
 #                      Prefix Verb   URI Pattern                                                    Controller#Action
@@ -129,6 +144,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :projects, only: [ :index, :show ]
       get "stream/current", to: "stream#current"
+      post "presence/ping", to: "presence#ping"
     end
   end
 end
