@@ -1,5 +1,650 @@
-<div>
-  <h1 class="font-bold text-4xl">Home#index</h1>
-  <p>Find me in app/views/home/index.html.erb</p>
-  <p>You're logged in as <%= current_user.display_name %> (<%= current_user.email %>)</p>
+<% content_for :title, "HOME — The Heist" %>
+<% content_for :hide_default_chrome, true %>
+
+<%
+  seconds_shipped = @seconds_shipped.to_i
+  hour_goal_seconds = @hour_goal * 3600
+  progress_pct = hour_goal_seconds.positive? ? ([ (seconds_shipped.to_f / hour_goal_seconds * 100).round(1), 100 ].min) : 0
+
+  fmt_hm = ->(total_seconds) {
+    s = total_seconds.to_i
+    h = s / 3600
+    m = (s % 3600) / 60
+    "#{h}h #{m}m"
+  }
+%>
+
+<div class="heist-home">
+  <aside class="heist-home__sidebar" aria-label="Primary">
+    <%= link_to home_path, class: "heist-home__nav heist-home__nav--active", "aria-label": "Home", title: "Home" do %>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-8.5Z"/>
+      </svg>
+    <% end %>
+    <%= link_to stream_path, class: "heist-home__nav", "aria-label": "Stream", title: "Stream" do %>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="12" rx="2"/>
+        <path d="M8 20h8M12 17v3"/>
+      </svg>
+    <% end %>
+    <%= link_to shop_path, class: "heist-home__nav", "aria-label": "Shop", title: "Shop" do %>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M3 5h2l2 12h12l2-8H7"/>
+        <circle cx="9" cy="20" r="1.5"/>
+        <circle cx="17" cy="20" r="1.5"/>
+      </svg>
+    <% end %>
+    <%= link_to docs_path, class: "heist-home__nav", "aria-label": "Help", title: "Help" do %>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="3"/>
+        <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/>
+      </svg>
+    <% end %>
+  </aside>
+
+  <main class="heist-home__main">
+    <header class="heist-home__header">
+      <h1 class="heist-home__title">HOME</h1>
+    </header>
+
+    <section class="heist-top-panel">
+      <div class="heist-top-panel__hours">
+        <p class="heist-top-panel__label">Total Hours Shipped (Week <%= @week_number %>)</p>
+        <div class="heist-progress" role="progressbar"
+             aria-valuenow="<%= @hours_shipped %>" aria-valuemin="0" aria-valuemax="<%= @hour_goal %>">
+          <div class="heist-progress__fill" style="width: <%= progress_pct %>%;"></div>
+          <span class="heist-progress__label"><%= @hours_shipped %> hrs / <%= number_with_delimiter(@hour_goal) %> hrs</span>
+        </div>
+      </div>
+
+      <div class="heist-top-panel__countdown"
+           data-controller="countdown"
+           data-countdown-target-value="<%= @week_ends_at.iso8601 %>">
+        <p class="heist-top-panel__label heist-top-panel__label--amber">Week <%= @week_number %> hour left</p>
+        <div class="heist-countdown">
+          <span class="heist-countdown__cell"><span data-countdown-target="days">--</span>d</span>
+          <span class="heist-countdown__cell"><span data-countdown-target="hours">--</span>h</span>
+          <span class="heist-countdown__cell"><span data-countdown-target="minutes">--</span>m</span>
+          <span class="heist-countdown__cell"><span data-countdown-target="seconds">--</span>s</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="heist-home__mid-row">
+      <section class="heist-panel heist-panel--bulletin">
+        <header class="heist-panel__header"><span>Bulletin board</span></header>
+        <div class="heist-panel__body heist-bulletin">
+          <% if @bulletin_posts.any? %>
+            <% @bulletin_posts.each do |post| %>
+              <article class="heist-bulletin__post">
+                <h3 class="heist-bulletin__title"><%= post.title %></h3>
+                <div class="heist-bulletin__body"><%= simple_format(post.body) %></div>
+                <p class="heist-bulletin__meta">Posted on <%= post.posted_at.to_date.strftime("%m/%d/%Y") %></p>
+              </article>
+            <% end %>
+          <% else %>
+            <p class="heist-bulletin__empty">No posts yet. Admins can post updates from the admin panel.</p>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="heist-panel heist-panel--partners">
+        <header class="heist-panel__header"><span>Partners in crime</span></header>
+        <div class="heist-panel__body heist-partners">
+          <% if @activity.any? %>
+            <% @activity.each do |entry| %>
+              <% if entry[:kind] == :ship %>
+                <% ship = entry[:record] %>
+                <% project = ship.project %>
+                <% user = project.user %>
+                <% seconds = ship.approved_seconds.to_i %>
+                <article class="heist-partners__item">
+                  <%= image_tag user.avatar_url, class: "heist-partners__avatar", alt: "" %>
+                  <div class="heist-partners__content">
+                    <h3 class="heist-partners__title">
+                      <%= user.display_name.to_s.downcase %> shipped <%= fmt_hm.call(seconds) %> from <%= project.name.to_s.downcase %>
+                    </h3>
+                    <p class="heist-partners__body"><%= truncate(project.description.to_s, length: 180) %></p>
+                    <div class="heist-partners__footer">
+                      <span class="heist-partners__time"><%= time_ago_in_words(entry[:at]) %> ago</span>
+                      <div class="heist-partners__links">
+                        <% if ship.frozen_repo_link.present? %>
+                          <%= link_to ship.frozen_repo_link, class: "heist-partners__link", target: "_blank", rel: "noopener" do %>
+                            <span aria-hidden="true">◈</span>REPO
+                          <% end %>
+                        <% end %>
+                        <% if ship.frozen_demo_link.present? %>
+                          <%= link_to ship.frozen_demo_link, class: "heist-partners__link", target: "_blank", rel: "noopener" do %>
+                            <span aria-hidden="true">↗</span>DEMO
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              <% else %>
+                <% project = entry[:record] %>
+                <% user = project.user %>
+                <article class="heist-partners__item">
+                  <%= image_tag user.avatar_url, class: "heist-partners__avatar", alt: "" %>
+                  <div class="heist-partners__content">
+                    <h3 class="heist-partners__title">
+                      <%= user.display_name.to_s.downcase %> created a project: <%= project.name.to_s.downcase %>
+                    </h3>
+                    <p class="heist-partners__body"><%= truncate(project.description.to_s, length: 180) %></p>
+                    <div class="heist-partners__footer">
+                      <span class="heist-partners__time"><%= time_ago_in_words(entry[:at]) %> ago</span>
+                      <div class="heist-partners__links">
+                        <% if project.repo_link.present? %>
+                          <%= link_to project.repo_link, class: "heist-partners__link", target: "_blank", rel: "noopener" do %>
+                            <span aria-hidden="true">◈</span>REPO
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              <% end %>
+            <% end %>
+          <% else %>
+            <p class="heist-partners__empty">No activity yet. Be the first to ship a project.</p>
+          <% end %>
+        </div>
+      </section>
+    </div>
+
+    <section class="heist-panel heist-panel--projects">
+      <header class="heist-panel__header heist-panel__header--split">
+        <span>Projects</span>
+        <div class="heist-panel__stats">
+          <span><%= fmt_hm.call(@user_logged_seconds) %> logged time</span>
+          <span><%= fmt_hm.call(@user_shipped_seconds) %> shipped time</span>
+        </div>
+      </header>
+      <div class="heist-panel__body heist-projects">
+        <%= link_to new_project_path, class: "heist-project heist-project--new" do %>
+          <span class="heist-project__plus" aria-hidden="true">+</span>
+          <span class="heist-project__label">Create a project</span>
+        <% end %>
+        <% @projects.each do |project| %>
+          <%= link_to project_path(project), class: "heist-project" do %>
+            <h3 class="heist-project__name"><%= project.name.to_s.downcase %></h3>
+            <p class="heist-project__desc"><%= truncate(project.description.to_s, length: 120) %></p>
+            <% total_seconds = project.ships.approved.sum(:approved_seconds).to_i %>
+            <% if total_seconds.positive? %>
+              <p class="heist-project__time">
+                <span class="heist-project__clock" aria-hidden="true">◷</span>
+                <%= fmt_hm.call(total_seconds) %>
+              </p>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  </main>
 </div>
+
+<style>
+  .heist-home {
+    --heist-bg: #0E1A10;
+    --heist-bg-2: #0A1309;
+    --heist-grid: rgba(90, 180, 96, 0.08);
+    --heist-lime: #C0F477;
+    --heist-lime-soft: #DAFBAC;
+    --heist-amber: #FFE572;
+    --heist-amber-dim: #DBC45F;
+    --heist-ink: #14251C;
+
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    color: var(--heist-lime);
+    background-color: var(--heist-bg);
+    background-image:
+      linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px);
+    background-size: 44px 44px;
+    font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .heist-home__sidebar {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    padding: 5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    border-right: 2px solid rgba(197, 241, 135, 0.15);
+    background: rgba(10, 19, 9, 0.5);
+  }
+
+  .heist-home__nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--heist-lime);
+    opacity: 0.7;
+    transition: opacity 150ms ease;
+  }
+
+  .heist-home__nav svg { width: 100%; height: 100%; }
+  .heist-home__nav:hover { opacity: 1; }
+  .heist-home__nav--active { opacity: 1; filter: drop-shadow(0 0 6px rgba(192, 244, 119, 0.55)); }
+
+  .heist-home__main {
+    padding: 1rem 1.25rem;
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .heist-home__header { margin-bottom: 0; }
+
+  .heist-home__mid-row {
+    min-height: 0;
+    margin-bottom: 0;
+  }
+
+  .heist-home__mid-row .heist-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .heist-home__mid-row .heist-panel__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .heist-home__header {
+    padding: 0.65rem 1.5rem;
+    border: 3px solid var(--heist-lime);
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.14) 0 8px, transparent 8px 14px),
+      rgba(10, 19, 9, 0.7);
+    box-shadow: 0 0 24px rgba(192, 244, 119, 0.2);
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+
+  .heist-home__title {
+    margin: 0;
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 40px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--heist-lime-soft);
+    text-shadow: 0 0 8px rgba(218, 251, 172, 0.55);
+  }
+
+  .heist-top-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
+    gap: 0;
+    margin-bottom: 1rem;
+    border: 4px solid var(--heist-lime);
+    border-radius: 4px;
+    background: rgba(10, 19, 9, 0.55);
+    box-shadow: 0 0 18px rgba(192, 244, 119, 0.15);
+    overflow: hidden;
+  }
+
+  .heist-top-panel__hours,
+  .heist-top-panel__countdown {
+    padding: 0.7rem 1rem;
+    position: relative;
+  }
+
+  .heist-top-panel__countdown {
+    border-left: 4px solid var(--heist-lime);
+  }
+
+  .heist-top-panel__label {
+    margin: 0 0 0.5rem;
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--heist-lime);
+    text-shadow: 0 0 4px rgba(192, 244, 119, 0.35);
+  }
+
+  .heist-top-panel__label--amber {
+    color: var(--heist-amber-dim);
+    text-shadow: 0 0 4px rgba(219, 196, 95, 0.35);
+  }
+
+  .heist-home__mid-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .heist-home { grid-template-columns: 56px minmax(0, 1fr); }
+    .heist-home__sidebar { padding: 3rem 0; gap: 1.75rem; }
+    .heist-home__main { padding: 1rem; }
+    .heist-home__top-row,
+    .heist-home__mid-row { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  .heist-panel {
+    border: 2px solid var(--heist-amber);
+    border-radius: 4px;
+    background: rgba(10, 19, 9, 0.55);
+    box-shadow: inset 0 0 0 1px rgba(255, 229, 114, 0.18), 0 0 18px rgba(255, 229, 114, 0.08);
+    overflow: hidden;
+  }
+
+  .heist-panel__header {
+    padding: 0.5rem 0.9rem;
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.04em;
+    color: var(--heist-amber);
+    text-shadow: 0 0 4px rgba(255, 229, 114, 0.35);
+    background: repeating-linear-gradient(135deg, rgba(255, 229, 114, 0.13) 0 6px, transparent 6px 12px);
+    border-bottom: 2px solid var(--heist-amber);
+    text-transform: lowercase;
+  }
+
+  .heist-top-panel .heist-progress {
+    height: 2.9rem;
+    border: 3px solid var(--heist-lime);
+    background:
+      repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.08) 0 6px, transparent 6px 12px),
+      rgba(14, 40, 18, 0.55);
+  }
+
+  .heist-top-panel .heist-progress__fill {
+    background: repeating-linear-gradient(135deg, var(--heist-lime) 0 6px, rgba(192, 244, 119, 0.5) 6px 12px);
+  }
+
+  .heist-top-panel .heist-progress__label {
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 18px;
+    color: var(--heist-lime);
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.95);
+    letter-spacing: 0.02em;
+  }
+
+  .heist-panel__header--split {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .heist-panel__stats {
+    display: flex;
+    gap: 1.2rem;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 14px;
+    color: var(--heist-amber);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  .heist-panel__body { padding: 1rem; }
+
+  .heist-progress {
+    position: relative;
+    height: 2.2rem;
+    border: 2px solid var(--heist-lime);
+    border-radius: 2px;
+    background:
+      repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.1) 0 6px, transparent 6px 12px),
+      rgba(14, 40, 18, 0.5);
+    overflow: hidden;
+  }
+
+  .heist-progress__fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background:
+      repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.3) 0 6px, rgba(192, 244, 119, 0.55) 6px 12px);
+    box-shadow: 0 0 12px rgba(192, 244, 119, 0.45);
+    transition: width 400ms ease;
+  }
+
+  .heist-progress__label {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: var(--heist-lime);
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
+  }
+
+  .heist-countdown {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    align-items: center;
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: clamp(1.2rem, 2vw, 1.75rem);
+    color: var(--heist-amber-dim);
+    letter-spacing: 0.04em;
+  }
+
+  .heist-countdown__cell { white-space: nowrap; }
+
+  .heist-bulletin {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .heist-bulletin__post { padding: 0; }
+
+  .heist-bulletin__title {
+    margin: 0 0 0.35rem;
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--heist-lime);
+    text-shadow: 0 0 4px rgba(192, 244, 119, 0.4);
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+  }
+
+  .heist-bulletin__body p {
+    margin: 0 0 0.35rem;
+    color: var(--heist-amber);
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.19;
+  }
+
+  .heist-bulletin__meta {
+    margin: 0.2rem 0 0;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--heist-amber-dim);
+    opacity: 0.85;
+  }
+
+  .heist-bulletin__empty,
+  .heist-partners__empty {
+    color: var(--heist-amber);
+    opacity: 0.7;
+    font-size: 12px;
+    font-family: "ModeSeven", ui-monospace, monospace;
+  }
+
+  .heist-partners {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .heist-partners__item {
+    display: flex;
+    gap: 0.65rem;
+    padding: 0.6rem;
+    border: 1px solid var(--heist-amber);
+    border-radius: 2px;
+    background: rgba(14, 40, 18, 0.35);
+  }
+
+  .heist-partners__avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255, 229, 114, 0.45);
+    background: rgba(14, 40, 18, 0.7);
+    flex-shrink: 0;
+  }
+
+  .heist-partners__content { flex: 1; min-width: 0; }
+
+  .heist-partners__title {
+    margin: 0 0 0.25rem;
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--heist-lime);
+    text-shadow: 0 0 4px rgba(192, 244, 119, 0.35);
+    letter-spacing: 0.02em;
+  }
+
+  .heist-partners__body {
+    margin: 0 0 0.4rem;
+    color: var(--heist-amber);
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.19;
+  }
+
+  .heist-partners__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .heist-partners__time {
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--heist-amber-dim);
+    opacity: 0.9;
+  }
+
+  .heist-partners__links { display: flex; gap: 0.4rem; }
+
+  .heist-partners__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--heist-ink);
+    background: var(--heist-amber);
+    text-decoration: none;
+    border: 1px solid var(--heist-amber-dim);
+  }
+
+  .heist-partners__link:hover { filter: brightness(1.05); }
+
+  .heist-projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 0.65rem;
+  }
+
+  .heist-project {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.7rem;
+    min-height: 6.5rem;
+    border: 1px solid var(--heist-amber);
+    border-radius: 2px;
+    background: rgba(14, 40, 18, 0.35);
+    color: var(--heist-amber);
+    text-decoration: none;
+    transition: background 150ms ease, transform 150ms ease;
+  }
+
+  .heist-project:hover {
+    background: rgba(14, 40, 18, 0.65);
+    transform: translateY(-1px);
+  }
+
+  .heist-project--new {
+    align-items: center;
+    justify-content: center;
+    color: var(--heist-amber);
+    text-align: center;
+  }
+
+  .heist-project__plus {
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--heist-amber);
+  }
+
+  .heist-project__label {
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+
+  .heist-project__name {
+    margin: 0;
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--heist-lime);
+    text-shadow: 0 0 4px rgba(192, 244, 119, 0.35);
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+  }
+
+  .heist-project__desc {
+    margin: 0;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--heist-amber);
+    line-height: 1.19;
+  }
+
+  .heist-project__time {
+    margin: auto 0 0;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--heist-amber);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .heist-project__clock { font-size: 0.9rem; }
+</style>
+ze: 0.9rem; }
+</style>

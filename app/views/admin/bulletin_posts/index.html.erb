@@ -1,0 +1,36 @@
+<div class="p-6">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="font-bold text-2xl">Bulletin Posts</h1>
+    <%= link_to "New post", new_admin_bulletin_post_path, class: "px-3 py-1.5 bg-emerald-600 text-white rounded" %>
+  </div>
+
+  <% if @bulletin_posts.any? %>
+    <ul class="space-y-3">
+      <% @bulletin_posts.each do |post| %>
+        <li class="border rounded p-3 <%= "opacity-50" if post.discarded? %>">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-semibold"><%= post.title %></p>
+              <p class="text-sm text-gray-500">
+                Posted <%= l(post.posted_at, format: :short) %>
+                <% if post.author %> by <%= post.author.display_name %><% end %>
+                <% if post.discarded? %> · <span class="text-red-500">removed</span><% end %>
+              </p>
+            </div>
+            <div class="flex gap-2">
+              <%= link_to "Edit", edit_admin_bulletin_post_path(post), class: "text-sm underline" %>
+              <% unless post.discarded? %>
+                <%= button_to "Remove", admin_bulletin_post_path(post), method: :delete,
+                      data: { turbo_confirm: "Remove this bulletin?" },
+                      class: "text-sm text-red-600 underline" %>
+              <% end %>
+            </div>
+          </div>
+          <p class="mt-2 text-sm"><%= simple_format(post.body) %></p>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-gray-500">No bulletin posts yet.</p>
+  <% end %>
+</div>

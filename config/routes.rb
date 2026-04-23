@@ -99,6 +99,7 @@ Rails.application.routes.draw do
     namespace :admin do
       resources :projects, only: [ :index, :show ]
       resources :users, only: [ :index, :show ]
+      resources :bulletin_posts
     end
   end
 
@@ -119,6 +120,8 @@ Rails.application.routes.draw do
   get "sorry" => "bans#show", as: :sorry
 
   get "home" => "home#index", as: :home
+  get "stream" => "stream#index", as: :stream
+  get "shop" => "shop#index", as: :shop
 
   resources :projects
 

@@ -81,6 +81,15 @@ class User < ApplicationRecord
     hackatime_token.present? && hackatime_uid.present?
   end
 
+  AVATAR_FALLBACK = "/static-assets/pfp_fallback.webp"
+
+  def avatar_url
+    return AVATAR_FALLBACK if avatar.blank?
+    return avatar if avatar.start_with?("http://", "https://", "/")
+
+    AVATAR_FALLBACK
+  end
+
   def hackatime_projects(start_date: nil, end_date: nil)
     return [] unless has_hackatime?
 

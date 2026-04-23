@@ -10,6 +10,12 @@ module GeneratedUrlHelpersModule
   include ::ActionDispatch::Routing::PolymorphicRoutes
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_bulletin_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_bulletin_posts_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_project_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -46,6 +52,9 @@ module GeneratedUrlHelpersModule
   def docs_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_bulletin_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_admin_ship_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -68,6 +77,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def mission_control_jobs_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_bulletin_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_project_url(*args); end
@@ -175,6 +187,9 @@ module GeneratedUrlHelpersModule
   def rsvps_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def shop_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def signin_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -182,6 +197,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def sorry_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def stream_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def turbo_recede_historical_location_url(*args); end

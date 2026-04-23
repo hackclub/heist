@@ -1,0 +1,32 @@
+<%= form_with model: [:admin, bulletin_post], local: true, class: "space-y-3 p-6 max-w-2xl" do |f| %>
+  <% if bulletin_post.errors.any? %>
+    <div class="bg-red-50 border border-red-300 text-red-700 p-3 rounded text-sm">
+      <%= pluralize(bulletin_post.errors.count, "error") %> prevented saving:
+      <ul class="list-disc ml-5">
+        <% bulletin_post.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, class: "block text-sm font-medium" %>
+    <%= f.text_field :title, class: "mt-1 w-full border rounded px-2 py-1", required: true %>
+  </div>
+
+  <div>
+    <%= f.label :body, class: "block text-sm font-medium" %>
+    <%= f.text_area :body, rows: 6, class: "mt-1 w-full border rounded px-2 py-1", required: true %>
+  </div>
+
+  <div>
+    <%= f.label :posted_at, "Publish at", class: "block text-sm font-medium" %>
+    <%= f.datetime_local_field :posted_at, value: (bulletin_post.posted_at || Time.current).strftime("%Y-%m-%dT%H:%M"), class: "mt-1 border rounded px-2 py-1" %>
+  </div>
+
+  <div class="flex gap-2">
+    <%= f.submit class: "px-3 py-1.5 bg-emerald-600 text-white rounded" %>
+    <%= link_to "Cancel", admin_bulletin_posts_path, class: "px-3 py-1.5 border rounded" %>
+  </div>
+<% end %>

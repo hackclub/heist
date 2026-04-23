@@ -36,7 +36,7 @@ class AuthController < ApplicationController
         }.to_json)
       end
 
-      redirect_to root_path, notice: "Welcome back, #{user.display_name}!"
+      redirect_to home_path, notice: "Welcome back, #{user.display_name}!"
     rescue StandardError => e
       Rails.logger.tagged("Authentication") do
         Rails.logger.error({
