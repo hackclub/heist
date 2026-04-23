@@ -99,7 +99,7 @@
     --heist-grid-major: rgba(90, 180, 96, 0.12);
     --heist-lime: #C5F187;
     --heist-lime-soft: #DCFCAE;
-    --heist-green: #6BC96C;
+    --heist-green: #DCFCAE;
     --heist-amber: #D39F3B;
     --heist-ribbon: #C64545;
     --heist-ribbon-ink: #FFF4E1;
@@ -366,6 +366,9 @@
   .heist-crt--scene {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
+    transform: scale(1.12);
+    transform-origin: center;
+    z-index: 1;
   }
 
   .heist-crt--stream {
@@ -475,8 +478,8 @@
 
   .heist-ribbon {
     position: absolute;
-    top: 0;
-    left: 10px;
+    top: 1rem;
+    left: 0;
     z-index: 999;
     display: block;
     line-height: 0;
@@ -492,38 +495,50 @@
   }
 
   @media (min-width: 900px) {
+    .heist-ribbon {
+      top: 1.5rem;
+    }
     .heist-ribbon__img { width: 256px; }
   }
 
   .heist-scroll {
     position: absolute;
-    bottom: 1.5rem;
+    bottom: 4rem;
     left: 1.5rem;
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     color: var(--heist-green);
     font-family: "ModeSeven", ui-monospace, monospace;
-    font-size: 0.85rem;
-    letter-spacing: 0.1em;
+    font-size: 1rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    opacity: 0.85;
-    text-shadow: 0 0 6px rgba(107, 201, 108, 0.35);
+    text-shadow: 0 0 8px rgba(107, 201, 108, 0.45);
     z-index: 2;
   }
 
   @media (min-width: 900px) {
     .heist-scroll {
-      bottom: 2rem;
-      left: 2.5rem;
-      font-size: 0.95rem;
+      bottom: 5rem;
+      left: 10.5rem;
+      font-size: 1.25rem;
+      gap: 1.5rem;
     }
   }
 
   .heist-scroll__chevron {
-    font-size: 1.4rem;
-    line-height: 1;
+    display: inline-block;
+    font-size: 2rem;
+    line-height: 0.6;
+    transform: scaleX(1.6);
+    transform-origin: center;
     animation: heist-scroll-bob 1.6s ease-in-out infinite;
+  }
+
+  @media (min-width: 900px) {
+    .heist-scroll__chevron {
+      font-size: 2.5rem;
+    }
   }
 
   @keyframes heist-scroll-bob {
