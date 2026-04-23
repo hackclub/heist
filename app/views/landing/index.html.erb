@@ -5,12 +5,14 @@
   <div class="heist-landing__grid" aria-hidden="true"></div>
   <%= image_tag "landing/dark-layer.png", class: "heist-landing__ellipse", alt: "", "aria-hidden": true %>
 
-  <%# link_to "LOG IN", signin_path, class: "heist-btn heist-btn--login" %>
+  <a class="heist-ribbon" href="https://hackclub.com/" target="_blank" rel="noopener">
+    <%= image_tag "https://assets.hackclub.com/banners/2026.svg", class: "heist-ribbon__img", alt: "Hack Club" %>
+  </a>
+
+  <%= link_to "LOG IN", signin_path, class: "heist-btn heist-btn--login" %>
 
   <div class="heist-landing__inner">
     <section class="heist-hero">
-      <%= image_tag "landing/hero-bracket.svg", class: "heist-hero__bracket", alt: "", "aria-hidden": true %>
-
       <h1 class="heist-title">
         <span class="visually-hidden">THE HEIST</span>
         <%= image_tag "landing/heist-title.png", class: "heist-title__img", alt: "", "aria-hidden": true %>
@@ -23,15 +25,17 @@
         Join the <span class="heist-tagline__accent">operation</span>.
       </p>
 
+      <p class="heist-join__hint">Sign up now and get free stickers!</p>
+
       <%= form_with url: rsvps_path, method: :post, class: "heist-join",
                     data: { turbo: false } do |f| %>
         <%= f.email_field :email,
-              placeholder: "email@email.com",
+              placeholder: "orpheus@hackclub.com",
               autocomplete: "email",
               required: true,
               class: "heist-join__input",
               "aria-label": "Email" %>
-        <%= f.submit "RSVP", class: "heist-btn heist-btn--join" %>
+        <%= f.submit "JOIN", class: "heist-btn heist-btn--join" %>
       <% end %>
 
       <% if params[:rsvp] == "ok" %>
@@ -79,6 +83,12 @@
       </div>
     </aside>
   </div>
+
+  <div class="heist-scroll" aria-hidden="true">
+    <span class="heist-scroll__chevron">&#x2304;</span>
+    <span class="heist-scroll__label">SCROLL FOR MORE DETAILS</span>
+    <span class="heist-scroll__chevron">&#x2304;</span>
+  </div>
 </div>
 
 <style>
@@ -86,10 +96,13 @@
     --heist-bg: #0E1A10;
     --heist-bg-2: #0A1309;
     --heist-grid: rgba(90, 180, 96, 0.08);
+    --heist-grid-major: rgba(90, 180, 96, 0.12);
     --heist-lime: #C5F187;
     --heist-lime-soft: #DCFCAE;
-    --heist-green: #6BC96C;
+    --heist-green: #DCFCAE;
     --heist-amber: #D39F3B;
+    --heist-ribbon: #C64545;
+    --heist-ribbon-ink: #FFF4E1;
     --heist-ink: #14251C;
 
     position: relative;
@@ -106,13 +119,23 @@
     pointer-events: none;
   }
 
+  .heist-landing a img {
+    pointer-events: auto;
+  }
+
   .heist-landing__grid {
     position: absolute;
     inset: 0;
     background-image:
+      linear-gradient(to right, var(--heist-grid-major) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--heist-grid-major) 1px, transparent 1px),
       linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
       linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px);
-    background-size: 48px 48px;
+    background-size:
+      233.57px 233.57px,
+      233.57px 233.57px,
+      46.71px 46.71px,
+      46.71px 46.71px;
     pointer-events: none;
   }
 
@@ -164,8 +187,8 @@
     position: absolute;
     top: 1.25rem;
     right: 1.25rem;
-    padding: 0.7rem 2.4rem;
-    font-size: 0.85rem;
+    padding: 0.4rem 1.6rem;
+    font-size: 1.05rem;
     background: var(--heist-amber);
     color: var(--heist-ink);
     border-radius: 2px;
@@ -177,8 +200,8 @@
     .heist-btn--login {
       top: 2rem;
       right: 2rem;
-      padding: 0.8rem 3rem;
-      font-size: 0.95rem;
+      padding: 0.45rem 1.9rem;
+      font-size: 1.25rem;
     }
   }
 
@@ -186,24 +209,6 @@
     position: relative;
     padding: 2rem 0 0;
     min-width: 0;
-  }
-
-  .heist-hero__bracket {
-    position: absolute;
-    top: -1.5rem;
-    left: -1rem;
-    width: clamp(10rem, 22vw, 17rem);
-    height: auto;
-    pointer-events: none;
-    opacity: 0.85;
-    filter: drop-shadow(0 0 8px rgba(171, 221, 100, 0.45));
-  }
-
-  @media (min-width: 900px) {
-    .heist-hero__bracket {
-      top: -2.5rem;
-      left: -2.25rem;
-    }
   }
 
   .heist-title {
@@ -283,8 +288,25 @@
     padding: 0.45rem;
     border: 2px solid var(--heist-lime-soft);
     border-radius: 3px;
-    background: rgba(220, 252, 174, 0.08);
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        rgba(220, 252, 174, 0.10),
+        rgba(220, 252, 174, 0.10) 5px,
+        transparent 5px,
+        transparent 11px
+      ),
+      rgba(220, 252, 174, 0.05);
     box-shadow: 0 0 0 1px rgba(220, 252, 174, 0.18), 0 0 24px rgba(220, 252, 174, 0.22);
+  }
+
+  .heist-join__hint {
+    margin: 0 0 0.65rem;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    color: var(--heist-green);
+    text-shadow: 0 0 6px rgba(107, 201, 108, 0.25);
   }
 
   .heist-join__input {
@@ -293,7 +315,7 @@
     padding: 0.4rem 0.9rem;
     border: none;
     outline: none;
-    background: transparent;
+    background: rgba(14, 26, 16, 0.85);
     color: var(--heist-lime);
     font-family: "ModeSeven", ui-monospace, monospace;
     font-size: 1.55rem;
@@ -311,7 +333,7 @@
     border: 0;
     border-radius: 2px;
     font-family: "ModeSeven", ui-monospace, monospace;
-    font-size: 0.8rem;
+    font-size: 1.15rem;
     box-shadow: 0 0 12px rgba(211, 159, 59, 0.35);
   }
 
@@ -344,6 +366,9 @@
   .heist-crt--scene {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
+    transform: scale(1.12);
+    transform-origin: center;
+    z-index: 1;
   }
 
   .heist-crt--stream {
@@ -451,6 +476,78 @@
     z-index: 2;
   }
 
+  .heist-ribbon {
+    position: absolute;
+    top: 1rem;
+    left: 0;
+    z-index: 999;
+    display: block;
+    line-height: 0;
+    pointer-events: auto;
+  }
+
+  .heist-ribbon__img {
+    display: block;
+    width: 180px;
+    height: auto;
+    border: 0;
+    pointer-events: auto;
+  }
+
+  @media (min-width: 900px) {
+    .heist-ribbon {
+      top: 1.5rem;
+    }
+    .heist-ribbon__img { width: 256px; }
+  }
+
+  .heist-scroll {
+    position: absolute;
+    bottom: 4rem;
+    left: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--heist-green);
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 1rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(107, 201, 108, 0.45);
+    z-index: 2;
+  }
+
+  @media (min-width: 900px) {
+    .heist-scroll {
+      bottom: 5rem;
+      left: 10.5rem;
+      font-size: 1.25rem;
+      gap: 1.5rem;
+    }
+  }
+
+  .heist-scroll__chevron {
+    display: inline-block;
+    font-size: 2rem;
+    line-height: 0.6;
+    color: #6BC96C;
+    text-shadow: 0 0 6px rgba(107, 201, 108, 0.45);
+    transform: scaleX(1.6);
+    transform-origin: center;
+    animation: heist-scroll-bob 1.6s ease-in-out infinite;
+  }
+
+  @media (min-width: 900px) {
+    .heist-scroll__chevron {
+      font-size: 2.5rem;
+    }
+  }
+
+  @keyframes heist-scroll-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+  }
+
   @media (max-width: 640px) {
     .heist-crts { gap: 0.5rem; }
   }
@@ -458,5 +555,6 @@
   @media (max-width: 899px) {
     .heist-landing__inner { padding-left: 0.75rem; padding-right: 0.75rem; }
     .heist-title { width: 100%; max-width: 48rem; }
+    .heist-scroll { display: none; }
   }
 </style>
