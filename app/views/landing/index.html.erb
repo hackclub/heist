@@ -13,8 +13,6 @@
 
   <div class="heist-landing__inner">
     <section class="heist-hero">
-      <%= image_tag "landing/hero-bracket.svg", class: "heist-hero__bracket", alt: "", "aria-hidden": true %>
-
       <h1 class="heist-title">
         <span class="visually-hidden">THE HEIST</span>
         <%= image_tag "landing/heist-title.png", class: "heist-title__img", alt: "", "aria-hidden": true %>
@@ -213,24 +211,6 @@
     min-width: 0;
   }
 
-  .heist-hero__bracket {
-    position: absolute;
-    top: -1.5rem;
-    left: -1rem;
-    width: clamp(10rem, 22vw, 17rem);
-    height: auto;
-    pointer-events: none;
-    opacity: 0.85;
-    filter: drop-shadow(0 0 8px rgba(171, 221, 100, 0.45));
-  }
-
-  @media (min-width: 900px) {
-    .heist-hero__bracket {
-      top: -2.5rem;
-      left: -2.25rem;
-    }
-  }
-
   .heist-title {
     margin: 0;
     line-height: 0;
@@ -308,7 +288,15 @@
     padding: 0.45rem;
     border: 2px solid var(--heist-lime-soft);
     border-radius: 3px;
-    background: rgba(220, 252, 174, 0.08);
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        rgba(220, 252, 174, 0.10),
+        rgba(220, 252, 174, 0.10) 5px,
+        transparent 5px,
+        transparent 11px
+      ),
+      rgba(220, 252, 174, 0.05);
     box-shadow: 0 0 0 1px rgba(220, 252, 174, 0.18), 0 0 24px rgba(220, 252, 174, 0.22);
   }
 
@@ -327,7 +315,7 @@
     padding: 0.4rem 0.9rem;
     border: none;
     outline: none;
-    background: transparent;
+    background: rgba(14, 26, 16, 0.85);
     color: var(--heist-lime);
     font-family: "ModeSeven", ui-monospace, monospace;
     font-size: 1.55rem;
