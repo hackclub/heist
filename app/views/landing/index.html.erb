@@ -1,18 +1,23 @@
 <% content_for :title, "The Heist — 1,000 hours. One weekend." %>
 <% content_for :hide_default_chrome, true %>
 
-<div class="heist-landing">
+<div class="heist-landing" data-controller="landing">
   <div class="heist-landing__grid" aria-hidden="true"></div>
   <%= image_tag "landing/dark-layer.png", class: "heist-landing__ellipse", alt: "", "aria-hidden": true %>
 
-  <a class="heist-ribbon" href="https://hackclub.com/" target="_blank" rel="noopener">
-    <%= image_tag "https://assets.hackclub.com/banners/2026.svg", class: "heist-ribbon__img", alt: "Hack Club" %>
-  </a>
+  <%# link_to "LOG IN", signin_path, class: "heist-btn heist-btn--login" %>
 
-  <%= link_to "LOG IN", signin_path, class: "heist-btn heist-btn--login" %>
+  <nav data-landing-target="nav" class="heist-scroll-nav">
+    <button data-landing-target="navItem" data-action="click->landing#open" data-section="how-it-works" class="heist-scroll-nav__btn">HOW IT WORKS</button>
+    <button data-landing-target="navItem" data-action="click->landing#open" data-section="the-plan" class="heist-scroll-nav__btn">THE PLAN</button>
+    <button data-landing-target="navItem" data-action="click->landing#open" data-section="faqs" class="heist-scroll-nav__btn">FAQS</button>
+    <button data-landing-target="navItem" data-action="click->landing#open" data-section="credits" class="heist-scroll-nav__btn">CREDITS</button>
+  </nav>
 
   <div class="heist-landing__inner">
     <section class="heist-hero">
+      <%= image_tag "landing/hero-bracket.svg", class: "heist-hero__bracket", alt: "", "aria-hidden": true %>
+
       <h1 class="heist-title">
         <span class="visually-hidden">THE HEIST</span>
         <%= image_tag "landing/heist-title.png", class: "heist-title__img", alt: "", "aria-hidden": true %>
@@ -25,17 +30,15 @@
         Join the <span class="heist-tagline__accent">operation</span>.
       </p>
 
-      <p class="heist-join__hint">Sign up now and get free stickers!</p>
-
       <%= form_with url: rsvps_path, method: :post, class: "heist-join",
                     data: { turbo: false } do |f| %>
         <%= f.email_field :email,
-              placeholder: "orpheus@hackclub.com",
+              placeholder: "email@email.com",
               autocomplete: "email",
               required: true,
               class: "heist-join__input",
               "aria-label": "Email" %>
-        <%= f.submit "JOIN", class: "heist-btn heist-btn--join" %>
+        <%= f.submit "RSVP", class: "heist-btn heist-btn--join" %>
       <% end %>
 
       <% if params[:rsvp] == "ok" %>
@@ -84,33 +87,152 @@
     </aside>
   </div>
 
-  <div class="heist-scroll" aria-hidden="true">
-    <span class="heist-scroll__chevron">&#x2304;</span>
-    <span class="heist-scroll__label">SCROLL FOR MORE DETAILS</span>
-    <span class="heist-scroll__chevron">&#x2304;</span>
+  <div data-landing-target="overlay" data-action="click->landing#closeOnBackdrop" class="heist-modal-overlay">
+    <div class="heist-modal-panel">
+      <h2 class="heist-modal-title">HOW IT WORKS</h2>
+    </div>
+  </div>
+
+  <div data-landing-target="overlay" data-action="click->landing#closeOnBackdrop" class="heist-modal-overlay">
+    <div class="heist-plan">
+      <div class="heist-plan__topbar">
+        <span class="heist-plan__subtitle">Stream Schedule</span>
+      </div>
+      <div class="heist-plan__title-row">
+        <div class="heist-plan__title-line"></div>
+        <div class="heist-plan__title-group">
+          <span class="heist-plan__the">THE</span>
+          <span class="heist-plan__title">PLAN</span>
+        </div>
+        <div class="heist-plan__title-line"></div>
+      </div>
+      <div class="heist-plan__days-header">
+        <div class="heist-plan__time-spacer"></div>
+        <div class="heist-plan__day">SATURDAY</div>
+        <div class="heist-plan__day">SUNDAY</div>
+      </div>
+      <div class="heist-plan__hline"></div>
+      <div class="heist-plan__grid">
+        <div class="heist-plan__times">
+          <% %w[1200 1300 1400 1500 1600].each do |time| %>
+            <div class="heist-plan__time">
+              <%= time %>
+              <div class="heist-plan__tick"></div>
+            </div>
+          <% end %>
+        </div>
+        <div class="heist-plan__col-sat"></div>
+        <div class="heist-plan__vline"></div>
+        <div class="heist-plan__col-sun"></div>
+      </div>
+    </div>
+  </div>
+
+  <div data-landing-target="overlay" data-action="click->landing#closeOnBackdrop" class="heist-modal-overlay">
+    <div class="heist-modal-panel">
+      <h2 class="heist-modal-title">FAQS</h2>
+    </div>
+  </div>
+
+  <div data-landing-target="overlay" data-action="click->landing#closeOnBackdrop" class="heist-modal-overlay">
+    <div class="heist-modal-panel">
+      <h2 class="heist-modal-title">CREDITS</h2>
+    </div>
   </div>
 </div>
 
 <style>
+
   .heist-landing {
     --heist-bg: #0E1A10;
     --heist-bg-2: #0A1309;
     --heist-grid: rgba(90, 180, 96, 0.08);
-    --heist-grid-major: rgba(90, 180, 96, 0.12);
     --heist-lime: #C5F187;
     --heist-lime-soft: #DCFCAE;
-    --heist-green: #DCFCAE;
-    --heist-amber: #D39F3B;
-    --heist-ribbon: #C64545;
-    --heist-ribbon-ink: #FFF4E1;
+    --heist-green: #6BC96C;
+    --heist-amber: #B5A251;
     --heist-ink: #14251C;
 
     position: relative;
     min-height: 100vh;
     color: var(--heist-green);
-    background: radial-gradient(ellipse at 70% 50%, #13301C 0%, var(--heist-bg) 55%, var(--heist-bg-2) 100%);
+    /*background: radial-gradient(ellipse at 70% 50%, #13301C 0%, var(--heist-bg) 55%, var(--heist-bg-2) 100%);*/
     font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
     overflow-x: hidden;
+
+    height: 100vh;
+    width: 100vw;
+    background-color: #101c13;
+    background-image:
+            repeating-linear-gradient(
+                    to right,
+                    transparent,
+                    transparent 119px,
+                    rgba(180,255,120,0.18) 119px,
+                    rgba(180,255,120,0.18) 121px,
+                    transparent 121px
+            ),
+            repeating-linear-gradient(
+                    to bottom,
+                    transparent,
+                    transparent 119px,
+                    rgba(180,255,120,0.18) 119px,
+                    rgba(180,255,120,0.18) 121px,
+                    transparent 121px
+            ),
+            repeating-linear-gradient(
+                    to right,
+                    transparent,
+                    transparent 39px,
+                    rgba(180,255,120,0.10) 39px,
+                    rgba(180,255,120,0.10) 41px,
+                    transparent 41px,
+                    transparent 79px,
+                    rgba(180,255,120,0.10) 79px,
+                    rgba(180,255,120,0.10) 81px,
+                    transparent 81px,
+                    transparent 120px
+            ),
+            repeating-linear-gradient(
+                    to bottom,
+                    transparent,
+                    transparent 39px,
+                    rgba(180,255,120,0.10) 39px,
+                    rgba(180,255,120,0.10) 41px,
+                    transparent 41px,
+                    transparent 79px,
+                    rgba(180,255,120,0.10) 79px,
+                    rgba(180,255,120,0.10) 81px,
+                    transparent 81px,
+                    transparent 120px
+            ),
+            repeating-linear-gradient(
+                    to right,
+                    rgba(80, 120, 80, 0.18) 0px,
+                    rgba(80, 120, 80, 0.18) 2px,
+                    transparent 2px,
+                    transparent 120px
+            ),
+            repeating-linear-gradient(
+                    to bottom,
+                    rgba(80, 120, 80, 0.18) 0px,
+                    rgba(80, 120, 80, 0.18) 2px,
+                    transparent 2px,
+                    transparent 120px
+            ),
+            radial-gradient(
+                    ellipse at 35% 50%,
+                    rgba(180, 255, 120, 0.13) 0%,
+                    rgba(0,0,0,0.0) 60%
+            );
+    background-size:
+            200px 200px,
+            200px 200px,
+            40px 40px,
+            40px 40px,
+            200px 200px,
+            200px 200px,
+            100% 100%;
   }
 
   .heist-landing img {
@@ -119,23 +241,13 @@
     pointer-events: none;
   }
 
-  .heist-landing a img {
-    pointer-events: auto;
-  }
-
   .heist-landing__grid {
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(to right, var(--heist-grid-major) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--heist-grid-major) 1px, transparent 1px),
       linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
       linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px);
-    background-size:
-      233.57px 233.57px,
-      233.57px 233.57px,
-      46.71px 46.71px,
-      46.71px 46.71px;
+    background-size: 48px 48px;
     pointer-events: none;
   }
 
@@ -187,8 +299,8 @@
     position: absolute;
     top: 1.25rem;
     right: 1.25rem;
-    padding: 0.4rem 1.6rem;
-    font-size: 1.05rem;
+    padding: 0.7rem 2.4rem;
+    font-size: 0.85rem;
     background: var(--heist-amber);
     color: var(--heist-ink);
     border-radius: 2px;
@@ -200,8 +312,8 @@
     .heist-btn--login {
       top: 2rem;
       right: 2rem;
-      padding: 0.45rem 1.9rem;
-      font-size: 1.25rem;
+      padding: 0.8rem 3rem;
+      font-size: 0.95rem;
     }
   }
 
@@ -209,6 +321,23 @@
     position: relative;
     padding: 2rem 0 0;
     min-width: 0;
+  }
+
+  .heist-hero__bracket {
+    position: absolute;
+    top: -1.5rem;
+    left: -1rem;
+    width: clamp(10rem, 22vw, 17rem);
+    height: auto;
+    pointer-events: none;
+    filter: drop-shadow(0 0 8px rgba(171, 221, 100, 0.45));
+  }
+
+  @media (min-width: 900px) {
+    .heist-hero__bracket {
+      top: -2.5rem;
+      left: -2.25rem;
+    }
   }
 
   .heist-title {
@@ -219,18 +348,21 @@
     gap: 0;
     width: clamp(24rem, 62vw, 48rem);
     max-width: 100%;
+    filter: drop-shadow(0 0 8px rgba(200, 255, 0, 0.2));
   }
 
   .heist-title__img {
     display: block;
     width: 74.75%;
     height: auto;
+    margin: 0;
   }
 
   .heist-title__cursor {
     display: block;
     width: 25.25%;
     height: auto;
+    margin: 0;
     animation: heist-blink 1.1s steps(1) infinite;
   }
 
@@ -251,12 +383,12 @@
     font-size: clamp(1.75rem, 3.8vw, 2.5rem);
     line-height: 1.1;
     color: var(--heist-green);
-    text-shadow: 0 0 10px rgba(107, 201, 108, 0.25);
+    text-shadow: 0 0 6px currentColor;
   }
 
   .heist-tagline__accent {
     color: var(--heist-amber);
-    text-shadow: 0 0 10px rgba(211, 159, 59, 0.3);
+    text-shadow: 0 0 6px currentColor;
   }
 
   .heist-flash {
@@ -288,25 +420,8 @@
     padding: 0.45rem;
     border: 2px solid var(--heist-lime-soft);
     border-radius: 3px;
-    background:
-      repeating-linear-gradient(
-        -45deg,
-        rgba(220, 252, 174, 0.10),
-        rgba(220, 252, 174, 0.10) 5px,
-        transparent 5px,
-        transparent 11px
-      ),
-      rgba(220, 252, 174, 0.05);
+    background: rgba(220, 252, 174, 0.08);
     box-shadow: 0 0 0 1px rgba(220, 252, 174, 0.18), 0 0 24px rgba(220, 252, 174, 0.22);
-  }
-
-  .heist-join__hint {
-    margin: 0 0 0.65rem;
-    font-family: "ModeSeven", ui-monospace, monospace;
-    font-size: 1.05rem;
-    letter-spacing: 0.02em;
-    color: var(--heist-green);
-    text-shadow: 0 0 6px rgba(107, 201, 108, 0.25);
   }
 
   .heist-join__input {
@@ -315,7 +430,7 @@
     padding: 0.4rem 0.9rem;
     border: none;
     outline: none;
-    background: rgba(14, 26, 16, 0.85);
+    background: transparent;
     color: var(--heist-lime);
     font-family: "ModeSeven", ui-monospace, monospace;
     font-size: 1.55rem;
@@ -327,13 +442,13 @@
   }
 
   .heist-btn--join {
-    padding: 0.5rem 1.4rem;
+    padding: 0.2rem 1.5rem;
     background: var(--heist-amber);
     color: var(--heist-ink);
     border: 0;
     border-radius: 2px;
     font-family: "ModeSeven", ui-monospace, monospace;
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     box-shadow: 0 0 12px rgba(211, 159, 59, 0.35);
   }
 
@@ -366,9 +481,6 @@
   .heist-crt--scene {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
-    transform: scale(1.12);
-    transform-origin: center;
-    z-index: 1;
   }
 
   .heist-crt--stream {
@@ -476,78 +588,6 @@
     z-index: 2;
   }
 
-  .heist-ribbon {
-    position: absolute;
-    top: 1rem;
-    left: 0;
-    z-index: 999;
-    display: block;
-    line-height: 0;
-    pointer-events: auto;
-  }
-
-  .heist-ribbon__img {
-    display: block;
-    width: 180px;
-    height: auto;
-    border: 0;
-    pointer-events: auto;
-  }
-
-  @media (min-width: 900px) {
-    .heist-ribbon {
-      top: 1.5rem;
-    }
-    .heist-ribbon__img { width: 256px; }
-  }
-
-  .heist-scroll {
-    position: absolute;
-    bottom: 4rem;
-    left: 1.5rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
-    color: var(--heist-green);
-    font-family: "ModeSeven", ui-monospace, monospace;
-    font-size: 1rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    text-shadow: 0 0 8px rgba(107, 201, 108, 0.45);
-    z-index: 2;
-  }
-
-  @media (min-width: 900px) {
-    .heist-scroll {
-      bottom: 5rem;
-      left: 10.5rem;
-      font-size: 1.25rem;
-      gap: 1.5rem;
-    }
-  }
-
-  .heist-scroll__chevron {
-    display: inline-block;
-    font-size: 2rem;
-    line-height: 0.6;
-    color: #6BC96C;
-    text-shadow: 0 0 6px rgba(107, 201, 108, 0.45);
-    transform: scaleX(1.6);
-    transform-origin: center;
-    animation: heist-scroll-bob 1.6s ease-in-out infinite;
-  }
-
-  @media (min-width: 900px) {
-    .heist-scroll__chevron {
-      font-size: 2.5rem;
-    }
-  }
-
-  @keyframes heist-scroll-bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(3px); }
-  }
-
   @media (max-width: 640px) {
     .heist-crts { gap: 0.5rem; }
   }
@@ -555,6 +595,306 @@
   @media (max-width: 899px) {
     .heist-landing__inner { padding-left: 0.75rem; padding-right: 0.75rem; }
     .heist-title { width: 100%; max-width: 48rem; }
-    .heist-scroll { display: none; }
   }
+
+  /* Scroll nav */
+  .heist-scroll-nav {
+    position: fixed;
+    left: 5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    visibility: hidden;
+    z-index: 60;
+  }
+
+  .heist-scroll-nav__btn {
+    font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    color: var(--heist-lime);
+    font-size: 2rem;
+    white-space: nowrap;
+    letter-spacing: -0.05em;
+    text-shadow: 0 0 6px currentColor;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.15s;
+    font-style: italic;
+  }
+
+  .heist-scroll-nav__btn:hover { color: var(--heist-amber); }
+
+  .heist-scroll-nav__btn.nav-active {
+    color: var(--heist-amber);
+    text-shadow: 0 0 8px var(--heist-amber);
+  }
+
+  /* Modal overlays */
+  .heist-modal-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .heist-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .heist-modal-panel {
+    background-color: #4B6C42;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+    padding: 2rem;
+    width: 48rem;
+  }
+
+  .heist-modal-title {
+    font-family: "ModeSeven", ui-monospace, monospace;
+    color: #fff;
+    font-size: 2.25rem;
+    margin: 0;
+    text-shadow: 0 0 6px currentColor;
+  }
+
+  .heist-plan__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed rgba(255,255,255,0.5);
+    padding-bottom: 0.75rem;
+  }
+
+  .heist-plan__title-group { display: flex; align-items: baseline; gap: 0.75rem; }
+
+  .heist-plan__the {
+    font-family: "ModeSeven", ui-monospace, monospace;
+    color: #fff;
+    font-size: 1.5rem;
+  }
+
+  .heist-plan__title {
+    font-family: "ModeSeven", ui-monospace, monospace;
+    color: #fff;
+    font-size: 2.25rem;
+    font-weight: bold;
+    font-style: italic;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4);
+  }
+
+  .heist-plan__subtitle {
+    font-family: "ModeSeven", ui-monospace, monospace;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.875rem;
+  }
+
+  .heist-plan__days-header { display: flex; }
+  .heist-plan__time-spacer { width: 4rem; flex-shrink: 0; }
+  .heist-plan__days { display: flex; flex: 1; }
+
+  .heist-plan__day {
+    flex: 1;
+    text-align: center;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    color: #fff;
+    font-size: 1.25rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .heist-plan__grid {
+    display: flex;
+    border-top: 1px dashed rgba(255,255,255,0.5);
+  }
+
+  .heist-plan__times {
+    width: 4rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+
+  .heist-plan__time {
+    font-family: "ModeSeven", ui-monospace, monospace;
+    color: #fff;
+    font-size: 0.875rem;
+  }
+
+  .heist-plan__tick {
+    height: 1px;
+    width: 1.5rem;
+    background: rgba(255,255,255,0.6);
+    margin-top: 2px;
+  }
+  .heist-modal-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+  }
+
+  .heist-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+  }
+
+  .heist-plan {
+      width: 640px;
+      height: 380px;
+      background-color: #4a7a3a;
+      background-image:
+              linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 40px 40px;
+      border: 3px solid rgba(255,255,255,0.5);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Courier New', monospace;
+      color: white;
+  }
+
+  .heist-plan__topbar {
+      display: flex;
+      justify-content: flex-end;
+  }
+
+  .heist-plan__subtitle {
+      font-size: 11px;
+      opacity: 0.7;
+      letter-spacing: 0.1em;
+  }
+
+  .heist-plan__title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+  }
+
+  .heist-plan__title-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.5);
+  }
+
+  .heist-plan__title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+  }
+
+  .heist-plan__the {
+      font-size: 13px;
+      opacity: 0.9;
+  }
+
+  .heist-plan__title {
+      font-size: 28px;
+      font-weight: bold;
+      font-style: italic;
+      text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4);
+      letter-spacing: 0.05em;
+  }
+
+  .heist-plan__days-header {
+      display: flex;
+      margin-bottom: 4px;
+  }
+
+  .heist-plan__time-spacer {
+      width: 50px;
+  }
+
+  .heist-plan__day {
+      flex: 1;
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      opacity: 0.9;
+  }
+
+  .heist-plan__hline {
+      height: 1px;
+      background: rgba(255,255,255,0.5);
+      margin-bottom: 4px;
+  }
+
+  .heist-plan__grid {
+      display: flex;
+      flex: 1;
+  }
+
+  .heist-plan__times {
+      width: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+  }
+
+  .heist-plan__time {
+      font-size: 11px;
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+  }
+
+  .heist-plan__tick {
+      width: 8px;
+      height: 1px;
+      background: rgba(255,255,255,0.5);
+  }
+
+  .heist-plan__col-sat {
+      flex: 1;
+      border-right: 1px dashed rgba(255,255,255,0.5);
+  }
+
+  .heist-plan__vline {
+      width: 0;
+  }
+
+  .heist-plan__col-sun {
+      flex: 1;
+  }
+
+  .heist-modal-panel {
+      background: #1a2e1a;
+      border: 2px solid rgba(200,255,0,0.4);
+      padding: 40px;
+      min-width: 400px;
+      color: white;
+      font-family: 'Courier New', monospace;
+  }
+
+  .heist-modal-title {
+      font-size: 24px;
+      letter-spacing: 0.2em;
+      color: #C0F477;
+  }
+
 </style>
