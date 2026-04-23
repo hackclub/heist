@@ -1,7 +1,10 @@
 <svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 238 266" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Vector 1" opacity="0.8" filter="url(#filter0_f_0_4)">
-<path d="M218 22H60.5V120.112L22 151.472V246" stroke="var(--stroke-0, #ABDD64)" stroke-width="4"/>
-</g>
+  <!-- glow layer -->
+  <g opacity="0.8" filter="url(#filter0_f_0_4)">
+    <path d="M218 22H60.5V120.112L22 151.472V246" stroke="var(--stroke-0, #ABDD64)" stroke-width="4"/>
+  </g>
+  <!-- solid crisp line on top -->
+  <path d="M218 22H60.5V120.112L22 151.472V246" stroke="var(--stroke-0, #ABDD64)" stroke-width="2.5" opacity="0.95"/>
 <defs>
 <filter id="filter0_f_0_4" x="0" y="0" width="238" height="266" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
