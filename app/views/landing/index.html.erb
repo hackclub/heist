@@ -5,7 +5,11 @@
   <div class="heist-landing__grid" aria-hidden="true"></div>
   <%= image_tag "landing/dark-layer.png", class: "heist-landing__ellipse", alt: "", "aria-hidden": true %>
 
-  <%# link_to "LOG IN", signin_path, class: "heist-btn heist-btn--login" %>
+  <a class="heist-ribbon" href="https://hackclub.com/" target="_blank" rel="noopener">
+    <%= image_tag "https://assets.hackclub.com/banners/2026.svg", class: "heist-ribbon__img", alt: "Hack Club" %>
+  </a>
+
+  <%= link_to "LOG IN", signin_path, class: "heist-btn heist-btn--login" %>
 
   <div class="heist-landing__inner">
     <section class="heist-hero">
@@ -23,15 +27,17 @@
         Join the <span class="heist-tagline__accent">operation</span>.
       </p>
 
+      <p class="heist-join__hint">Sign up now and get free stickers!</p>
+
       <%= form_with url: rsvps_path, method: :post, class: "heist-join",
                     data: { turbo: false } do |f| %>
         <%= f.email_field :email,
-              placeholder: "email@email.com",
+              placeholder: "orpheus@hackclub.com",
               autocomplete: "email",
               required: true,
               class: "heist-join__input",
               "aria-label": "Email" %>
-        <%= f.submit "RSVP", class: "heist-btn heist-btn--join" %>
+        <%= f.submit "JOIN", class: "heist-btn heist-btn--join" %>
       <% end %>
 
       <% if params[:rsvp] == "ok" %>
@@ -79,6 +85,12 @@
       </div>
     </aside>
   </div>
+
+  <div class="heist-scroll" aria-hidden="true">
+    <span class="heist-scroll__chevron">&#x2304;</span>
+    <span class="heist-scroll__label">SCROLL FOR MORE DETAILS</span>
+    <span class="heist-scroll__chevron">&#x2304;</span>
+  </div>
 </div>
 
 <style>
@@ -86,10 +98,13 @@
     --heist-bg: #0E1A10;
     --heist-bg-2: #0A1309;
     --heist-grid: rgba(90, 180, 96, 0.08);
+    --heist-grid-major: rgba(90, 180, 96, 0.12);
     --heist-lime: #C5F187;
     --heist-lime-soft: #DCFCAE;
     --heist-green: #6BC96C;
     --heist-amber: #D39F3B;
+    --heist-ribbon: #C64545;
+    --heist-ribbon-ink: #FFF4E1;
     --heist-ink: #14251C;
 
     position: relative;
@@ -106,13 +121,23 @@
     pointer-events: none;
   }
 
+  .heist-landing a img {
+    pointer-events: auto;
+  }
+
   .heist-landing__grid {
     position: absolute;
     inset: 0;
     background-image:
+      linear-gradient(to right, var(--heist-grid-major) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--heist-grid-major) 1px, transparent 1px),
       linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
       linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px);
-    background-size: 48px 48px;
+    background-size:
+      233.57px 233.57px,
+      233.57px 233.57px,
+      46.71px 46.71px,
+      46.71px 46.71px;
     pointer-events: none;
   }
 
@@ -287,6 +312,15 @@
     box-shadow: 0 0 0 1px rgba(220, 252, 174, 0.18), 0 0 24px rgba(220, 252, 174, 0.22);
   }
 
+  .heist-join__hint {
+    margin: 0 0 0.65rem;
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    color: var(--heist-green);
+    text-shadow: 0 0 6px rgba(107, 201, 108, 0.25);
+  }
+
   .heist-join__input {
     flex: 1;
     min-width: 0;
@@ -451,6 +485,64 @@
     z-index: 2;
   }
 
+  .heist-ribbon {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    z-index: 999;
+    display: block;
+    line-height: 0;
+    pointer-events: auto;
+  }
+
+  .heist-ribbon__img {
+    display: block;
+    width: 180px;
+    height: auto;
+    border: 0;
+    pointer-events: auto;
+  }
+
+  @media (min-width: 900px) {
+    .heist-ribbon__img { width: 256px; }
+  }
+
+  .heist-scroll {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--heist-green);
+    font-family: "ModeSeven", ui-monospace, monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    text-shadow: 0 0 6px rgba(107, 201, 108, 0.35);
+    z-index: 2;
+  }
+
+  @media (min-width: 900px) {
+    .heist-scroll {
+      bottom: 2rem;
+      left: 2.5rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  .heist-scroll__chevron {
+    font-size: 1.4rem;
+    line-height: 1;
+    animation: heist-scroll-bob 1.6s ease-in-out infinite;
+  }
+
+  @keyframes heist-scroll-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+  }
+
   @media (max-width: 640px) {
     .heist-crts { gap: 0.5rem; }
   }
@@ -458,5 +550,6 @@
   @media (max-width: 899px) {
     .heist-landing__inner { padding-left: 0.75rem; padding-right: 0.75rem; }
     .heist-title { width: 100%; max-width: 48rem; }
+    .heist-scroll { display: none; }
   }
 </style>
