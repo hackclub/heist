@@ -46,3 +46,4 @@
 
 # Personal Claude Code workspace settings
 /.claude/settings.local.json
+/.claude/worktrees/

@@ -19,6 +19,8 @@ class LandingController < ApplicationController
     @stream_starts_at = stream_starts_at
     @stream_embed_url = ENV.fetch("HEIST_STREAM_EMBED_URL", nil)
     @stream_live = @stream_embed_url.present? && Time.current >= @stream_starts_at
+    @schedule_rows = HeistSchedule.slot_rows
+    @current_marker = HeistSchedule.current_marker
   end
 
   private
