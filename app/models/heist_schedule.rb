@@ -17,6 +17,11 @@ class HeistSchedule
       starts_at.strftime("%-l%p")
     end
 
+    sig { returns(Integer) }
+    def duration_minutes
+      ((ends_at - starts_at) / 60).to_i
+    end
+
     private
 
     sig { params(time: Time).returns(String) }

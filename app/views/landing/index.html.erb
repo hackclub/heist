@@ -801,39 +801,80 @@
 
   .heist-panel__body { padding: 1rem; }
 
-  /* ---------- Plan schedule (inside .heist-panel) ---------- */
+  /* ---------- Plan schedule (green CRT variant) ---------- */
+
+  .heist-panel--plan {
+    --plan-green: #5FA44B;
+    --plan-green-dark: #1E4220;
+    --plan-border: #EDF7CF;
+    --plan-grid: rgba(20, 37, 28, 0.22);
+    --plan-stripe: rgba(20, 37, 28, 0.14);
+    --plan-hatch: rgba(237, 247, 207, 0.18);
+
+    position: relative;
+    background: var(--plan-green);
+    border-color: var(--plan-border);
+    border-width: 1px;
+    box-shadow:
+      0 0 0 1px var(--plan-green-dark),
+      0 0 0 4px var(--plan-border),
+      0 0 28px rgba(95, 164, 75, 0.28);
+    color: var(--plan-green-dark);
+  }
+
+  .heist-panel--plan .heist-panel__header {
+    background:
+      repeating-linear-gradient(135deg, var(--plan-stripe) 0 8px, transparent 8px 14px);
+    border-bottom-color: var(--plan-border);
+    color: var(--heist-lime);
+    text-shadow: 0 0 6px rgba(192, 244, 118, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .heist-panel--plan .heist-panel__meta {
+    color: var(--heist-lime);
+    text-shadow: 0 0 6px rgba(192, 244, 118, 0.45);
+    opacity: 1;
+  }
+
+  .heist-panel--plan .heist-panel__body {
+    padding: 0;
+  }
 
   .heist-schedule {
     display: grid;
-    grid-template-columns: 3.25rem minmax(0, 1fr) minmax(0, 1fr);
-    column-gap: 0.55rem;
-    row-gap: 0.45rem;
+    grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 0;
+    row-gap: 0.35rem;
     max-height: clamp(18rem, 58vh, 30rem);
     overflow-y: auto;
-    padding-right: 0.35rem;
-    scrollbar-color: var(--heist-amber) rgba(10, 19, 9, 0.3);
+    padding: 0.75rem 0.5rem 1rem;
+    scrollbar-color: var(--plan-border) rgba(20, 37, 28, 0.2);
+    background-image:
+      linear-gradient(to right, var(--plan-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--plan-grid) 1px, transparent 1px);
+    background-size: 23.35px 23.35px;
   }
 
-  .heist-schedule::-webkit-scrollbar { width: 8px; }
-  .heist-schedule::-webkit-scrollbar-track { background: rgba(10, 19, 9, 0.3); }
-  .heist-schedule::-webkit-scrollbar-thumb { background: var(--heist-amber); }
+  .heist-schedule::-webkit-scrollbar { width: 10px; }
+  .heist-schedule::-webkit-scrollbar-track { background: rgba(20, 37, 28, 0.2); }
+  .heist-schedule::-webkit-scrollbar-thumb { background: var(--plan-border); }
 
-  .heist-schedule__header {
-    grid-column: 1 / 2;
-  }
+  .heist-schedule__header { grid-column: 1 / 2; }
 
   .heist-schedule__day-label {
-    margin: 0 0 0.5rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid rgba(192, 244, 118, 0.45);
+    margin: 0;
+    padding: 0.15rem 0 0.5rem;
+    border-bottom: 2px solid var(--plan-border);
     font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 400;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.14em;
     text-align: center;
-    text-transform: lowercase;
-    color: var(--heist-lime);
-    text-shadow: 0 0 6px rgba(192, 244, 118, 0.45);
+    text-transform: uppercase;
+    color: var(--plan-border);
+    text-shadow: 0 0 8px rgba(237, 247, 207, 0.55);
   }
 
   .heist-schedule__hour-cell {
@@ -842,38 +883,41 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.35rem;
-    padding-top: 0.45rem;
+    padding: 0.45rem 0 0 0.25rem;
   }
 
   .heist-schedule__hour {
     font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
     font-size: 13px;
-    letter-spacing: 0.06em;
-    color: var(--heist-amber);
-    text-shadow: 0 0 4px rgba(222, 195, 95, 0.4);
-    text-transform: lowercase;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--plan-border);
+    text-shadow: 0 0 4px rgba(237, 247, 207, 0.4);
   }
 
   .heist-schedule__now {
     display: inline-block;
-    padding: 0.15rem 0.45rem;
+    padding: 0.2rem 0.5rem;
     background: var(--heist-amber);
     color: var(--heist-ink);
     font-family: "ModeSeven", ui-monospace, monospace;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.04em;
     white-space: nowrap;
-    box-shadow: 0 0 10px rgba(255, 229, 114, 0.5);
+    box-shadow: 0 0 12px rgba(255, 229, 114, 0.55);
   }
 
-  .heist-schedule__cell { min-height: 0; }
+  .heist-schedule__cell {
+    min-height: 0;
+    padding: 0 0.35rem;
+  }
 
   .heist-schedule__entry {
     position: relative;
-    padding: 0.4rem 0.6rem;
-    border: 1px solid rgba(192, 244, 118, 0.3);
-    background: rgba(192, 244, 118, 0.05);
-    color: var(--heist-lime);
+    padding: 0.45rem 0.65rem;
+    min-height: calc(1.75rem + (var(--duration, 30) * 0.55px));
+    border: 1.5px solid var(--plan-border);
+    background: transparent;
     font-family: "ModeSeven", ui-monospace, monospace;
     overflow: hidden;
   }
@@ -884,65 +928,77 @@
     inset: 0;
     background: repeating-linear-gradient(
       135deg,
-      rgba(192, 244, 118, 0.08) 0 4px,
-      transparent 4px 9px
+      var(--plan-hatch) 0 2px,
+      transparent 2px 7px
     );
     pointer-events: none;
+    z-index: 0;
   }
+
+  .heist-schedule__entry > * { position: relative; z-index: 1; }
 
   .heist-schedule__title {
     margin: 0;
-    position: relative;
-    z-index: 1;
-    font-size: 13px;
-    letter-spacing: 0.02em;
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--heist-lime);
+    text-shadow: 0 0 6px rgba(192, 244, 118, 0.5);
   }
 
   .heist-schedule__time {
-    margin: 0.1rem 0 0;
-    position: relative;
-    z-index: 1;
+    margin: 0.2rem 0 0;
     font-size: 11px;
     letter-spacing: 0.04em;
-    opacity: 0.8;
+    color: var(--heist-lime);
+    text-shadow: 0 0 4px rgba(192, 244, 118, 0.35);
+    opacity: 0.85;
   }
+
+  .heist-schedule__entry--prize_unlock,
+  .heist-schedule__entry--now {
+    /* amber blocks: drop the diagonal hatch for a clean solid fill */
+  }
+  .heist-schedule__entry--prize_unlock::after,
+  .heist-schedule__entry--now::after { display: none; }
 
   .heist-schedule__entry--prize_unlock {
     border-color: var(--heist-amber);
-    background: rgba(222, 195, 95, 0.2);
-    color: var(--heist-yellow);
+    background: rgba(222, 195, 95, 0.85);
   }
 
-  .heist-schedule__entry--prize_unlock::after {
-    background: repeating-linear-gradient(
-      135deg,
-      rgba(255, 229, 114, 0.14) 0 4px,
-      transparent 4px 9px
-    );
+  .heist-schedule__entry--prize_unlock .heist-schedule__title {
+    color: var(--heist-ink);
+    text-shadow: none;
+  }
+
+  .heist-schedule__entry--prize_unlock .heist-schedule__time {
+    color: var(--heist-ink);
+    text-shadow: none;
+    opacity: 0.75;
   }
 
   .heist-schedule__entry--kickoff {
-    background: rgba(192, 244, 118, 0.15);
+    background: rgba(237, 247, 207, 0.18);
   }
 
   .heist-schedule__entry--now {
     border-color: var(--heist-amber);
-    background: rgba(222, 195, 95, 0.25);
-    color: var(--heist-yellow);
-    box-shadow: 0 0 10px rgba(255, 229, 114, 0.35);
+    background: rgba(222, 195, 95, 0.85);
+    box-shadow: 0 0 14px rgba(255, 229, 114, 0.45);
   }
 
-  .heist-schedule__entry--now::after {
-    background: repeating-linear-gradient(
-      135deg,
-      rgba(255, 229, 114, 0.18) 0 4px,
-      transparent 4px 9px
-    );
+  .heist-schedule__entry--now .heist-schedule__title,
+  .heist-schedule__entry--now .heist-schedule__time {
+    color: var(--heist-ink);
+    text-shadow: none;
   }
 
   @media (max-width: 640px) {
     .heist-schedule {
-      grid-template-columns: 2.5rem minmax(0, 1fr);
+      grid-template-columns: 2.75rem minmax(0, 1fr);
       max-height: 60vh;
     }
     .heist-schedule__day-label:nth-of-type(2) { display: none; }
@@ -1033,5 +1089,37 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     opacity: 0.65;
+  }
+
+  /* ---------- How it works (blueprint plate) ---------- */
+
+  .heist-how-it-works {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .heist-how-it-works__plate {
+    margin: 0;
+    width: 100%;
+    max-width: 62rem;
+    aspect-ratio: 1024 / 591;
+    box-shadow: 0 0 42px rgba(222, 195, 95, 0.22);
+  }
+
+  .heist-how-it-works__art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  @media (max-width: 899px) {
+    .heist-how-it-works__plate {
+      max-width: 100%;
+      box-shadow: 0 0 24px rgba(222, 195, 95, 0.18);
+    }
   }
 </style>
