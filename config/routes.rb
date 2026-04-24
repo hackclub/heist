@@ -144,6 +144,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :projects, only: [ :index, :show ]
       get "stream/current", to: "stream#current"
+      post "presence/ping", to: "presence#ping"
     end
   end
 end
