@@ -23,7 +23,7 @@ export default class extends Controller {
     gsap.set(this.frameTarget, { autoAlpha: 0, y: this.reduceMotion ? 0 : 48 })
 
     const initial = this.sectionFromHash() || this.defaultSectionValue
-    this.activate(initial, { updateHash: false })
+    this.activate(initial)
     if (this.sectionFromHash()) this.open()
 
     window.addEventListener("wheel", this.boundWheel, { passive: true })
@@ -79,12 +79,12 @@ export default class extends Controller {
   }
 
   close(event) {
-    if (event) event.preventDefault()
+    if (event && typeof event.preventDefault === "function") event.preventDefault()
     if (!this.isOpen()) return
 
     this.killTimeline()
     this.timeline = gsap.timeline({
-      defaults: { ease: "power2.in" },
+      defaults: { ease: "power3.out" },
       onComplete: () => {
         this.panelTarget.classList.remove(this.openClass)
         this.panelTarget.setAttribute("aria-hidden", "true")
@@ -99,18 +99,18 @@ export default class extends Controller {
       }
     })
       .to(this.frameTarget,
-          { autoAlpha: 0, y: this.reduceMotion ? 0 : 32, duration: 0.24 })
-      .to(this.backdropTarget, { autoAlpha: 0, duration: 0.2 }, "-=0.14")
+          { autoAlpha: 0, y: this.reduceMotion ? 0 : 48, duration: this.reduceMotion ? 0.2 : 0.44 }, 0)
+      .to(this.backdropTarget, { autoAlpha: 0, duration: this.reduceMotion ? 0.2 : 0.44 }, 0)
   }
 
   select(event) {
     event.preventDefault()
     const section = event.currentTarget.dataset.section
     if (!section) return
-    this.activate(section, { updateHash: true })
+    this.activate(section)
   }
 
-  activate(section, { updateHash }) {
+  activate(section) {
     const nextSection = this.sectionTargets.find((s) => s.dataset.section === section)
     const prevSection = this.sectionTargets.find((s) => s.classList.contains("is-active"))
 
@@ -145,10 +145,6 @@ export default class extends Controller {
         }
       })
     }
-
-    if (updateHash) {
-      history.replaceState(null, "", `#${section}`)
-    }
   }
 
   handleKeydown(event) {
@@ -157,7 +153,19 @@ export default class extends Controller {
 
   handleWheel(event) {
     if (this.isOpen()) {
-      this.scrollAccum = 0
+      if (event.deltaY >= 0) {
+        this.scrollAccum = 0
+        return
+      }
+      if (this.gestureInsideScrolledRegion(event.target)) {
+        this.scrollAccum = 0
+        return
+      }
+      this.scrollAccum += event.deltaY
+      if (this.scrollAccum < -80) {
+        this.scrollAccum = 0
+        this.close()
+      }
       return
     }
     if (event.deltaY <= 0) {
@@ -172,18 +180,34 @@ export default class extends Controller {
   }
 
   handleTouchStart(event) {
-    if (this.isOpen()) return
     this.touchStartY = event.touches[0]?.clientY ?? null
+    this.touchStartTarget = event.target
   }
 
   handleTouchMove(event) {
-    if (this.isOpen() || this.touchStartY === null) return
+    if (this.touchStartY === null) return
     const currentY = event.touches[0]?.clientY
     if (currentY === undefined) return
+
+    if (this.isOpen()) {
+      const dy = currentY - this.touchStartY
+      if (dy > 48 && !this.gestureInsideScrolledRegion(this.touchStartTarget)) {
+        this.touchStartY = null
+        this.close()
+      }
+      return
+    }
+
     if (this.touchStartY - currentY > 48) {
       this.touchStartY = null
       this.open()
     }
+  }
+
+  gestureInsideScrolledRegion(target) {
+    if (!target || typeof target.closest !== "function") return false
+    const scrollable = target.closest(".heist-schedule")
+    return Boolean(scrollable && scrollable.scrollTop > 0)
   }
 
   isOpen() {
