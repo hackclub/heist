@@ -1,3 +1,6 @@
+> **Load when**: an error fires, a test fails, or something behaves unexpectedly.
+> **Skip when**: greenfield work with no observed failures.
+
 # Troubleshooting Guide
 
 ## Common Issues
@@ -89,34 +92,12 @@
 21. **Skylight missing data**
     - `SKYLIGHT_AUTHENTICATION` missing. Development is off by default.
 
-## Systematic Debugging Approach
+## Debugging discipline
 
-**YOU MUST ALWAYS find the root cause of any issue you are debugging.**
-
-**YOU MUST NEVER fix a symptom or add a workaround instead of finding a root cause, even if it is faster.**
-
-### Multi-issue problem solving
-
-When several tests or integrations fail at once:
-
-1. **Identify root causes**:
-   - Run failing tests individually to isolate.
-   - Read error messages carefully — both the failure line and any wrapped exceptions.
-   - Reproduce consistently before investigating.
-   - Check recent changes: `git log`, `git diff`.
-   - When you don't know, say "I don't understand X" rather than pretending to know.
-
-2. **Fix in logical order**:
-   - Load errors / undefined constants first.
-   - Authorization (Pundit) next.
-   - Business-logic / validation next.
-   - Edge cases and race conditions last.
-   - If your first fix didn't work, STOP and re-analyze. Don't stack more fixes on a wrong hypothesis.
-
-3. **Verify**:
-   - Test each fix individually before moving on.
-   - Run `bin/rubocop -f github` and `bin/brakeman --no-pager` after database or auth changes.
-   - Run the full suite before considering the task complete (excluding HCB without approval).
+- **Find the root cause.** Never fix a symptom or add a workaround when the root cause is reachable.
+- **Reproduce before investigating.** A flaky failure is not the same as a broken one.
+- **Fix in order:** load errors first, authorization next, business logic next, race conditions last. If a fix doesn't work, stop and re-analyze rather than stacking more fixes on a wrong hypothesis.
+- **Say "I don't understand X"** rather than guessing.
 
 ## Debug Commands
 
@@ -185,34 +166,13 @@ When several tests or integrations fail at once:
 - Cause: Turbo Frame request but the response has no matching frame id.
 - Fix: Return a frame with the expected id, or redirect.
 
-## Prevention Strategies
+## Where to look first
 
-### Before making changes
-
-1. Read the relevant section of `.claude/docs/`.
-2. Check similar patterns already in the codebase.
-3. Understand the policy for the records you'll touch.
-4. Plan database changes (migration + schema + backfill).
-
-### During development
-
-1. Run tests frequently: `bin/rails test test/path/to/specific_test.rb`.
-2. Tail the Rails log to catch N+1s and unexpected SQL.
-3. Use `binding.break` (debug gem) or `binding.irb`, remove before committing.
-
-### Before committing
-
-1. `bin/rubocop -f github` clean for your change.
-2. `bin/brakeman --no-pager` clean for your change.
-3. `git diff` reviewed — no stray `pp`, `binding.irb`, or unrelated edits.
-4. No Claude co-author trailers.
-
-## Getting Help
-
-- Check existing similar implementations in the codebase first.
-- Read the related test files for expected behavior.
-- Sentry captures uncaught errors; search by the error message.
-- Skylight has perf traces; use them before optimizing blindly.
+- Similar implementations in the codebase.
+- The related test file (it documents expected behavior and edge cases).
+- Sentry, by error message, for uncaught exceptions.
+- Skylight, for perf traces. Use them before optimizing blindly.
+- [LESSONS.md](./LESSONS.md), for recorded failure patterns this project has seen.
 
 ## Debug Info to Collect
 

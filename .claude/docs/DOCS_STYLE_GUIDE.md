@@ -1,3 +1,6 @@
+> **Load when**: writing user-facing docs under `docs/` (served via `MarkdownController`).
+> **Skip when**: editing `AGENTS.md`, `README.md`, or any file under `.claude/docs/`.
+
 # Documentation Style Guide
 
 This guide applies to Markdown documentation in `docs/`, served at `/docs` via `MarkdownController`. It does not apply to `README.md`, `AGENTS.md`, or files under `.claude/docs/`.

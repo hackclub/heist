@@ -41,6 +41,40 @@ When asked to do something, just do it, including obvious follow-up actions need
 - You genuinely don't understand what's being asked.
 - Your partner asked a question (answer the question, don't jump to implementation).
 
+## Scope discipline
+
+Do exactly what was asked. Nothing more.
+
+- **Change only what was named.** If the user asks to fix X, fix X. Do not refactor Y nearby. Do not rename, reformat, or re-style adjacent code that you did not need to touch.
+- **Do not promote files unprompted.** Do not change `# typed: false` to `# typed: true` on a file you only edited incidentally. Do not modernize `before_filter` to `before_action` in a file you did not need to open. The "Replace these patterns" table in [.claude/docs/RAILS.md](.claude/docs/RAILS.md) is a target state, not a license to refactor on sight.
+- **Do not implement design beyond the named section.** If the user names a Figma section or component, implement only that. Do not also implement sibling sections you noticed in the same frame. Confirm scope before starting if it is ambiguous.
+- **No invisible "while I was there" edits.** If you notice unrelated issues, list them at the end of the response. Do not silently fix them in the same diff.
+- **No new abstractions for one caller.** If the change has one caller, inline the logic. Do not introduce a service object, concern, helper, or Stimulus controller for "future flexibility."
+- **No new error handling for cases that cannot happen.** Trust internal invariants. Add validation only at user-input boundaries.
+- **No new gates, configs, or feature flags** unless the user asked for one.
+
+If you find yourself wanting to do more than was asked, stop and either ask, or note it as a follow-up at the end of the response. Do not just do it.
+
+### Small fix mode
+
+A small fix is a surgical change of less than ~20 lines that does not introduce a new model, controller action, policy, partial, job, or external call.
+
+For small fixes, the full New Feature Checklist does NOT apply. Specifically:
+
+- Skip the validation checklists in [HOTWIRE.md](.claude/docs/HOTWIRE.md) and [FIGMA.md](.claude/docs/FIGMA.md).
+- Skip "search shared partials" if you are not creating a partial.
+- Skip RBI regeneration if you did not change a model, association, enum, scope, or job.
+- Skip system tests unless the user-visible flow changed.
+
+What still applies for every change, no matter how small:
+
+- `bin/rubocop -f github` clean for your change.
+- `bundle exec srb tc` clean for your change.
+- No Claude co-author trailers.
+- No new debug logs, `binding.pry`, or unrelated edits in the diff.
+
+If you are unsure whether a change qualifies as small, ask.
+
 ## Money and safety (HCB)
 
 **HCB controls money for the program. DO NOT EDIT any code related to HCB without explicit written approval.** Alert in the chat before making changes to HCB code. Do not run tests or console code that touches HCB without explicit written approval.
@@ -127,20 +161,13 @@ Private methods go at the bottom of the class. When you add the `private` keywor
 
 ### Type safety (Sorbet)
 
-This project uses [Sorbet](https://sorbet.org) with [Tapioca](https://github.com/Shopify/tapioca) for gradual static typing. Rules:
+This project uses Sorbet + Tapioca for gradual static typing. Three load-bearing rules:
 
-- **Default strictness is `# typed: false`**. Add the sigil explicitly when you write a file that you want checked more strictly.
-- **Move new service objects, policies, and jobs to `# typed: true`** from day one. Existing files stay at `# typed: false` until you touch them.
-- **Never `# typed: ignore`.** It hides errors in downstream files. If a file can't be typed, mark it `# typed: false`, not ignore.
-- **Add `sig { params(...).returns(...) }` to every public method on a typed file.** Required args are keyword-only for any method with more than one argument.
-- **Prefer `T::Struct` and `Data.define` over raw Hashes** for multi-field return values or structured arguments.
-- **Rails `enum` for closed sets** (ship status, user role). Never a free-text string column with "magic" values.
-- **`T.must` and `T.unsafe` are code smells.** Prefer `#fetch`, explicit guards, or narrowing via `is_a?`. If you reach for them, leave a comment explaining why the type system can't see the invariant.
-- **After model, association, enum, scope, or job changes, run `bundle exec tapioca dsl`** and commit the updated `sorbet/rbi/dsl/*.rbi` files.
-- **After `bundle install`, run `bundle exec tapioca gem`** to refresh gem RBIs for changed gems. Commit the updated `sorbet/rbi/gems/*.rbi` files.
 - **`bundle exec srb tc` must pass before finishing** (same tier as `rubocop` and `brakeman`).
+- **Existing files stay at `# typed: false` until you touch them.** Do not promote `typed:` levels in files you are not actively changing.
+- **After model / association / enum / scope / job changes, run `bundle exec tapioca dsl`** and commit the updated `sorbet/rbi/dsl/*.rbi` files.
 
-See [.claude/docs/RAILS.md](.claude/docs/RAILS.md) for the full type-safety section including `T::Struct` patterns and the "If we ratchet to `typed: strict`" roadmap.
+See [.claude/docs/SORBET.md](.claude/docs/SORBET.md) for the full runbook (sig syntax, `T::Struct`, escape hatches, error patterns).
 
 ## Naming Conventions
 
@@ -265,17 +292,18 @@ If your agent tool does not auto-load `@`-referenced files, read these manually 
 
 **Read when relevant:**
 
+- [.claude/docs/LESSONS.md](.claude/docs/LESSONS.md) — recorded agent-failure patterns. Skim before non-trivial work.
+- [.claude/docs/HOTWIRE.md](.claude/docs/HOTWIRE.md) — before frontend work (views, Stimulus, Tailwind)
+- [.claude/docs/FIGMA.md](.claude/docs/FIGMA.md) — before implementing any Figma design
 - [.claude/docs/SORBET.md](.claude/docs/SORBET.md) — Sorbet + Tapioca runbook (any `sig`, `.rbi`, or `srb tc` work)
 - [.claude/docs/RAILS.md](.claude/docs/RAILS.md) — Rails 8 / Ruby 3.4 patterns
-- [.claude/docs/TESTING.md](.claude/docs/TESTING.md) — Minitest, fixtures, race conditions
+- [.claude/docs/AUTH.md](.claude/docs/AUTH.md) — HCA + Hackatime OAuth, Pundit
 - [.claude/docs/DATABASE.md](.claude/docs/DATABASE.md) — migrations, schema, audit, soft delete
+- [.claude/docs/TESTING.md](.claude/docs/TESTING.md) — Minitest, fixtures, race conditions
+- [.claude/docs/TROUBLESHOOTING.md](.claude/docs/TROUBLESHOOTING.md) — error patterns and debug commands
 - [.claude/docs/ARCHITECTURE.md](.claude/docs/ARCHITECTURE.md) — system overview
 - [.claude/docs/PR_STYLE_GUIDE.md](.claude/docs/PR_STYLE_GUIDE.md) — PR description format
-- [.claude/docs/AUTH.md](.claude/docs/AUTH.md) — HCA + Hackatime OAuth, Pundit
-- [.claude/docs/TROUBLESHOOTING.md](.claude/docs/TROUBLESHOOTING.md) — common failures
-- [.claude/docs/DOCS_STYLE_GUIDE.md](.claude/docs/DOCS_STYLE_GUIDE.md) — `docs/` markdown conventions
-- [.claude/docs/HOTWIRE.md](.claude/docs/HOTWIRE.md) — before frontend work (views/Stimulus/Tailwind)
-- [.claude/docs/FIGMA.md](.claude/docs/FIGMA.md) — before implementing any Figma design (fidelity rules, validation checklist)
+- [.claude/docs/DOCS_STYLE_GUIDE.md](.claude/docs/DOCS_STYLE_GUIDE.md) — `docs/` markdown conventions (only for files served at `/docs`)
 
 ## Local Configuration
 

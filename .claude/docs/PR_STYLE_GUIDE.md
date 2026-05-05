@@ -1,3 +1,6 @@
+> **Load when**: writing a PR title or description.
+> **Skip when**: writing a commit message (see commit conventions in [AGENTS.md](../../AGENTS.md#commits-and-prs)).
+
 # Pull Request Description Style Guide
 
 ## PR Title Format

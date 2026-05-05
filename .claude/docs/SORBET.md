@@ -1,3 +1,6 @@
+> **Load when**: adding a `sig`, regenerating RBIs, debugging `srb tc` errors, or upgrading sorbet/tapioca.
+> **Skip when**: changes do not touch typed code.
+
 # Sorbet and Tapioca Runbook
 
 This is the canonical runbook for Sorbet + Tapioca on The Heist. Read it before touching anything under `sorbet/`, before adding or upgrading a gem, and before adding your first `sig` to a new file.

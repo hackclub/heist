@@ -1,3 +1,6 @@
+> **Load when**: touching sign-in, OAuth flows, or any Pundit policy.
+> **Skip when**: no auth or policy code is involved.
+
 # Authentication and Authorization Guide
 
 This project has two external OAuth providers and one internal authorization system:
@@ -139,32 +142,7 @@ Admins are identified by a role on `User` (see `UserPolicy` and `Admin::*` contr
 
 ## Type safety for auth code
 
-Policies and services in the auth path should be `# typed: true` from day one.
-
-- `current_user` and `Current.user` are `T.nilable(User)` — nil in background jobs, nil for anonymous controllers.
-- `Pundit::Authorization#authorize` raises `Pundit::NotAuthorizedError` (caught globally); its return type is `T.untyped` in Pundit's stock RBIs. Don't rely on its return value.
-- `policy_scope(Model)` returns `ActiveRecord::Relation`. Chain `.includes` / `.where` freely.
-- `HcaService` and `HackatimeService` public methods should return a typed shape (a `T::Struct` or `T.nilable(T::Hash[String, T.untyped])` for raw API responses). Callers must handle nil.
-
-Example:
-
-```ruby
-# typed: true
-class HcaService
-  extend T::Sig
-
-  sig { params(code: String, redirect_uri: String).returns(T.nilable(HcaSession)) }
-  def exchange(code:, redirect_uri:)
-    # ...
-  end
-end
-
-class HcaSession < T::Struct
-  const :access_token, String
-  const :user_id, Integer
-  const :expires_at, Time
-end
-```
+Auth-path policies and services start at `# typed: true`. `current_user` and `Current.user` are `T.nilable(User)`. `policy_scope(Model)` returns `ActiveRecord::Relation`. See [SORBET.md](./SORBET.md) for sig patterns.
 
 ## Security checklist before completing auth work
 
