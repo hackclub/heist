@@ -16,6 +16,7 @@ class LandingController < ApplicationController
     end
 
     @active_hackers = active_hackers_count
+    @rsvpd = cookies[:heist_rsvpd] == "1"
     @stream_starts_at = stream_starts_at
     @stream_embed_url = ENV.fetch("HEIST_STREAM_EMBED_URL", nil)
     @stream_live = @stream_embed_url.present? && Time.current >= @stream_starts_at
