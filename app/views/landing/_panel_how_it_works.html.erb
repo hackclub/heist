@@ -3,8 +3,10 @@
          data-overlay-panel-target="section"
          hidden>
   <figure class="heist-how-it-works__plate">
-    <%= image_tag "landing/how-it-works.png",
+    <%= image_tag "landing/how-it-works.webp",
           class: "heist-how-it-works__art",
+          loading: "lazy",
+          decoding: "async",
           alt: "Handwritten blueprint of the heist: step 1 join the stream, step 2 start a project, step 3 hit 1000 hours together, step 4 steal the prizes." %>
   </figure>
 

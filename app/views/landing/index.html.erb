@@ -1,9 +1,13 @@
 <% content_for :title, "The Heist — 1,000 hours. One weekend." %>
 <% content_for :hide_default_chrome, true %>
 
+<% content_for :head do %>
+  <link rel="preload" as="image" href="<%= asset_path("landing/heist-title.webp") %>" type="image/webp" fetchpriority="high">
+<% end %>
+
 <div class="heist-landing" data-controller="overlay-panel" data-overlay-panel-open-class="is-open">
   <div class="heist-landing__grid" aria-hidden="true"></div>
-  <%= image_tag "landing/dark-layer.png", class: "heist-landing__ellipse", alt: "", "aria-hidden": true %>
+  <%= image_tag "landing/dark-layer.webp", class: "heist-landing__ellipse", alt: "", "aria-hidden": true, loading: "lazy", decoding: "async" %>
 
   <a class="heist-ribbon" href="https://hackclub.com/" target="_blank" rel="noopener">
     <%= image_tag "https://assets.hackclub.com/banners/2026.svg", class: "heist-ribbon__img", alt: "Hack Club" %>
@@ -15,8 +19,8 @@
     <section class="heist-hero">
       <h1 class="heist-title">
         <span class="visually-hidden">THE HEIST</span>
-        <%= image_tag "landing/heist-title.png", class: "heist-title__img", alt: "", "aria-hidden": true %>
-        <%= image_tag "landing/heist-cursor.png", class: "heist-title__cursor", alt: "", "aria-hidden": true %>
+        <%= image_tag "landing/heist-title.webp", class: "heist-title__img", alt: "", "aria-hidden": true, fetchpriority: "high", decoding: "async" %>
+        <%= image_tag "landing/heist-cursor.webp", class: "heist-title__cursor", alt: "", "aria-hidden": true, decoding: "async" %>
       </h1>
 
       <p class="heist-tagline">
@@ -47,7 +51,7 @@
 
     <aside class="heist-crts">
       <div class="heist-crt heist-crt--counter" role="status" aria-live="polite">
-        <%= image_tag "landing/crt1.png", class: "heist-crt__img", alt: "", "aria-hidden": true %>
+        <%= image_tag "landing/crt1.webp", class: "heist-crt__img", alt: "", "aria-hidden": true, decoding: "async" %>
         <p class="heist-crt__counter-text">
           <span class="heist-crt__counter-line">
             <span class="heist-crt__counter-number"><%= @active_hackers %></span>
@@ -58,13 +62,13 @@
       </div>
 
       <div class="heist-crt heist-crt--scene">
-        <%= image_tag "landing/crt2.png", class: "heist-crt__img", alt: "", "aria-hidden": true %>
+        <%= image_tag "landing/crt2.webp", class: "heist-crt__img", alt: "", "aria-hidden": true, decoding: "async" %>
       </div>
 
       <div class="heist-crt heist-crt--stream"
            data-controller="<%= @stream_live ? "" : "countdown" %>"
            <% unless @stream_live %>data-countdown-target-value="<%= @stream_starts_at.iso8601 %>"<% end %>>
-        <%= image_tag "landing/crt3.png", class: "heist-crt__img", alt: "", "aria-hidden": true %>
+        <%= image_tag "landing/crt3.webp", class: "heist-crt__img", alt: "", "aria-hidden": true, loading: "lazy", decoding: "async" %>
         <% if @stream_live %>
           <iframe class="heist-crt__embed"
                   src="<%= @stream_embed_url %>"
