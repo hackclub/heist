@@ -83,7 +83,13 @@
               </article>
             <% end %>
           <% else %>
-            <p class="heist-bulletin__empty">No posts yet. Admins can post updates from the admin panel.</p>
+            <article class="heist-bulletin__post heist-bulletin__post--placeholder" aria-label="Placeholder bulletin post">
+              <h3 class="heist-bulletin__title">Welcome hackers!</h3>
+              <div class="heist-bulletin__body">
+                <p>Today is the start of The Heist Weekend 1! The plan is simple: watch the streams, code, ship your project, and steal prizes!</p>
+              </div>
+              <p class="heist-bulletin__meta">Posted on 05/01/2026</p>
+            </article>
           <% end %>
         </div>
       </section>
@@ -192,6 +198,8 @@
     --heist-amber: #FFE572;
     --heist-amber-dim: #DBC45F;
     --heist-ink: #14251C;
+    --heist-stripe-amber: repeating-linear-gradient(135deg, rgba(255, 229, 114, 0.13) 0 6px, transparent 6px 12px);
+    --heist-stripe-lime: repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.14) 0 6px, transparent 6px 12px);
 
     position: relative;
     height: 100vh;
@@ -272,10 +280,10 @@
 
   .heist-home__header {
     padding: 0.65rem 1.5rem;
-    border: 3px solid var(--heist-lime);
+    border: 4px solid var(--heist-lime);
     border-radius: 4px;
     background:
-      repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.14) 0 8px, transparent 8px 14px),
+      var(--heist-stripe-lime),
       rgba(10, 19, 9, 0.7);
     box-shadow: 0 0 24px rgba(192, 244, 119, 0.2);
     text-align: center;
@@ -303,7 +311,9 @@
     padding: 0.7rem 1rem;
     border: 4px solid var(--heist-lime);
     border-radius: 4px;
-    background: rgba(10, 19, 9, 0.55);
+    background:
+      var(--heist-stripe-lime),
+      rgba(10, 19, 9, 0.55);
     box-shadow: 0 0 18px rgba(192, 244, 119, 0.15);
   }
 
@@ -311,7 +321,9 @@
     padding: 0.7rem 1rem;
     border: 4px solid var(--heist-amber-dim);
     border-radius: 4px;
-    background: rgba(20, 37, 28, 0.5);
+    background:
+      var(--heist-stripe-amber),
+      rgba(20, 37, 28, 0.5);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -369,7 +381,9 @@
     letter-spacing: 0.04em;
     color: var(--heist-amber);
     text-shadow: 0 0 4px rgba(255, 229, 114, 0.35);
-    background: rgba(10, 19, 9, 0.55);
+    background:
+      var(--heist-stripe-amber),
+      rgba(10, 19, 9, 0.55);
     border: 4px solid var(--heist-amber-dim);
     border-radius: 2px;
     text-transform: lowercase;
@@ -413,7 +427,9 @@
     padding: 0.5rem 0.9rem;
     border: 4px solid var(--heist-amber-dim);
     border-radius: 2px;
-    background: rgba(10, 19, 9, 0.55);
+    background:
+      var(--heist-stripe-amber),
+      rgba(10, 19, 9, 0.55);
     font-size: 16px;
     line-height: normal;
     letter-spacing: 0.04em;
@@ -492,11 +508,17 @@
     padding: 12px;
     border: 4px solid var(--heist-amber-dim);
     border-radius: 2px;
+    background:
+      var(--heist-stripe-amber),
+      rgba(10, 19, 9, 0.55);
+  }
+
+  .heist-bulletin__post:nth-child(even) {
     background: rgba(10, 19, 9, 0.55);
   }
 
   .heist-bulletin__title {
-    margin: 0 0 0.35rem;
+    margin: 0 0 4px;
     font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
     font-size: 16px;
     font-weight: 400;
@@ -507,7 +529,7 @@
   }
 
   .heist-bulletin__body p {
-    margin: 0 0 0.35rem;
+    margin: 0;
     color: var(--heist-amber);
     font-family: "ModeSeven", ui-monospace, monospace;
     font-size: 12px;
@@ -515,11 +537,10 @@
   }
 
   .heist-bulletin__meta {
-    margin: 0.2rem 0 0;
+    margin: 8px 0 0;
     font-family: "ModeSeven", ui-monospace, monospace;
     font-size: 10px;
-    color: var(--heist-amber-dim);
-    opacity: 0.85;
+    color: var(--heist-lime);
   }
 
   .heist-bulletin__empty,
@@ -542,6 +563,12 @@
     padding: 12px 10px 10px 12px;
     border: 4px solid var(--heist-amber-dim);
     border-radius: 2px;
+    background:
+      var(--heist-stripe-amber),
+      rgba(10, 19, 9, 0.55);
+  }
+
+  .heist-partners__item:nth-child(even) {
     background: rgba(10, 19, 9, 0.55);
   }
 
@@ -621,7 +648,9 @@
     padding: 12px 10px 12px 12px;
     border: 4px solid var(--heist-amber-dim);
     border-radius: 2px;
-    background: rgba(10, 19, 9, 0.55);
+    background:
+      var(--heist-stripe-amber),
+      rgba(10, 19, 9, 0.55);
     color: var(--heist-amber);
     text-decoration: none;
     transition: background 150ms ease, transform 150ms ease;
