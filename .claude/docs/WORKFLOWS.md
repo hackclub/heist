@@ -187,6 +187,18 @@ Use Rails' own tooling first.
 3. Check `test/` for expected behavior and edge cases.
 4. When touching jobs, look at `app/jobs/` and the Mission Control dashboard at `/jobs`.
 
+## Figma Implementation Workflow
+
+When implementing a design from Figma, follow [`.claude/docs/FIGMA.md`](./FIGMA.md). Key rules:
+
+- The screenshot from `get_screenshot` is the visual spec. Validate against it per section, not once at the end.
+- Translate React + Tailwind output into ERB + Tailwind. Promote any logic into a Stimulus controller. No inline `<script>` and no `onclick=`.
+- Resolve every color, spacing, and typography value to a project token before writing it. No raw hex, no eyeballed spacing.
+- Search `app/views/shared/` and the sibling view directory before creating a partial.
+- Do not implement from a truncated `get_design_context` payload. Use `get_metadata` and pull child nodes individually.
+
+See [`FIGMA.md`](./FIGMA.md) for the full fidelity rules and validation checklist.
+
 ## Troubleshooting Development Issues
 
 - **Dev server won't start** → Ensure Postgres is running; check `.env`; run `bundle install`.

@@ -275,6 +275,7 @@ If your agent tool does not auto-load `@`-referenced files, read these manually 
 - [.claude/docs/TROUBLESHOOTING.md](.claude/docs/TROUBLESHOOTING.md) — common failures
 - [.claude/docs/DOCS_STYLE_GUIDE.md](.claude/docs/DOCS_STYLE_GUIDE.md) — `docs/` markdown conventions
 - [.claude/docs/HOTWIRE.md](.claude/docs/HOTWIRE.md) — before frontend work (views/Stimulus/Tailwind)
+- [.claude/docs/FIGMA.md](.claude/docs/FIGMA.md) — before implementing any Figma design (fidelity rules, validation checklist)
 
 ## Local Configuration
 

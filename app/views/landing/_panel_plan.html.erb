@@ -1,0 +1,43 @@
+<article class="heist-overlay__section"
+         data-section="plan"
+         data-overlay-panel-target="section"
+         hidden>
+  <section class="heist-panel heist-panel--plan">
+    <header class="heist-panel__header heist-panel__header--split">
+      <span>the plan</span>
+      <span class="heist-panel__meta">GMT +08:00 - PH Standard Time</span>
+    </header>
+    <div class="heist-panel__body">
+      <div class="heist-schedule">
+        <div class="heist-schedule__header" aria-hidden="true"></div>
+        <h3 class="heist-schedule__day-label">saturday</h3>
+        <h3 class="heist-schedule__day-label">sunday</h3>
+
+        <% @schedule_rows.each do |row| %>
+          <div class="heist-schedule__hour-cell">
+            <% if row.hour_label %>
+              <span class="heist-schedule__hour"><%= row.hour_label %></span>
+            <% end %>
+            <% if @current_marker&.time_of_day == row.time_of_day %>
+              <span class="heist-schedule__now" aria-label="Current time">
+                <%= @current_marker.label %>
+              </span>
+            <% end %>
+          </div>
+
+          <% [row.saturday_entry, row.sunday_entry].each do |entry| %>
+            <div class="heist-schedule__cell">
+              <% if entry %>
+                <div class="heist-schedule__entry heist-schedule__entry--<%= entry.kind %><%= " heist-schedule__entry--now" if @current_marker&.time_of_day == row.time_of_day %>"
+                     style="--duration: <%= entry.duration_minutes %>;">
+                  <p class="heist-schedule__title"><%= entry.label %></p>
+                  <p class="heist-schedule__time"><%= entry.time_range %></p>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </section>
+</article>
