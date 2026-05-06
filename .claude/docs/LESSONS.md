@@ -104,6 +104,13 @@ Keep entries short. Two to four sentences each section. Do not turn this into a 
 **Right behavior.** Run `rg -l "<%= render" app/views/shared/ app/views/<feature>/` before creating any partial. State the grep result in your response. Reuse if anything looks close.
 **Heuristic.** Never create a partial without saying "I grepped and nothing matches because X."
 
+## 13. Chased CSS hover and stacking when an overlay was eating the events
+
+**Symptom.** Tooltip on `.heist-progress__segment:hover` would not show on the home progress bar. Spent multiple rounds tweaking `:has()` stacking contexts, `z-index`, `visibility`, `display`, sibling vs. descendant selectors. The tooltip rendered correctly when forced visible, so the problem was hover detection — not styling.
+**Why it's wrong.** The bar had a `.heist-progress__label` ("0 hrs / 1,000 hrs") with `position: absolute; inset: 0;` covering the entire bar. With no `pointer-events: none`, every hover event hit the label, never the segment buttons underneath. No stacking-context fix can change that.
+**Right behavior.** Any decorative absolute overlay (text label, glow layer, stretched `::before`/`::after`) over interactive children needs `pointer-events: none`. Check that first before touching `z-index`, `:has()`, or hover selectors.
+**Heuristic.** Hover/click not firing on a child? Inspect for a sibling with `position: absolute` + full coverage and no `pointer-events: none`. Fix that one line before debugging anything else.
+
 ---
 
 ## How to add a new lesson
