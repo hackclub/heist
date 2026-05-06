@@ -20,9 +20,58 @@ class HomeController < ApplicationController
     @bulletin_posts = BulletinPost.published.limit(5)
     @activity = recent_activity(limit: 8)
     @projects = current_user.projects.kept.order(updated_at: :desc).limit(8)
+    @ship_segments = build_ship_segments(@week_start, @hour_goal * 3600)
   end
 
   private
+
+  SegmentRow = T.type_alias { T::Hash[Symbol, T.untyped] }
+
+  sig { params(week_start: ActiveSupport::TimeWithZone, hour_goal_seconds: Integer).returns(T::Array[SegmentRow]) }
+  def build_ship_segments(week_start, hour_goal_seconds)
+    ships = Ship.approved
+                .joins(:project)
+                .where(projects: { discarded_at: nil })
+                .where(created_at: week_start..)
+                .where("approved_seconds >= ?", 60)
+                .order(approved_seconds: :asc)
+                .includes(project: :user)
+                .to_a
+    return [] if ships.empty?
+
+    user_ids = ships.map { |s| T.must(s.project).user_id }.uniq
+    project_counts = Project.kept.where(user_id: user_ids).group(:user_id).count
+    shipped_totals = Ship.approved
+                         .joins(:project)
+                         .where(projects: { user_id: user_ids })
+                         .group("projects.user_id")
+                         .sum(:approved_seconds)
+    projects_by_uid = Project.kept
+                             .where(user_id: user_ids)
+                             .order(updated_at: :desc)
+                             .group_by(&:user_id)
+
+    cursor = 0.0
+    ships.map do |ship|
+      project = T.must(ship.project)
+      seconds = ship.approved_seconds.to_i
+      width_pct = hour_goal_seconds.positive? ? (seconds.to_f / hour_goal_seconds * 100.0) : 0.0
+      uid = project.user_id
+      row = {
+        ship: ship,
+        project: project,
+        user: project.user,
+        ship_seconds: seconds,
+        offset_pct: cursor,
+        width_pct: width_pct,
+        user_project_count: project_counts[uid].to_i,
+        user_total_shipped_seconds: shipped_totals[uid].to_i,
+        user_recent_projects: (projects_by_uid[uid] || []).first(2)
+      }
+      cursor += width_pct
+      row
+    end
+  end
 
   sig { returns(ActiveSupport::TimeWithZone) }
   def weekend_start
