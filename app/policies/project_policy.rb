@@ -21,7 +21,16 @@ class ProjectPolicy < ApplicationPolicy
 
   def destroy?
     return false if record.discarded?
+    return false if record.ships.approved.exists?
     admin? || owner?
+  end
+
+  def ship?
+    return false if record.discarded?
+    return false if record.ships.pending.exists?
+    return false if record.repo_link.blank?
+    return false unless user&.has_hackatime?
+    owner?
   end
 
   class Scope < ApplicationPolicy::Scope

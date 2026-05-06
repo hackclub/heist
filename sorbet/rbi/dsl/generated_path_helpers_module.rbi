@@ -97,6 +97,9 @@ module GeneratedPathHelpersModule
   def project_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def project_ships_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def projects_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

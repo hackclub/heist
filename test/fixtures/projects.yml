@@ -31,8 +31,8 @@ one:
   user: one
   name: MyString
   description: MyText
-  demo_link: MyString
-  repo_link: MyString
+  demo_link: https://example.com
+  repo_link: https://github.com/heist/example
   tags: []
   is_unlisted: false
 
@@ -40,7 +40,7 @@ two:
   user: two
   name: MyString
   description: MyText
-  demo_link: MyString
-  repo_link: MyString
+  demo_link: https://example.com
+  repo_link: https://github.com/heist/example
   tags: []
   is_unlisted: false

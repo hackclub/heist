@@ -138,7 +138,9 @@ Rails.application.routes.draw do
   get "stream" => "stream#index", as: :stream
   get "shop" => "shop#index", as: :shop
 
-  resources :projects
+  resources :projects do
+    resources :ships, only: [ :create ], module: :projects
+  end
 
   get "docs" => "markdown#show", as: :docs
   get "docs/*slug" => "markdown#show", as: :doc
