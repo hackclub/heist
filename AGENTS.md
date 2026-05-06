@@ -299,6 +299,7 @@ If your agent tool does not auto-load `@`-referenced files, read these manually 
 - [.claude/docs/RAILS.md](.claude/docs/RAILS.md) — Rails 8 / Ruby 3.4 patterns
 - [.claude/docs/AUTH.md](.claude/docs/AUTH.md) — HCA + Hackatime OAuth, Pundit
 - [.claude/docs/DATABASE.md](.claude/docs/DATABASE.md) — migrations, schema, audit, soft delete
+- [.claude/docs/SEED_DATA.md](.claude/docs/SEED_DATA.md) — demo seeds for the home dashboard / progress bar
 - [.claude/docs/TESTING.md](.claude/docs/TESTING.md) — Minitest, fixtures, race conditions
 - [.claude/docs/TROUBLESHOOTING.md](.claude/docs/TROUBLESHOOTING.md) — error patterns and debug commands
 - [.claude/docs/ARCHITECTURE.md](.claude/docs/ARCHITECTURE.md) — system overview
