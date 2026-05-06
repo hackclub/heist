@@ -6,12 +6,14 @@ module Discardable
     scope :discarded, -> { where.not(discarded_at: nil) }
   end
 
+  # Bypass model validations: stale or malformed data on unrelated columns
+  # must never make a record un-deletable.
   def discard
-    update(discarded_at: Time.current)
+    update_columns(discarded_at: Time.current)
   end
 
   def undiscard
-    update(discarded_at: nil)
+    update_columns(discarded_at: nil)
   end
 
   def discarded?
