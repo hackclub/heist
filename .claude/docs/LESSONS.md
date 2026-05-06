@@ -90,6 +90,13 @@ Keep entries short. Two to four sentences each section. Do not turn this into a 
 **Right behavior.** Validate per chunk. After each section or component, do the per-section check in [FIGMA.md](./FIGMA.md) before moving on.
 **Heuristic.** Implement one chunk. Compare. Then the next.
 
+## 12. Implemented Figma visuals while the feature plumbing was missing
+
+**Symptom.** Built a "Save to favorites" star button in ERB exactly to spec. The Stimulus action fired, but there was no `favorites` route, no model column, no policy. The click 404'd in production.
+**Why it's wrong.** A Figma frame can imply features that don't exist yet. Implementing the visual without the plumbing ships a button that pretends to work and breaks for real users. Skipping the plumbing because "it wasn't in the screenshot" is just as wrong as silently building it without asking.
+**Right behavior.** Step 1 of the FIGMA.md workflow: categorize the work as pure visual, visual + client behavior, or visual + feature work. If feature work, list the missing pieces (route, model column, policy, controller fetch) and ask the user whether to do everything, split PRs, or stub the visual with a clear "not wired yet" affordance.
+**Heuristic.** A button has an endpoint behind it. A count has a column. A badge has a policy. A list has a controller fetch. If any are missing, the design implies feature work.
+
 ## 11. Created a duplicate partial without grepping
 
 **Symptom.** Created `app/views/landing/_card.html.erb` for a card that was already implemented as `app/views/shared/_card.html.erb`.

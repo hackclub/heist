@@ -11,12 +11,32 @@ If your task is purely backend, you do not need this guide. If you are writing b
 
 Before any tool calls or code:
 
-1. **Confirm what the user named.** "Implement the hero section" is not "implement the landing page." If the user named a section, component, or node, implement only that.
-2. **List sibling sections you will NOT touch.** State them back to the user. This makes scope creep impossible to do silently.
-3. **Ask if scope is ambiguous.** A Figma URL with no `nodeId` is ambiguous. A frame containing four sections is ambiguous. Ask which section, do not guess.
-4. **Match Heist scope discipline.** See [Scope discipline](../../AGENTS.md#scope-discipline). The named section is the contract; everything else is out of scope.
+1. **Categorize the work.** A "Figma implementation" hides one of three kinds of change. Decide which before anything else:
 
-If the named section depends on a sibling (shared partial, parent layout, design token), surface it before starting. Do not silently expand scope to include the dependency.
+   - **Pure visual.** Restyling existing functionality. No new routes, model attributes, controller logic, or client behavior. Stay within this doc and [HOTWIRE.md](./HOTWIRE.md).
+   - **Visual + new client behavior.** Adds Stimulus controllers, interactions, animations, or hover/focus states the codebase does not yet have. No backend changes. Pull in [HOTWIRE.md](./HOTWIRE.md).
+   - **Visual + feature work.** The design implies functionality that does not exist yet: a button with no endpoint behind it, a count with no model column, an admin badge with no policy, a list with no controller fetch. The Figma slice is one part of a larger feature; the [New Feature Checklist in AGENTS.md](../../AGENTS.md#new-feature-checklist) also applies, and so do [RAILS.md](./RAILS.md), [DATABASE.md](./DATABASE.md), and [AUTH.md](./AUTH.md) as relevant.
+
+   To decide, look at both the design context AND the screenshot, then ask yourself:
+
+   - Does the design imply **state** that doesn't exist on the model? (favorites, drafts, statuses, counts, "last updated", "is admin", etc.)
+   - Does the design imply a **route or action** that doesn't exist? (a button without an endpoint, a form without a controller)
+   - Does the design imply **data** the controller does not currently fetch?
+   - Does the design imply a **permission distinction**? (admin-only chrome, owner-only edits, signed-in vs anonymous variants)
+   - Does the design imply **external service** behavior? (a Hackatime stat, a YouTube embed, a Ferret search result)
+
+   If any answer is yes, this is **visual + feature work**. Surface it to the user *before* writing visual code:
+
+   > "This implementation also requires: a `favorites` join table, a `Favorites::Create` action gated by `FavoritePolicy`, and an `includes(:favorites)` on the home query. Do you want me to do all of it as one PR, split into a UI-only PR plus a feature PR, or stub the visual as 'not wired yet' for now?"
+
+   Do not silently build feature plumbing. Do not silently skip it either, leaving a button that 404s.
+
+2. **Confirm what the user named.** "Implement the hero section" is not "implement the landing page." If the user named a section, component, or node, implement only that.
+3. **List sibling sections you will NOT touch.** State them back to the user. This makes scope creep impossible to do silently.
+4. **Ask if scope is ambiguous.** A Figma URL with no `nodeId` is ambiguous. A frame containing four sections is ambiguous. Ask which section, do not guess.
+5. **Match Heist scope discipline.** See [Scope discipline](../../AGENTS.md#scope-discipline). The named section is the contract; everything else is out of scope.
+
+If the named section depends on a sibling (shared partial, parent layout, design token, missing model attribute), surface it before starting. Do not silently expand scope to include the dependency.
 
 ## Mindset
 
@@ -225,6 +245,7 @@ Underclaiming is fine. Overclaiming gets caught at review and erodes trust.
 7. **Validating once at the end.** Compounded differences are hard to attribute.
 8. **Truncated `get_design_context` payload.** Implementing from partial data produces partial work.
 9. **Implementing sibling sections you weren't asked for.** The named section is the contract.
+10. **Implementing visuals while the feature plumbing is missing.** A button with no endpoint behind it, a count with no column, a badge with no policy. Categorize the work in step 1 and surface missing plumbing before touching ERB.
 
 ## Related
 
