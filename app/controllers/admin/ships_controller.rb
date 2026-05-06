@@ -11,6 +11,12 @@ class Admin::ShipsController < Admin::ApplicationController
 
   def edit
     authorize @ship
+
+    unless Ship.atomic_claim!(@ship.id, current_user)
+      @ship.reload
+      redirect_to admin_ship_path(@ship),
+                  alert: "This ship is being reviewed by #{@ship.reviewer&.display_name || 'someone else'}; try again later."
+    end
   end
 
   def update

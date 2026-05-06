@@ -6,6 +6,7 @@
 #
 #  id                :bigint           not null, primary key
 #  approved_seconds  :integer
+#  claim_expires_at  :datetime
 #  feedback          :text
 #  frozen_demo_link  :string
 #  frozen_hca_data   :text
@@ -20,9 +21,10 @@
 #
 # Indexes
 #
-#  index_ships_on_project_id   (project_id)
-#  index_ships_on_reviewer_id  (reviewer_id)
-#  index_ships_on_status       (status)
+#  index_ships_on_claim_expires_at  (claim_expires_at) WHERE (claim_expires_at IS NOT NULL)
+#  index_ships_on_project_id        (project_id)
+#  index_ships_on_reviewer_id       (reviewer_id)
+#  index_ships_on_status            (status)
 #
 # Foreign Keys
 #
@@ -38,7 +40,6 @@ one:
   approved_seconds: 1
   frozen_demo_link: MyString
   frozen_repo_link: MyString
-  frozen_hca_data: MyText
   frozen_screenshot: MyString
 
 two:
@@ -50,5 +51,4 @@ two:
   approved_seconds: 1
   frozen_demo_link: MyString
   frozen_repo_link: MyString
-  frozen_hca_data: MyText
   frozen_screenshot: MyString

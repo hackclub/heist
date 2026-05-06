@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_23_113746) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_06_212323) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -124,6 +124,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_113746) do
 
   create_table "ships", force: :cascade do |t|
     t.integer "approved_seconds"
+    t.datetime "claim_expires_at"
     t.datetime "created_at", null: false
     t.text "feedback"
     t.string "frozen_demo_link"
@@ -135,6 +136,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_113746) do
     t.bigint "reviewer_id"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["claim_expires_at"], name: "index_ships_on_claim_expires_at", where: "(claim_expires_at IS NOT NULL)"
     t.index ["project_id"], name: "index_ships_on_project_id"
     t.index ["reviewer_id"], name: "index_ships_on_reviewer_id"
     t.index ["status"], name: "index_ships_on_status"
