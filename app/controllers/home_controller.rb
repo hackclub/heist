@@ -95,12 +95,10 @@ class HomeController < ApplicationController
     ships = Ship.approved
                 .joins(:project)
                 .where(projects: { discarded_at: nil })
-                .includes(project: :user)
                 .order(updated_at: :desc)
                 .limit(limit)
                 .to_a
     projects = Project.kept
-                      .includes(:user)
                       .order(created_at: :desc)
                       .limit(limit)
                       .to_a
@@ -108,6 +106,14 @@ class HomeController < ApplicationController
     entries = ships.map { |s| { kind: :ship, at: s.updated_at, record: s } } +
               projects.map { |p| { kind: :project, at: p.created_at, record: p } }
 
-    entries.sort_by { |e| -e[:at].to_i }.first(limit)
+    top = entries.sort_by { |e| -e[:at].to_i }.first(limit)
+
+    top_ships = top.filter_map { |e| e[:record] if e[:kind] == :ship }
+    top_projects = top.filter_map { |e| e[:record] if e[:kind] == :project }
+
+    ActiveRecord::Associations::Preloader.new(records: top_ships, associations: { project: :user }).call if top_ships.any?
+    ActiveRecord::Associations::Preloader.new(records: top_projects, associations: :user).call if top_projects.any?
+
+    top
   end
 end
