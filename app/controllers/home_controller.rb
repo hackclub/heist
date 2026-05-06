@@ -15,7 +15,7 @@ class HomeController < ApplicationController
     @hour_goal = WEEKLY_HOUR_GOAL
     @hours_shipped = (@seconds_shipped / 3600.0).round
     @week_ends_at = @week_end
-    @user_logged_seconds = current_user.hackatime_total_seconds(start_date: @week_start.to_date, end_date: @week_end.to_date) || 0
+    @user_logged_seconds = cached_hackatime_seconds(current_user, @week_start, @week_end)
     @user_shipped_seconds = current_user.ships.approved.sum(:approved_seconds).to_i
     @bulletin_posts = BulletinPost.published.limit(5)
     @activity = recent_activity(limit: 8)
@@ -81,6 +81,17 @@ class HomeController < ApplicationController
   sig { returns(Integer) }
   def current_week_number
     Integer(ENV.fetch("HEIST_WEEK_NUMBER", "1"))
+  end
+
+  sig { params(user: User, week_start: ActiveSupport::TimeWithZone, week_end: ActiveSupport::TimeWithZone).returns(Integer) }
+  def cached_hackatime_seconds(user, week_start, week_end)
+    return 0 unless user.has_hackatime?
+
+    cached = Rails.cache.read(HackatimeRefreshJob.cache_key(user.id, week_start))
+    return cached.to_i if cached
+
+    HackatimeRefreshJob.perform_later(user.id, week_start.iso8601, week_end.iso8601)
+    0
   end
 
   sig { params(since: ActiveSupport::TimeWithZone).returns(Integer) }
