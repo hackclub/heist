@@ -51,25 +51,29 @@
         <div class="heist-progress" role="progressbar"
              aria-valuenow="<%= @hours_shipped %>" aria-valuemin="0" aria-valuemax="<%= @hour_goal %>">
           <% @ship_segments.each_with_index do |seg, idx| %>
-            <span class="heist-progress__seg-wrap" style="left: <%= seg[:offset_pct].round(4) %>%; width: <%= seg[:width_pct].round(4) %>%;">
+            <span class="heist-progress__seg-wrap"
+                  style="left: <%= seg[:offset_pct].round(4) %>%; width: <%= seg[:width_pct].round(4) %>%;"
+                  data-controller="ship-tooltip">
               <button type="button" class="heist-progress__segment <%= 'heist-progress__segment--alt' if idx.odd? %>"
-                      aria-describedby="ship-tooltip-<%= seg[:ship].id %>">
+                      aria-describedby="ship-tooltip-<%= seg[:ship].id %>"
+                      data-action="click->ship-tooltip#toggle">
                 <span class="heist-progress__segment-sr"><%= seg[:user].display_name.to_s %> shipped <%= fmt_hm.call(seg[:ship_seconds]) %></span>
               </button>
-              <span id="ship-tooltip-<%= seg[:ship].id %>" class="heist-progress__tooltip" role="tooltip">
+              <span id="ship-tooltip-<%= seg[:ship].id %>" class="heist-progress__tooltip" role="tooltip"
+                    data-ship-tooltip-target="tooltip">
                 <span class="heist-progress__tooltip-connector" aria-hidden="true"></span>
-                <span class="heist-progress__tooltip-header">Shipped <%= fmt_hm.call(seg[:ship_seconds]) %></span>
+                <span class="heist-progress__tooltip-header"><%= fmt_hm.call(seg[:ship_seconds]) %> shipped</span>
                 <span class="heist-progress__tooltip-identity">
                   <%= image_tag seg[:user].avatar_url, class: "heist-progress__tooltip-avatar", alt: "" %>
                   <span class="heist-progress__tooltip-name"><%= seg[:user].display_name.to_s.downcase %></span>
                 </span>
                 <span class="heist-progress__tooltip-stats">
-                  <%= pluralize(seg[:user_project_count], "project") %> // <%= fmt_hm.call(seg[:user_total_shipped_seconds]) %> shipped
+                  <%= pluralize(seg[:user_project_count], "project") %> &middot; <%= fmt_hm.call(seg[:user_total_shipped_seconds]) %> shipped
                 </span>
                 <% if seg[:user_recent_projects].any? %>
                   <span class="heist-progress__tooltip-projects">
                     <% seg[:user_recent_projects].each do |project| %>
-                      <span class="heist-progress__tooltip-project">
+                      <%= link_to project_path(project), class: "heist-progress__tooltip-project" do %>
                         <span class="heist-progress__tooltip-cover" aria-hidden="true">
                           <span class="heist-progress__tooltip-cover-letter"><%= project.name.to_s.first.to_s.upcase %></span>
                         </span>
@@ -77,7 +81,7 @@
                           <span class="heist-progress__tooltip-project-name"><%= project.name.to_s.downcase %></span>
                           <span class="heist-progress__tooltip-project-desc"><%= truncate(project.description.to_s, length: 30) %></span>
                         </span>
-                      </span>
+                      <% end %>
                     <% end %>
                   </span>
                 <% end %>
@@ -339,6 +343,8 @@
   }
 
   .heist-top-panel {
+    position: relative;
+    z-index: 50;
     display: grid;
     grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
     gap: 4px;
@@ -434,6 +440,7 @@
     background:
       repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.08) 0 6px, transparent 6px 12px),
       rgba(14, 40, 18, 0.55);
+    overflow: visible;
   }
 
   .heist-top-panel .heist-progress__label {
@@ -449,8 +456,13 @@
     top: 0;
     bottom: 0;
     display: block;
-    min-width: 3px;
+    min-width: 6px;
+    pointer-events: auto;
   }
+
+  .heist-progress__seg-wrap:hover,
+  .heist-progress__seg-wrap:focus-within,
+  .heist-progress__seg-wrap.is-pinned { z-index: 70; }
 
   .heist-progress__segment {
     display: block;
@@ -515,36 +527,83 @@
 
   .heist-progress__tooltip {
     position: absolute;
-    top: calc(100% + 12px);
-    left: 50%;
-    transform: translateX(-50%);
-    width: 284px;
+    top: calc(100% + 14px);
+    left: 0;
+    transform: translateX(-14px) translateY(-4px);
+    width: 300px;
     z-index: 60;
-    display: none;
-    pointer-events: none;
+    display: flex;
     flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
     gap: 4px;
     padding: 4px;
     border: 4px solid var(--heist-amber-dim);
-    background: rgba(20, 37, 28, 0.92);
+    background:
+      var(--heist-stripe-lime),
+      rgba(20, 37, 28, 0.92);
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7);
     text-align: left;
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease,
+      visibility 0s linear 200ms;
+  }
+
+  /* invisible bridge between bar and tooltip so the cursor can cross the gap
+     without losing hover; also stops a flicker when sliding between segments */
+  .heist-progress__tooltip::before {
+    content: "";
+    position: absolute;
+    top: -18px;
+    left: 0;
+    right: 0;
+    height: 18px;
   }
 
   .heist-progress__seg-wrap:hover .heist-progress__tooltip,
-  .heist-progress__seg-wrap:focus-within .heist-progress__tooltip {
-    display: flex;
+  .heist-progress__seg-wrap:focus-within .heist-progress__tooltip,
+  .heist-progress__seg-wrap.is-pinned .heist-progress__tooltip,
+  .heist-progress__tooltip:hover {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-14px) translateY(0);
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease,
+      visibility 0s linear 0s;
+  }
+
+  /* flipped variant: tooltip anchors to seg-wrap's right edge for late segments */
+  .heist-progress__tooltip.is-flipped {
+    left: auto;
+    right: 0;
+    transform: translateX(14px) translateY(-4px);
+  }
+
+  .heist-progress__seg-wrap:hover .heist-progress__tooltip.is-flipped,
+  .heist-progress__seg-wrap:focus-within .heist-progress__tooltip.is-flipped,
+  .heist-progress__seg-wrap.is-pinned .heist-progress__tooltip.is-flipped,
+  .heist-progress__tooltip.is-flipped:hover {
+    transform: translateX(14px) translateY(0);
   }
 
   .heist-progress__tooltip-connector {
     position: absolute;
     bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 7px;
-    height: 12px;
-    background: var(--heist-lime);
-    box-shadow: 0 0 8px rgba(192, 244, 119, 0.6);
+    left: 14px;
+    width: 14px;
+    height: 18px;
+    background: var(--heist-amber);
+    border: 2px solid var(--heist-amber-dim);
+    box-shadow: 0 0 8px rgba(255, 229, 114, 0.6);
+  }
+
+  .heist-progress__tooltip.is-flipped .heist-progress__tooltip-connector {
+    left: auto;
+    right: 14px;
   }
 
   .heist-progress__tooltip-header {
@@ -614,6 +673,23 @@
     background:
       var(--heist-stripe-amber),
       rgba(10, 19, 9, 0.55);
+    text-decoration: none;
+    color: inherit;
+    transition: background 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+  }
+
+  a.heist-progress__tooltip-project:hover,
+  a.heist-progress__tooltip-project:focus-visible {
+    background:
+      var(--heist-stripe-amber),
+      rgba(20, 37, 28, 0.85);
+    box-shadow: 0 0 12px rgba(255, 229, 114, 0.35);
+    outline: none;
+  }
+
+  a.heist-progress__tooltip-project:focus-visible {
+    outline: 2px solid var(--heist-amber);
+    outline-offset: 1px;
   }
 
   .heist-progress__tooltip-cover {
@@ -663,33 +739,28 @@
     white-space: nowrap;
   }
 
-  .heist-home:has(.heist-progress__segment:hover),
-  .heist-home:has(.heist-progress__segment:focus-visible) {
-    --heist-bar-active: 1;
-  }
-
-  .heist-home:has(.heist-progress__segment:hover) .heist-home__header,
-  .heist-home:has(.heist-progress__segment:hover) .heist-home__sidebar,
-  .heist-home:has(.heist-progress__segment:hover) .heist-top-panel__countdown,
+  /* gentle dim of nearby panels so the tooltip reads cleanly without blacking
+     out the whole dashboard. Header, sidebar, and countdown stay full opacity. */
   .heist-home:has(.heist-progress__segment:hover) .heist-home__mid-row,
-  .heist-home:has(.heist-progress__segment:hover) .heist-panel--projects,
-  .heist-home:has(.heist-progress__segment:focus-visible) .heist-home__header,
-  .heist-home:has(.heist-progress__segment:focus-visible) .heist-home__sidebar,
-  .heist-home:has(.heist-progress__segment:focus-visible) .heist-top-panel__countdown,
   .heist-home:has(.heist-progress__segment:focus-visible) .heist-home__mid-row,
-  .heist-home:has(.heist-progress__segment:focus-visible) .heist-panel--projects {
-    opacity: 0.25;
+  .heist-home:has(.heist-progress__seg-wrap.is-pinned) .heist-home__mid-row {
+    opacity: 0.55;
     transition: opacity 200ms ease;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .heist-home__header,
-    .heist-home__sidebar,
-    .heist-top-panel__countdown,
     .heist-home__mid-row,
-    .heist-panel--projects,
-    .heist-progress__segment {
+    .heist-progress__segment,
+    .heist-progress__tooltip,
+    .heist-progress__tooltip-project {
       transition: none;
+    }
+    .heist-progress__tooltip,
+    .heist-progress__tooltip.is-flipped {
+      transform: translateX(-14px);
+    }
+    .heist-progress__tooltip.is-flipped {
+      transform: translateX(14px);
     }
   }
 
@@ -764,6 +835,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    pointer-events: none;
     font-family: "ModeSeven", ui-monospace, monospace;
     font-size: 14px;
     letter-spacing: 0.05em;
