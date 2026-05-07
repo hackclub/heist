@@ -15,7 +15,10 @@
   <div class="grid grid-cols-2 gap-4 mb-6">
     <div>
       <span class="text-sm text-gray-500">Roles</span>
-      <p><%= @user.roles.join(", ") %></p>
+      <p>
+        <%= @user.roles.join(", ") %>
+        <%= link_to "Edit", edit_admin_user_path(@user), class: "text-sm text-blue-600 hover:underline ml-2" %>
+      </p>
     </div>
     <div>
       <span class="text-sm text-gray-500">Timezone</span>

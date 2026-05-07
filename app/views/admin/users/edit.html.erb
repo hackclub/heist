@@ -1,0 +1,29 @@
+<div class="max-w-2xl mx-auto py-8">
+  <%= link_to "← Back to user", admin_user_path(@user), class: "text-sm text-gray-500 hover:underline" %>
+  <h1 class="font-bold text-3xl mt-2">Edit Roles: <%= @user.display_name %></h1>
+  <p class="text-gray-500"><%= @user.email %></p>
+
+  <%= form_with url: admin_user_path(@user), method: :patch, class: "mt-6 space-y-4" do |f| %>
+    <fieldset class="space-y-2">
+      <legend class="font-medium">Roles</legend>
+      <% User::ROLES.each do |role| %>
+        <label class="flex items-center gap-2">
+          <%= check_box_tag "user[roles][]", role, @user.has_role?(role) %>
+          <span><%= role %></span>
+        </label>
+      <% end %>
+      <%= hidden_field_tag "user[roles][]", "" %>
+    </fieldset>
+
+    <% if @user == current_user %>
+      <p class="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-3">
+        You cannot remove your own <code>admin</code> role.
+      </p>
+    <% end %>
+
+    <div class="flex gap-2">
+      <%= f.submit "Save", class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer" %>
+      <%= link_to "Cancel", admin_user_path(@user), class: "bg-gray-200 px-4 py-2 rounded hover:bg-gray-300" %>
+    </div>
+  <% end %>
+</div>

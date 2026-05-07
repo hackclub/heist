@@ -113,7 +113,7 @@ Rails.application.routes.draw do
 
     namespace :admin do
       resources :projects, only: [ :index, :show ]
-      resources :users, only: [ :index, :show ]
+      resources :users, only: [ :index, :show, :edit, :update ]
       resources :bulletin_posts
     end
   end

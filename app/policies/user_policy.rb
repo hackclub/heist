@@ -15,6 +15,10 @@ class UserPolicy < ApplicationPolicy
     admin? && record != user
   end
 
+  def manage_roles?
+    admin?
+  end
+
   class Scope < ApplicationPolicy::Scope
     def resolve
       if user&.admin?

@@ -38,6 +38,8 @@ class User < ApplicationRecord
   has_many :ships, through: :projects
   has_many :reviewed_ships, class_name: "Ship", foreign_key: :reviewer_id, dependent: :nullify, inverse_of: :reviewer
 
+  ROLES = %w[admin reviewer user].freeze
+
   encrypts :hca_token
   encrypts :hackatime_token
 
