@@ -1,0 +1,27 @@
+<div class="max-w-4xl mx-auto py-8">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="font-bold text-4xl">Inbox</h1>
+    <% if @unread_count.positive? %>
+      <span class="bg-blue-600 text-white text-sm px-3 py-1 rounded"><%= @unread_count %> unread</span>
+    <% end %>
+  </div>
+
+  <% if @mail_messages.any? %>
+    <ul class="divide-y border rounded">
+      <% @mail_messages.each do |message| %>
+        <li class="p-4 <%= "bg-blue-50" unless message.read? %>">
+          <div class="flex items-baseline justify-between gap-4">
+            <%= link_to message.subject, mail_message_path(message), class: "font-medium hover:underline" %>
+            <span class="text-xs text-gray-500"><%= time_ago_in_words(message.created_at) %> ago</span>
+          </div>
+          <% if message.body.present? %>
+            <p class="text-sm text-gray-700 mt-1 truncate"><%= message.body %></p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+    <%== pagy_nav(@pagy) %>
+  <% else %>
+    <p class="text-gray-500">No messages yet.</p>
+  <% end %>
+</div>

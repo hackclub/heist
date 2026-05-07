@@ -1,0 +1,20 @@
+t<div class="max-w-2xl mx-auto py-8">
+  <%= link_to "← Inbox", mail_messages_path, class: "text-sm text-gray-500 hover:underline" %>
+  <h1 class="font-bold text-3xl mt-2"><%= @mail_message.subject %></h1>
+  <p class="text-xs text-gray-500 mt-1">
+    <%= @mail_message.created_at.to_fs(:long) %>
+  </p>
+
+  <div class="prose mt-6">
+    <%= simple_format(@mail_message.body) %>
+  </div>
+
+  <% if @mail_message.mailable_type == "Ship" %>
+    <% ship = @mail_message.mailable %>
+    <% if ship %>
+      <div class="mt-8 border-t pt-4">
+        <%= link_to "View ship", project_path(ship.project), class: "text-blue-600 hover:underline" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

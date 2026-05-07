@@ -1,0 +1,34 @@
+<div class="max-w-6xl mx-auto py-8">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="font-bold text-4xl">Admin: Sent Mail</h1>
+    <%= link_to "Compose", new_admin_mail_message_path, class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
+  </div>
+
+  <% if @mail_messages.any? %>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b text-left">
+          <th class="py-2 px-3">Recipient</th>
+          <th class="py-2 px-3">Subject</th>
+          <th class="py-2 px-3">Kind</th>
+          <th class="py-2 px-3">Read?</th>
+          <th class="py-2 px-3">Sent</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @mail_messages.each do |message| %>
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-2 px-3"><%= link_to message.user.display_name, admin_user_path(message.user), class: "text-blue-600 hover:underline" %></td>
+            <td class="py-2 px-3"><%= message.subject %></td>
+            <td class="py-2 px-3"><code class="text-xs"><%= message.kind %></code></td>
+            <td class="py-2 px-3"><%= message.read? ? "Yes" : "—" %></td>
+            <td class="py-2 px-3"><%= message.created_at.strftime("%b %d, %Y %H:%M") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%== pagy_nav(@pagy) %>
+  <% else %>
+    <p class="text-gray-500">No mail sent yet.</p>
+  <% end %>
+</div>

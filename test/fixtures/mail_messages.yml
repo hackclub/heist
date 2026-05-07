@@ -1,0 +1,14 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+unread_for_two:
+  user: two
+  subject: Welcome to The Heist
+  body: Get in there.
+  kind: ship_status_changed
+
+read_for_two:
+  user: two
+  subject: Earlier message
+  body: This was already read.
+  kind: ship_status_changed
+  read_at: <%= 1.day.ago.iso8601 %>

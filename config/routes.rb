@@ -115,6 +115,7 @@ Rails.application.routes.draw do
       resources :projects, only: [ :index, :show ]
       resources :users, only: [ :index, :show, :edit, :update ]
       resources :bulletin_posts
+      resources :mail_messages, only: [ :index, :new, :create ]
     end
   end
 
@@ -141,6 +142,8 @@ Rails.application.routes.draw do
   resources :projects do
     resources :ships, only: [ :create ], module: :projects
   end
+
+  resources :mail_messages, only: %i[index show update], path: "mails"
 
   get "docs" => "markdown#show", as: :docs
   get "docs/*slug" => "markdown#show", as: :doc

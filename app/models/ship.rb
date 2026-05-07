@@ -46,6 +46,8 @@ class Ship < ApplicationRecord
   validates :status, presence: true
   validate :status_transition_allowed, if: :status_changed?
 
+  after_update_commit :notify_status_change, if: :saved_change_to_status?
+
   delegate :user, to: :project
 
   scope :for_user, ->(user) { joins(:project).where(projects: { user_id: user.id }) }
@@ -69,5 +71,12 @@ class Ship < ApplicationRecord
     return if new_record?
     return unless TERMINAL_STATUSES.include?(status_was)
     errors.add(:status, "cannot transition from #{status_was}")
+  end
+
+  # Mail-delivery failures must never roll back an approval; log and continue.
+  def notify_status_change
+    MailDeliveryService.ship_status_changed(self)
+  rescue StandardError => e
+    Rails.logger.error("Ship#notify_status_change failed for ship #{id}: #{e.class}: #{e.message}")
   end
 end

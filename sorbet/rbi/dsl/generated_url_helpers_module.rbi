@@ -76,6 +76,12 @@ module GeneratedUrlHelpersModule
   def home_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def mail_message_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def mail_messages_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def mission_control_jobs_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

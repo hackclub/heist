@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_06_212323) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_07_142444) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -95,6 +95,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_212323) do
     t.datetime "updated_at", null: false
     t.index ["discarded_at"], name: "index_bulletin_posts_on_discarded_at"
     t.index ["posted_at"], name: "index_bulletin_posts_on_posted_at"
+  end
+
+  create_table "mail_messages", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "discarded_at"
+    t.string "kind", null: false
+    t.bigint "mailable_id"
+    t.string "mailable_type"
+    t.datetime "read_at"
+    t.string "subject", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["discarded_at"], name: "index_mail_messages_on_discarded_at"
+    t.index ["mailable_type", "mailable_id"], name: "index_mail_messages_on_mailable_type_and_mailable_id"
+    t.index ["user_id", "read_at"], name: "index_mail_messages_unread_per_user", where: "(read_at IS NULL)"
+    t.index ["user_id"], name: "index_mail_messages_on_user_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -339,6 +356,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_212323) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bulletin_posts", "users", column: "author_id", on_delete: :nullify
+  add_foreign_key "mail_messages", "users"
   add_foreign_key "projects", "users"
   add_foreign_key "ships", "projects"
   add_foreign_key "ships", "users", column: "reviewer_id"

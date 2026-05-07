@@ -6,6 +6,16 @@
 
 
 class ActiveSupport::TestCase
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[MailMessage]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(MailMessage) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[MailMessage])
+  end
+  def mail_messages(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Project]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Project) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: T.any(String, Symbol)).returns(T::Array[Project]) }

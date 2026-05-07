@@ -76,6 +76,12 @@ module GeneratedPathHelpersModule
   def home_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def mail_message_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def mail_messages_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def mission_control_jobs_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
