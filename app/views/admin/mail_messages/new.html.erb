@@ -1,35 +1,37 @@
-<div class="max-w-2xl mx-auto py-8">
-  <%= link_to "← Back to sent mail", admin_mail_messages_path, class: "text-sm text-gray-500 hover:underline" %>
-  <h1 class="font-bold text-3xl mt-2">Compose Mail</h1>
+<div class="heist-admin__page-header">
+  <h1>COMPOSE MAIL</h1>
+</div>
 
-  <%= form_with url: admin_mail_messages_path, method: :post, local: true, class: "mt-6 space-y-4" do |f| %>
-    <label class="flex items-center gap-2">
-      <%= check_box_tag :broadcast, "1" %>
-      <span>Broadcast to all kept users</span>
-    </label>
+<div class="heist-admin__panel">
+  <%= form_with url: admin_mail_messages_path, method: :post, local: true, class: "heist-admin__form-stack" do |f| %>
+    <div class="heist-admin__form-field">
+      <label style="display: flex; align-items: center; gap: 0.5rem; font-family: 'ModeSeven', monospace; text-transform: none; letter-spacing: 0; color: #DAFBAC;">
+        <%= check_box_tag :broadcast, "1", false, style: "accent-color: #FFE572; width: 16px; height: 16px;" %>
+        <span>Broadcast to all kept users</span>
+      </label>
+    </div>
 
-    <div>
-      <%= label_tag :recipient_id, "Recipient", class: "block text-sm font-medium" %>
+    <div class="heist-admin__form-field">
+      <%= label_tag :recipient_id, "Recipient" %>
       <%= select_tag :recipient_id,
             options_from_collection_for_select(@users, :id, :display_name),
-            include_blank: "— Select a user —",
-            class: "border rounded px-3 py-2 w-full" %>
-      <p class="text-xs text-gray-500 mt-1">Ignored when broadcast is checked.</p>
+            include_blank: "— Select a user —" %>
+      <span class="heist-admin__hint">Ignored when broadcast is checked.</span>
     </div>
 
-    <div>
-      <%= label_tag :subject, nil, class: "block text-sm font-medium" %>
-      <%= text_field_tag :subject, params[:subject], required: true, class: "border rounded px-3 py-2 w-full" %>
+    <div class="heist-admin__form-field">
+      <%= label_tag :subject %>
+      <%= text_field_tag :subject, params[:subject], required: true %>
     </div>
 
-    <div>
-      <%= label_tag :body, nil, class: "block text-sm font-medium" %>
-      <%= text_area_tag :body, params[:body], rows: 8, class: "border rounded px-3 py-2 w-full font-mono text-sm" %>
+    <div class="heist-admin__form-field">
+      <%= label_tag :body %>
+      <%= text_area_tag :body, params[:body], rows: 8 %>
     </div>
 
-    <div class="flex gap-2">
-      <%= f.submit "Send", class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer" %>
-      <%= link_to "Cancel", admin_mail_messages_path, class: "bg-gray-200 px-4 py-2 rounded hover:bg-gray-300" %>
+    <div class="heist-admin__btn-row">
+      <%= f.submit "SEND", class: "heist-admin__btn" %>
+      <%= link_to "CANCEL", admin_mail_messages_path, class: "heist-admin__btn heist-admin__btn--ghost" %>
     </div>
   <% end %>
 </div>

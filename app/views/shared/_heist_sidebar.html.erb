@@ -1,0 +1,43 @@
+<%# Renders the brand sidebar nav. Pass `active:` (Symbol) to mark a key — :home, :stream, :shop, :inbox, :help, :admin. %>
+<% active = local_assigns[:active] %>
+<aside class="heist-sidebar" aria-label="Primary">
+  <%= link_to home_path, class: "heist-sidebar__nav #{'heist-sidebar__nav--active' if active == :home}", "aria-label": "Home", title: "Home" do %>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter" stroke-linecap="square" aria-hidden="true">
+      <path d="M3 11 12 3l9 8v10H3V11Z"/>
+    </svg>
+  <% end %>
+  <%= link_to stream_path, class: "heist-sidebar__nav #{'heist-sidebar__nav--active' if active == :stream}", "aria-label": "Stream", title: "Stream" do %>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter" stroke-linecap="square" aria-hidden="true">
+      <path d="M3 4l5 4M21 4l-5 4"/>
+      <rect x="3" y="8" width="18" height="13"/>
+      <rect x="14" y="12" width="4" height="5" fill="currentColor"/>
+    </svg>
+  <% end %>
+  <%= link_to shop_path, class: "heist-sidebar__nav #{'heist-sidebar__nav--active' if active == :shop}", "aria-label": "Shop", title: "Shop" do %>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter" stroke-linecap="square" aria-hidden="true">
+      <path d="M2 4h3l2 11h11l2-8H7"/>
+      <circle cx="9" cy="20" r="1.5"/>
+      <circle cx="17" cy="20" r="1.5"/>
+    </svg>
+  <% end %>
+  <%= link_to mail_messages_path, class: "heist-sidebar__nav #{'heist-sidebar__nav--active' if active == :inbox}", "aria-label": "Inbox", title: "Inbox" do %>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter" stroke-linecap="square" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14"/>
+      <path d="M3 7l9 6 9-6"/>
+    </svg>
+  <% end %>
+  <%= link_to docs_path, class: "heist-sidebar__nav #{'heist-sidebar__nav--active' if active == :help}", "aria-label": "Help", title: "Help" do %>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter" stroke-linecap="square" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18"/>
+      <path d="M9 10a3 3 0 1 1 4 2.8c-.7.3-1 .8-1 1.7M12 17.5h.01"/>
+    </svg>
+  <% end %>
+  <% if current_user&.admin? %>
+    <%= link_to admin_root_path, class: "heist-sidebar__nav heist-sidebar__nav--admin #{'heist-sidebar__nav--active' if active == :admin}", "aria-label": "Admin", title: "Admin" do %>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter" stroke-linecap="square" aria-hidden="true">
+        <circle cx="9" cy="12" r="4"/>
+        <path d="M13 12h8M17 12v3M20 12v3"/>
+      </svg>
+    <% end %>
+  <% end %>
+</aside>

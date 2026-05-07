@@ -1,32 +1,30 @@
-<div class="max-w-6xl mx-auto py-8">
-  <h1 class="font-bold text-4xl mb-6">Admin: Reviews</h1>
-
-  <table class="w-full border-collapse">
-    <thead>
-      <tr class="border-b text-left">
-        <th class="py-2 px-3">Project</th>
-        <th class="py-2 px-3">Owner</th>
-        <th class="py-2 px-3">Status</th>
-        <th class="py-2 px-3">Reviewer</th>
-        <th class="py-2 px-3">Created</th>
-        <th class="py-2 px-3"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @ships.each do |ship| %>
-        <tr class="border-b hover:bg-gray-50">
-          <td class="py-2 px-3"><%= ship.project.name %></td>
-          <td class="py-2 px-3"><%= ship.project.user.display_name %></td>
-          <td class="py-2 px-3"><span class="capitalize"><%= ship.status %></span></td>
-          <td class="py-2 px-3"><%= ship.reviewer&.display_name || "Unassigned" %></td>
-          <td class="py-2 px-3"><%= ship.created_at.strftime("%b %d, %Y") %></td>
-          <td class="py-2 px-3">
-            <%= link_to "View", admin_ship_path(ship), class: "text-blue-600 hover:underline" %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-
-  <%== pagy_nav(@pagy) %>
+<div class="heist-admin__page-header">
+  <h1>REVIEW QUEUE</h1>
 </div>
+
+<table class="heist-admin__table">
+  <thead>
+    <tr>
+      <th>Project</th>
+      <th>Owner</th>
+      <th>Status</th>
+      <th>Reviewer</th>
+      <th>Created</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @ships.each do |ship| %>
+      <tr>
+        <td><%= ship.project.name %></td>
+        <td><%= ship.project.user.display_name %></td>
+        <td><span class="heist-admin__pill heist-admin__pill--<%= ship.status %>"><%= ship.status %></span></td>
+        <td><%= ship.reviewer&.display_name || "—" %></td>
+        <td><%= ship.created_at.strftime("%b %d, %Y") %></td>
+        <td><%= link_to "View →", admin_ship_path(ship) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%== pagy_nav(@pagy) %>

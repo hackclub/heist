@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Admin — The Heist" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+
+    <style>
+      @font-face { font-family: "Audiowide"; src: url("/static-assets/Audiowide-Regular.ttf") format("truetype"); font-display: swap; }
+      @font-face { font-family: "ModeSeven"; src: url("/static-assets/Modeseven-L3n5.ttf") format("truetype"); font-display: swap; }
+      @font-face { font-family: "Blade Runner"; src: url("/static-assets/BLADRMF_.TTF") format("truetype"); font-display: swap; }
+    </style>
+
+    <link rel="preload" as="font" type="font/ttf" href="/static-assets/Audiowide-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" type="font/ttf" href="/static-assets/Modeseven-L3n5.ttf" crossorigin>
+    <link rel="preload" as="font" type="font/ttf" href="/static-assets/BLADRMF_.TTF" crossorigin>
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <%= Sentry.get_trace_propagation_meta.html_safe %>
+  </head>
+
+  <body class="heist-admin">
+    <header class="heist-admin__header">
+      <div class="heist-admin__brand">
+        <%= link_to home_path, class: "heist-admin__home", title: "Back to home", "aria-label": "Home" do %>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter" stroke-linecap="square" aria-hidden="true">
+            <path d="M3 11 12 3l9 8v10H3V11Z"/>
+          </svg>
+        <% end %>
+        <h1 class="heist-admin__title">ADMIN</h1>
+      </div>
+      <%= render "shared/heist_identity" %>
+    </header>
+
+    <%= render "shared/admin_tabs" %>
+
+    <main class="heist-admin__main">
+      <% if notice %>
+        <div class="heist-admin__flash heist-admin__flash--notice"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="heist-admin__flash heist-admin__flash--alert"><%= alert %></div>
+      <% end %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

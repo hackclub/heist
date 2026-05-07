@@ -161,3 +161,493 @@
   border-top: 1px solid #e2e8f0;
   font-size: 0.875rem;
 }
+
+/* Brand sidebar (shared/_heist_sidebar.html.erb). Pages place it via grid-area: sidebar. */
+.heist-sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 4px;
+  border: 4px solid #DAFBAC;
+  box-sizing: border-box;
+}
+
+.heist-sidebar__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 64px;
+  box-sizing: border-box;
+  color: #DAFBAC;
+  border: 4px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  transition: filter 150ms ease;
+}
+
+.heist-sidebar__nav svg { width: 28px; height: 28px; }
+.heist-sidebar__nav:hover { filter: brightness(1.3); }
+
+.heist-sidebar__nav--active {
+  background:
+    repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.32) 0 5px, transparent 5px 10px),
+    rgba(10, 19, 9, 0.55);
+  color: #FFE572;
+  border-color: #FFE572;
+}
+
+/* Admin shortcut: amber accent so it reads as elevated. */
+.heist-sidebar__nav--admin {
+  margin-top: auto;
+  color: #DBC45F;
+  border-color: #DBC45F;
+}
+
+.heist-sidebar__nav--admin:hover { color: #FFE572; border-color: #FFE572; }
+
+/* Identity chip rendered in page headers via shared/_heist_identity.html.erb. */
+.heist-identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.7);
+  color: #DAFBAC;
+  font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  text-decoration: none;
+}
+
+.heist-identity:hover {
+  border-color: #C0F477;
+  filter: brightness(1.1);
+}
+
+.heist-identity__avatar {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border: 2px solid #C0F477;
+  flex-shrink: 0;
+}
+
+.heist-identity__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1;
+}
+
+.heist-identity__name {
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: #C0F477;
+}
+
+.heist-identity__email {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: #DAFBAC;
+  opacity: 0.65;
+}
+
+.heist-identity__role {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  flex-shrink: 0;
+}
+
+.heist-identity__role--admin {
+  background: #FFE572;
+  color: #14251C;
+  box-shadow: 0 0 8px rgba(255, 229, 114, 0.5);
+}
+
+.heist-identity__role--reviewer {
+  background: #DBC45F;
+  color: #14251C;
+}
+
+/* =========================================================================
+   Admin chrome (layouts/admin.html.erb).
+   ========================================================================= */
+
+.heist-admin {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #0E1A10;
+  background-image:
+    linear-gradient(to right, rgba(90, 180, 96, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(90, 180, 96, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  color: #DAFBAC;
+  font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+.heist-admin__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 4px solid #C0F477;
+  background: rgba(10, 19, 9, 0.7);
+}
+
+.heist-admin__brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.heist-admin__home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: #C0F477;
+  border: 2px solid #C0F477;
+  background: rgba(10, 19, 9, 0.55);
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.heist-admin__home svg { width: 18px; height: 18px; }
+
+.heist-admin__home:hover {
+  background: #C0F477;
+  color: #14251C;
+}
+
+.heist-admin__title {
+  margin: 0;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 28px;
+  letter-spacing: 0.1em;
+  color: #FFE572;
+  text-shadow: 0 0 8px rgba(255, 229, 114, 0.3);
+}
+
+/* Tabs */
+
+.heist-admin__tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 1.5rem;
+  border-bottom: 2px solid rgba(218, 251, 172, 0.25);
+  background: rgba(10, 19, 9, 0.5);
+  overflow-x: auto;
+}
+
+.heist-admin__tab {
+  padding: 0.85rem 1.5rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: #DAFBAC;
+  text-decoration: none;
+  border-bottom: 4px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.heist-admin__tab:hover {
+  color: #FFE572;
+  text-decoration: none;
+}
+
+.heist-admin__tab--active {
+  color: #FFE572;
+  border-bottom-color: #FFE572;
+}
+
+/* Main content area */
+
+.heist-admin__main {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.heist-admin__main h1 {
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 36px;
+  letter-spacing: 0.06em;
+  color: #FFE572;
+  margin: 0 0 1.5rem 0;
+}
+
+.heist-admin__main h2 {
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  color: #C0F477;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.heist-admin__main a {
+  color: #FFE572;
+}
+
+.heist-admin__main a:hover {
+  text-decoration: underline;
+}
+
+/* Flash banners */
+
+.heist-admin__flash {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 2px solid;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.heist-admin__flash--notice {
+  border-color: #C0F477;
+  background: rgba(192, 244, 119, 0.1);
+  color: #C0F477;
+}
+
+.heist-admin__flash--alert {
+  border-color: #FFE572;
+  background: rgba(255, 229, 114, 0.1);
+  color: #FFE572;
+}
+
+/* Panel container for grouping content */
+
+.heist-admin__panel {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.heist-admin__panel + .heist-admin__panel { margin-top: 0; }
+
+/* Tables */
+
+.heist-admin__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  border: 2px solid #DAFBAC;
+}
+
+.heist-admin__table thead {
+  background: rgba(10, 19, 9, 0.7);
+}
+
+.heist-admin__table thead tr {
+  border-bottom: 2px solid #C0F477;
+}
+
+.heist-admin__table th {
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #FFE572;
+  text-transform: uppercase;
+}
+
+.heist-admin__table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.25);
+  color: #DAFBAC;
+}
+
+.heist-admin__table tr:last-child td { border-bottom: 0; }
+.heist-admin__table tr:hover td { background: rgba(255, 229, 114, 0.06); }
+
+.heist-admin__table-empty {
+  color: #DAFBAC;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Forms */
+
+.heist-admin__form-stack > * + * { margin-top: 1rem; }
+
+.heist-admin__form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.heist-admin__label,
+.heist-admin__form-field label {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #FFE572;
+  text-transform: uppercase;
+}
+
+.heist-admin__input,
+.heist-admin__textarea,
+.heist-admin__select,
+.heist-admin__form-field input[type="text"],
+.heist-admin__form-field input[type="email"],
+.heist-admin__form-field input[type="url"],
+.heist-admin__form-field input[type="number"],
+.heist-admin__form-field input[type="datetime-local"],
+.heist-admin__form-field input[type="date"],
+.heist-admin__form-field textarea,
+.heist-admin__form-field select {
+  padding: 0.6rem 0.75rem;
+  background: rgba(10, 19, 9, 0.7);
+  border: 2px solid #DAFBAC;
+  color: #DAFBAC;
+  font-family: "ModeSeven", monospace;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.heist-admin__input:focus,
+.heist-admin__textarea:focus,
+.heist-admin__select:focus,
+.heist-admin__form-field input:focus,
+.heist-admin__form-field textarea:focus,
+.heist-admin__form-field select:focus {
+  outline: none;
+  border-color: #FFE572;
+}
+
+.heist-admin__textarea,
+.heist-admin__form-field textarea {
+  font-family: "ModeSeven", monospace;
+  resize: vertical;
+}
+
+.heist-admin__hint {
+  font-size: 11px;
+  color: #DAFBAC;
+  opacity: 0.7;
+  letter-spacing: 0.04em;
+}
+
+/* Buttons */
+
+.heist-admin__btn {
+  display: inline-block;
+  padding: 0.6rem 1.25rem;
+  background: #FFE572;
+  color: #14251C;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  border: 2px solid #FFE572;
+  cursor: pointer;
+}
+
+.heist-admin__btn:hover {
+  filter: brightness(1.1);
+  text-decoration: none;
+}
+
+.heist-admin__btn--ghost {
+  background: transparent;
+  color: #DAFBAC;
+  border-color: #DAFBAC;
+}
+
+.heist-admin__btn--ghost:hover {
+  color: #FFE572;
+  border-color: #FFE572;
+}
+
+.heist-admin__btn--danger {
+  background: transparent;
+  color: #FF6B6B;
+  border-color: #FF6B6B;
+}
+
+.heist-admin__btn--danger:hover {
+  background: #FF6B6B;
+  color: #14251C;
+}
+
+.heist-admin__btn-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* Page header (h1 with action buttons) */
+
+.heist-admin__page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.heist-admin__page-header h1 { margin: 0; }
+
+/* Status pills */
+
+.heist-admin__pill {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid #DAFBAC;
+  color: #DAFBAC;
+}
+
+.heist-admin__pill--approved { border-color: #C0F477; background: rgba(192, 244, 119, 0.15); color: #C0F477; }
+.heist-admin__pill--pending  { border-color: #FFE572; background: rgba(255, 229, 114, 0.15); color: #FFE572; }
+.heist-admin__pill--returned { border-color: #DBC45F; background: rgba(219, 196, 95, 0.15); color: #DBC45F; }
+.heist-admin__pill--rejected { border-color: #FF6B6B; background: rgba(255, 107, 107, 0.15); color: #FF6B6B; }
+
+/* Search input cluster */
+
+.heist-admin__search {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.heist-admin__search input { flex: 1; }
+
+.heist-identity__signout-form {
+  display: inline-flex;
+  margin: 0;
+  margin-left: 0.5rem;
+}
+
+.heist-identity__signout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid #DBC45F;
+  background: transparent;
+  color: #DBC45F;
+  cursor: pointer;
+  padding: 0;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.heist-identity__signout svg { width: 18px; height: 18px; }
+
+.heist-identity__signout:hover {
+  background: #DBC45F;
+  color: #14251C;
+}
