@@ -1,27 +1,284 @@
-<div class="max-w-4xl mx-auto py-8">
-  <div class="flex items-center justify-between mb-6">
-    <h1 class="font-bold text-4xl">Inbox</h1>
-    <% if @unread_count.positive? %>
-      <span class="bg-blue-600 text-white text-sm px-3 py-1 rounded"><%= @unread_count %> unread</span>
-    <% end %>
-  </div>
+<% content_for :title, "INBOX — The Heist" %>
+<% content_for :hide_default_chrome, true %>
 
-  <% if @mail_messages.any? %>
-    <ul class="divide-y border rounded">
-      <% @mail_messages.each do |message| %>
-        <li class="p-4 <%= "bg-blue-50" unless message.read? %>">
-          <div class="flex items-baseline justify-between gap-4">
-            <%= link_to message.subject, mail_message_path(message), class: "font-medium hover:underline" %>
-            <span class="text-xs text-gray-500"><%= time_ago_in_words(message.created_at) %> ago</span>
-          </div>
-          <% if message.body.present? %>
-            <p class="text-sm text-gray-700 mt-1 truncate"><%= message.body %></p>
-          <% end %>
-        </li>
+<div class="heist-inbox">
+  <header class="heist-inbox__header">
+    <div class="heist-inbox__title-group">
+      <span class="heist-inbox__prompt">&gt;&gt;</span>
+      <h1 class="heist-inbox__title">INCOMING TRANSMISSIONS</h1>
+      <% if @unread_count.positive? %>
+        <span class="heist-inbox__badge"><%= @unread_count %> NEW</span>
       <% end %>
-    </ul>
-    <%== pagy_nav(@pagy) %>
-  <% else %>
-    <p class="text-gray-500">No messages yet.</p>
-  <% end %>
+    </div>
+    <%= render "shared/heist_identity" %>
+  </header>
+
+  <%= render "shared/heist_sidebar", active: :inbox %>
+
+  <main class="heist-inbox__main">
+    <% if @mail_messages.any? %>
+      <ol class="heist-inbox__list">
+        <% @mail_messages.each_with_index do |message, idx| %>
+          <li class="heist-inbox__item <%= 'heist-inbox__item--unread' unless message.read? %>">
+            <%= link_to mail_message_path(message), class: "heist-inbox__row" do %>
+              <span class="heist-inbox__index">#<%= format("%04d", message.id % 10_000) %></span>
+              <span class="heist-inbox__dot" aria-hidden="true"></span>
+              <span class="heist-inbox__subject"><%= message.subject.upcase %></span>
+              <span class="heist-inbox__kind">[<%= message.kind %>]</span>
+              <span class="heist-inbox__time"><%= time_ago_in_words(message.created_at).upcase.gsub("ABOUT ", "") %> AGO</span>
+            <% end %>
+            <% if message.body.present? %>
+              <p class="heist-inbox__preview">&gt; <%= truncate(message.body, length: 160) %></p>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+      <div class="heist-inbox__pager">
+        <%== pagy_nav(@pagy) %>
+      </div>
+    <% else %>
+      <div class="heist-inbox__empty">
+        <p class="heist-inbox__empty-line">&gt; NO TRANSMISSIONS RECEIVED.</p>
+        <p class="heist-inbox__empty-hint">SHIP A PROJECT FOR REVIEW AND THE LINE WILL OPEN UP.</p>
+      </div>
+    <% end %>
+  </main>
 </div>
+
+<style>
+  .heist-inbox {
+    --heist-bg: #0E1A10;
+    --heist-bg-2: #0A1309;
+    --heist-grid: rgba(90, 180, 96, 0.08);
+    --heist-lime: #C0F477;
+    --heist-lime-soft: #DAFBAC;
+    --heist-amber: #FFE572;
+    --heist-amber-dim: #DBC45F;
+    --heist-ink: #14251C;
+    --heist-stripe-amber: repeating-linear-gradient(135deg, rgba(255, 229, 114, 0.13) 0 6px, transparent 6px 12px);
+    --heist-stripe-lime: repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.14) 0 6px, transparent 6px 12px);
+
+    position: relative;
+    min-height: 100vh;
+    color: var(--heist-lime);
+    background-color: var(--heist-bg);
+    background-image:
+      linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px);
+    background-size: 44px 44px;
+    font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    display: grid;
+    grid-template-columns: 75px minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      "header header"
+      "sidebar main";
+    column-gap: 4px;
+    row-gap: 4px;
+    padding: 1.25rem;
+    box-sizing: border-box;
+  }
+
+  /* CRT scanline overlay */
+  .heist-inbox::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(192, 244, 119, 0.04) 0,
+      rgba(192, 244, 119, 0.04) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    z-index: 1;
+  }
+
+  .heist-inbox > * { position: relative; z-index: 2; }
+
+  .heist-inbox__header {
+    grid-area: header;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    border: 4px solid var(--heist-lime);
+    background: var(--heist-stripe-lime), rgba(10, 19, 9, 0.7);
+    box-shadow: 0 0 24px rgba(192, 244, 119, 0.2), inset 0 0 18px rgba(192, 244, 119, 0.12);
+  }
+
+  .heist-inbox__title-group {
+    grid-column: 2;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .heist-inbox__header .heist-identity { grid-column: 3; justify-self: end; }
+
+  .heist-inbox__prompt {
+    color: var(--heist-amber);
+    font-family: "Audiowide", "ModeSeven", monospace;
+    font-size: 22px;
+    text-shadow: 0 0 6px rgba(255, 229, 114, 0.6);
+  }
+
+  .heist-inbox__title {
+    flex: 1;
+    margin: 0;
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 32px;
+    letter-spacing: 0.08em;
+    color: var(--heist-lime);
+    text-shadow: 0 0 8px rgba(192, 244, 119, 0.4);
+  }
+
+  .heist-inbox__badge {
+    font-family: "Audiowide", "ModeSeven", monospace;
+    background: var(--heist-amber);
+    color: var(--heist-ink);
+    padding: 0.3rem 0.85rem;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    box-shadow: 0 0 12px rgba(255, 229, 114, 0.5);
+  }
+
+  /* Main panel */
+  .heist-inbox__main {
+    grid-area: main;
+    border: 4px solid var(--heist-lime-soft);
+    background: rgba(10, 19, 9, 0.55);
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  .heist-inbox__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .heist-inbox__item {
+    border: 2px solid rgba(218, 251, 172, 0.35);
+    padding: 0.75rem 1rem;
+    background: rgba(14, 26, 16, 0.65);
+    transition: border-color 150ms ease, background 150ms ease;
+  }
+
+  .heist-inbox__item:hover {
+    border-color: var(--heist-lime);
+    background: rgba(14, 26, 16, 0.9);
+  }
+
+  .heist-inbox__item--unread {
+    border-color: var(--heist-amber);
+    background: var(--heist-stripe-amber), rgba(14, 26, 16, 0.9);
+    box-shadow: 0 0 12px rgba(255, 229, 114, 0.18);
+  }
+
+  .heist-inbox__row {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    align-items: baseline;
+    gap: 0.75rem;
+    color: var(--heist-lime-soft);
+    text-decoration: none;
+  }
+
+  .heist-inbox__index {
+    color: var(--heist-amber-dim);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+
+  .heist-inbox__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid var(--heist-lime-soft);
+  }
+
+  .heist-inbox__item--unread .heist-inbox__dot {
+    background: var(--heist-amber);
+    border-color: var(--heist-amber);
+    box-shadow: 0 0 8px rgba(255, 229, 114, 0.7);
+  }
+
+  .heist-inbox__subject {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--heist-lime);
+    text-shadow: 0 0 6px rgba(192, 244, 119, 0.25);
+  }
+
+  .heist-inbox__item--unread .heist-inbox__subject {
+    color: var(--heist-amber);
+    text-shadow: 0 0 6px rgba(255, 229, 114, 0.45);
+  }
+
+  .heist-inbox__kind {
+    color: var(--heist-amber-dim);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .heist-inbox__time {
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--heist-lime-soft);
+    opacity: 0.75;
+  }
+
+  .heist-inbox__preview {
+    margin: 0.5rem 0 0 1.5rem;
+    font-size: 14px;
+    color: var(--heist-lime-soft);
+    opacity: 0.75;
+  }
+
+  .heist-inbox__empty {
+    padding: 2rem 1rem;
+    color: var(--heist-lime-soft);
+  }
+
+  .heist-inbox__empty-line {
+    margin: 0;
+    color: var(--heist-amber);
+    font-family: "Audiowide", "ModeSeven", monospace;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+  }
+
+  .heist-inbox__empty-hint {
+    margin: 0.5rem 0 0;
+    font-size: 13px;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+  }
+
+  .heist-inbox__pager {
+    margin-top: 1rem;
+    color: var(--heist-lime-soft);
+  }
+
+  .heist-inbox__pager a, .heist-inbox__pager .current {
+    color: var(--heist-lime);
+    padding: 0.25rem 0.6rem;
+    border: 2px solid var(--heist-lime-soft);
+    margin-right: 4px;
+    text-decoration: none;
+  }
+
+  .heist-inbox__pager .current {
+    background: var(--heist-lime);
+    color: var(--heist-ink);
+  }
+</style>
