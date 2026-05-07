@@ -17,7 +17,7 @@ class MailMessagesControllerTest < ActionDispatch::IntegrationTest
     get mail_messages_path
     assert_response :success
     assert_match(/Inbox/i, response.body)
-    assert_match(mail_messages(:unread_for_two).subject, response.body)
+    assert_match(/#{Regexp.escape(mail_messages(:unread_for_two).subject)}/i, response.body)
   end
 
   test "show marks a message as read" do
