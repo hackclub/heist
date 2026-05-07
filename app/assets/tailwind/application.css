@@ -538,42 +538,62 @@
 
 /* Buttons */
 
-.heist-admin__btn {
+.heist-admin__btn,
+.heist-admin__main a.heist-admin__btn {
   display: inline-block;
-  padding: 0.6rem 1.25rem;
+  padding: 0.7rem 1.5rem;
   background: #FFE572;
   color: #14251C;
   font-family: "Audiowide", "ModeSeven", monospace;
-  font-size: 13px;
-  letter-spacing: 0.08em;
+  font-size: 14px;
+  letter-spacing: 0.1em;
   text-decoration: none;
-  border: 2px solid #FFE572;
+  border: 2px solid #14251C;
+  border-bottom-width: 4px;
+  border-right-width: 4px;
   cursor: pointer;
+  transition: transform 80ms ease, box-shadow 120ms ease, background 120ms ease;
 }
 
-.heist-admin__btn:hover {
-  filter: brightness(1.1);
+.heist-admin__btn:hover,
+.heist-admin__main a.heist-admin__btn:hover {
+  background: #C0F477;
+  color: #14251C;
   text-decoration: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 1px 1px 0 0 #14251C;
 }
 
-.heist-admin__btn--ghost {
-  background: transparent;
-  color: #DAFBAC;
-  border-color: #DAFBAC;
+.heist-admin__btn:active {
+  transform: translate(2px, 2px);
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+  box-shadow: none;
 }
 
-.heist-admin__btn--ghost:hover {
+.heist-admin__btn--ghost,
+.heist-admin__main a.heist-admin__btn--ghost {
+  background: rgba(10, 19, 9, 0.6);
+  color: #C0F477;
+  border-color: #C0F477;
+}
+
+.heist-admin__btn--ghost:hover,
+.heist-admin__main a.heist-admin__btn--ghost:hover {
+  background: rgba(192, 244, 119, 0.12);
   color: #FFE572;
   border-color: #FFE572;
 }
 
-.heist-admin__btn--danger {
-  background: transparent;
+.heist-admin__btn--danger,
+.heist-admin__main a.heist-admin__btn--danger {
+  background: rgba(10, 19, 9, 0.6);
   color: #FF6B6B;
   border-color: #FF6B6B;
 }
 
-.heist-admin__btn--danger:hover {
+.heist-admin__btn--danger:hover,
+.heist-admin__main a.heist-admin__btn--danger:hover {
   background: #FF6B6B;
   color: #14251C;
 }
@@ -624,6 +644,117 @@
 }
 
 .heist-admin__search input { flex: 1; }
+
+/* Stats grid (above review queue) */
+
+.heist-admin__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 4px;
+  margin-bottom: 1rem;
+}
+
+.heist-admin__stat-card {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 1rem 1.25rem;
+}
+
+.heist-admin__stat-label {
+  margin: 0 0 0.5rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #DBC45F;
+}
+
+.heist-admin__stat-value {
+  margin: 0;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 38px;
+  letter-spacing: 0.04em;
+  color: #C0F477;
+  line-height: 1;
+}
+
+.heist-admin__stat-value--accent { color: #FFE572; }
+
+.heist-admin__stat-unit {
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: #DBC45F;
+  margin-left: 4px;
+}
+
+.heist-admin__stat-sub {
+  margin: 0.5rem 0 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #DAFBAC;
+  opacity: 0.75;
+}
+
+/* Sub-tabs (status filter on review queue) */
+
+.heist-admin__subtabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid rgba(218, 251, 172, 0.25);
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.heist-admin__subtab {
+  padding: 0.6rem 1rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: #DAFBAC;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.heist-admin__main a.heist-admin__subtab { color: #DAFBAC; }
+.heist-admin__main a.heist-admin__subtab:hover { color: #FFE572; text-decoration: none; }
+
+.heist-admin__subtab--active,
+.heist-admin__main a.heist-admin__subtab--active {
+  color: #FFE572;
+  border-bottom-color: #FFE572;
+}
+
+.heist-admin__subtab-count {
+  display: inline-block;
+  min-width: 22px;
+  padding: 1px 6px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  background: rgba(192, 244, 119, 0.15);
+  border: 1px solid rgba(192, 244, 119, 0.3);
+  color: #C0F477;
+  text-align: center;
+}
+
+.heist-admin__subtab--active .heist-admin__subtab-count {
+  background: rgba(255, 229, 114, 0.18);
+  border-color: rgba(255, 229, 114, 0.5);
+  color: #FFE572;
+}
+
+/* Small button variant for table action cells */
+
+.heist-admin__btn--small {
+  padding: 0.35rem 0.75rem;
+  font-size: 11px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+}
 
 .heist-identity__signout-form {
   display: inline-flex;
