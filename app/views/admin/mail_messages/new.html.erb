@@ -5,18 +5,32 @@
 <div class="heist-admin__panel">
   <%= form_with url: admin_mail_messages_path, method: :post, local: true, class: "heist-admin__form-stack" do |f| %>
     <div class="heist-admin__form-field">
-      <label style="display: flex; align-items: center; gap: 0.5rem; font-family: 'ModeSeven', monospace; text-transform: none; letter-spacing: 0; color: #DAFBAC;">
-        <%= check_box_tag :broadcast, "1", false, style: "accent-color: #FFE572; width: 16px; height: 16px;" %>
-        <span>Broadcast to all kept users</span>
-      </label>
+      <label class="heist-admin__label">Audience</label>
+      <div class="heist-mail__audience">
+        <label class="heist-mail__audience-option">
+          <%= radio_button_tag :audience, "individual", @audience == "individual" %>
+          <span>Single user</span>
+        </label>
+        <label class="heist-mail__audience-option">
+          <%= radio_button_tag :audience, "broadcast", @audience == "broadcast" %>
+          <span>All kept users (broadcast)</span>
+        </label>
+        <label class="heist-mail__audience-option">
+          <%= radio_button_tag :audience, "silent", @audience == "silent" %>
+          <span>
+            Silent · signed up &lt; 7d, no project
+            <strong class="heist-mail__audience-count">(<%= @silent_count %>)</strong>
+          </span>
+        </label>
+      </div>
     </div>
 
     <div class="heist-admin__form-field">
-      <%= label_tag :recipient_id, "Recipient" %>
+      <%= label_tag :recipient_id, "Recipient (single user only)" %>
       <%= select_tag :recipient_id,
             options_from_collection_for_select(@users, :id, :display_name),
             include_blank: "— Select a user —" %>
-      <span class="heist-admin__hint">Ignored when broadcast is checked.</span>
+      <span class="heist-admin__hint">Ignored unless audience is set to single user.</span>
     </div>
 
     <div class="heist-admin__form-field">

@@ -39,9 +39,15 @@ class User < ApplicationRecord
   has_many :reviewed_ships, class_name: "Ship", foreign_key: :reviewer_id, dependent: :nullify, inverse_of: :reviewer
 
   ROLES = %w[admin reviewer user].freeze
+  SILENT_SIGNUP_WINDOW = 7.days
 
   encrypts :hca_token
   encrypts :hackatime_token
+
+  scope :silent_signups, -> {
+    kept.where(created_at: SILENT_SIGNUP_WINDOW.ago..)
+        .where.not(id: User.joins(:projects).where(projects: { discarded_at: nil }).select("users.id"))
+  }
 
   validates :avatar, :display_name, :email, :timezone, presence: true
   validates :slack_id, presence: true
