@@ -31,6 +31,8 @@ class User < ApplicationRecord
 
   has_paper_trail skip: [ :hca_token, :hackatime_token ]
 
+  after_create_commit :send_welcome_mail
+
   pg_search_scope :search, against: [ :display_name, :email ], using: { tsearch: { prefix: true } }
 
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :nullify
@@ -280,6 +282,12 @@ class User < ApplicationRecord
   end
 
   private
+
+  def send_welcome_mail
+    MailDeliveryService.welcome(self)
+  rescue StandardError => e
+    Rails.logger.error("User#send_welcome_mail failed for user #{id}: #{e.class}: #{e.message}")
+  end
 
   def self.determine_is_adult(identity)
     birthday_str = identity["birthday"]
