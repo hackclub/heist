@@ -1,7 +1,306 @@
+<%
+  fmt_hm = ->(seconds) {
+    s = seconds.to_i
+    h = s / 3600
+    m = (s % 3600) / 60
+    "#{h}h #{m}m"
+  }
+%>
+
 <div class="heist-admin__page-header">
   <h1>HEIST CONTROL</h1>
+  <p class="heist-dash__page-sub">
+    <%= @program_start.strftime("%b %-d") %> – <%= @program_end.strftime("%b %-d, %Y") %>
+    · day <%= [ ((@now - @program_start) / 1.day).round, 0 ].max %>
+    of <%= @chart_total_days %>
+  </p>
 </div>
 
-<div class="heist-admin__panel">
-  <p>Pick a tab above. Reviews queue up incoming ships, projects shows all kept work, users lets you manage roles, mail composes broadcasts.</p>
+<%# === Red-flag banner row =================================================== %>
+<% if @banners.any? %>
+  <section class="heist-dash__banners" aria-label="Diagnostics">
+    <% @banners.each do |b| %>
+      <% banner_classes = [ "heist-dash__banner", "heist-dash__banner--#{b[:kind]}" ] %>
+      <% if b[:link] %>
+        <%= link_to b[:link], class: banner_classes.join(" ") do %>
+          <span class="heist-dash__banner-text"><%= b[:text] %></span>
+          <% if b[:cta] %><span class="heist-dash__banner-cta"><%= b[:cta] %></span><% end %>
+        <% end %>
+      <% else %>
+        <div class="<%= banner_classes.join(" ") %>">
+          <span class="heist-dash__banner-text"><%= b[:text] %></span>
+        </div>
+      <% end %>
+    <% end %>
+  </section>
+<% end %>
+
+<%# === Hero: pace chart with projection ====================================== %>
+<section class="heist-dash__hero" aria-label="Program progress">
+  <div class="heist-dash__hero-row">
+    <span class="heist-dash__hero-label">Hours toward 1,000h goal</span>
+    <span class="heist-dash__hero-pct"><%= @progress_pct %>%</span>
+  </div>
+  <div class="heist-dash__hero-row">
+    <span class="heist-dash__hero-num"><%= @approved_hours %><span class="heist-dash__hero-unit">h</span></span>
+    <span class="heist-dash__hero-goal">/ <%= number_with_delimiter(@hour_goal) %>h
+      ·
+      <% if @hours_delta >= 0 %>
+        <span class="heist-dash__delta heist-dash__delta--pos">+<%= @hours_delta %>h vs pace</span>
+      <% else %>
+        <span class="heist-dash__delta heist-dash__delta--neg"><%= @hours_delta %>h vs pace</span>
+      <% end %>
+    </span>
+  </div>
+
+  <%# Pace chart (Chart.js, Stimulus-controlled, with hover tooltips + pinch/wheel zoom) %>
+  <div class="heist-dash__pace-chart-wrap"
+       data-controller="pace-chart"
+       data-pace-chart-labels-value="<%= @chart_labels.to_json %>"
+       data-pace-chart-actual-value="<%= @chart_actual.to_json %>"
+       data-pace-chart-goal-value="<%= @hour_goal %>"
+       data-pace-chart-total-days-value="<%= @chart_total_days %>"
+       data-pace-chart-expected-hours-value="<%= @expected_hours %>"
+       <%= "data-pace-chart-projection-hours-value=\"#{@projection_hours}\"".html_safe if @projection_hours %>
+       data-pace-chart-today-index-value="<%= @chart_today_index %>">
+    <div class="heist-dash__pace-canvas">
+      <canvas data-pace-chart-target="canvas" class="heist-dash__pace-chart"
+              aria-label="Cumulative approved hours vs expected pace"></canvas>
+    </div>
+
+    <div class="heist-dash__pace-legend">
+      <span class="heist-dash__legend-item"><span class="heist-dash__legend-swatch heist-dash__legend-swatch--actual"></span> actual</span>
+      <span class="heist-dash__legend-item"><span class="heist-dash__legend-swatch heist-dash__legend-swatch--pace"></span> pace</span>
+      <span class="heist-dash__legend-item"><span class="heist-dash__legend-swatch heist-dash__legend-swatch--proj"></span> projected</span>
+      <span class="heist-dash__legend-item heist-dash__legend-hint">drag · wheel · pinch to zoom</span>
+      <button type="button"
+              class="heist-dash__legend-reset"
+              data-action="pace-chart#resetZoom">reset</button>
+      <% if @projection_hours %>
+        <span class="heist-dash__legend-spacer"></span>
+        <span class="heist-dash__legend-item heist-dash__legend-item--projection">
+          projecting <strong><%= number_with_delimiter(@projection_hours) %>h</strong>
+          <% if @projection_delta && @projection_delta >= 0 %>
+            (<span class="heist-dash__delta heist-dash__delta--pos">+<%= number_with_delimiter(@projection_delta) %>h over goal</span>)
+          <% elsif @projection_delta %>
+            (<span class="heist-dash__delta heist-dash__delta--neg"><%= number_with_delimiter(@projection_delta) %>h short</span>)
+          <% end %>
+        </span>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<%# === KPI strip with sparklines ============================================ %>
+<div class="heist-dash__kpis">
+  <% @kpis.each do |kpi| %>
+    <% tile_classes = [ "heist-dash__kpi" ] %>
+    <% tile_classes << "heist-dash__kpi--accent" if kpi[:accent] %>
+    <% if kpi[:link] %>
+      <% tile_classes << "heist-dash__kpi--link" %>
+      <%= link_to kpi[:link], class: tile_classes.join(" "), style: "text-decoration: none;" do %>
+        <%= render "kpi_inner", kpi: kpi %>
+      <% end %>
+    <% else %>
+      <div class="<%= tile_classes.join(" ") %>">
+        <%= render "kpi_inner", kpi: kpi %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<%# === Activation funnel ==================================================== %>
+<section class="heist-dash__panel heist-dash__funnel-panel">
+  <header class="heist-dash__panel-head">
+    <h2>Activation Funnel</h2>
+    <span class="heist-dash__panel-link" style="cursor: default;">red bar = biggest drop-off</span>
+  </header>
+  <ol class="heist-dash__funnel">
+    <% @funnel_stages.each_with_index do |stage, i| %>
+      <% stage_classes = [ "heist-dash__funnel-row" ] %>
+      <% stage_classes << "heist-dash__funnel-row--worst" if stage[:worst] %>
+      <li class="<%= stage_classes.join(" ") %>">
+        <span class="heist-dash__funnel-step"><%= format("%02d", i + 1) %></span>
+        <span class="heist-dash__funnel-label">
+          <% if stage[:link] %>
+            <%= link_to stage[:label], stage[:link] %>
+          <% else %>
+            <%= stage[:label] %>
+          <% end %>
+        </span>
+        <span class="heist-dash__funnel-bar-wrap">
+          <span class="heist-dash__funnel-bar" style="width: <%= stage[:width_pct] %>%;"></span>
+        </span>
+        <span class="heist-dash__funnel-count"><%= number_with_delimiter(stage[:count]) %></span>
+        <span class="heist-dash__funnel-pct">
+          <% if stage[:from_prev_pct] %>
+            <%= stage[:from_prev_pct] %>% from prev
+          <% else %>
+            base
+          <% end %>
+        </span>
+      </li>
+    <% end %>
+  </ol>
+</section>
+
+<%# === Two columns: leaderboard + recent activity =========================== %>
+<div class="heist-dash__split">
+  <section class="heist-dash__panel">
+    <header class="heist-dash__panel-head">
+      <h2>Top Contributors</h2>
+      <%= link_to "All users →", admin_users_path, class: "heist-dash__panel-link" %>
+    </header>
+    <% if @leaderboard.any? %>
+      <ol class="heist-dash__board">
+        <% @leaderboard.each_with_index do |row, idx| %>
+          <li>
+            <span class="heist-dash__board-rank"><%= format("%02d", idx + 1) %></span>
+            <% if row[:avatar].present? && row[:avatar].start_with?("http", "/") %>
+              <img src="<%= row[:avatar] %>" alt="" class="heist-dash__board-avatar">
+            <% else %>
+              <span class="heist-dash__board-avatar heist-dash__board-avatar--blank"></span>
+            <% end %>
+            <%= link_to(row[:display_name].presence || "User ##{row[:user_id]}", admin_user_path(row[:user_id]), class: "heist-dash__board-name") %>
+            <span class="heist-dash__board-meta"><%= row[:project_count] %>p · last <%= short_time_ago(row[:last_active]) %></span>
+            <span class="heist-dash__board-hours"><%= row[:approved_hours] %>h</span>
+          </li>
+        <% end %>
+      </ol>
+    <% else %>
+      <p class="heist-dash__empty">No approved ships yet.</p>
+    <% end %>
+  </section>
+
+  <section class="heist-dash__panel">
+    <header class="heist-dash__panel-head">
+      <h2>Decisions · last 24h</h2>
+      <span class="heist-dash__panel-link" style="cursor: default;"><%= @recent_activity.size %> total</span>
+    </header>
+    <% if @recent_activity.any? %>
+      <ul class="heist-dash__feed">
+        <% @recent_activity.each do |ship| %>
+          <% marker_class, label =
+            case ship.status
+            when "approved" then [ "heist-dash__feed-marker--ship", "approved" ]
+            when "returned" then [ "heist-dash__feed-marker--warn", "returned" ]
+            when "rejected" then [ "heist-dash__feed-marker--alert", "rejected" ]
+            else [ "heist-dash__feed-marker--project", ship.status ]
+            end
+          %>
+          <li>
+            <span class="heist-dash__feed-marker <%= marker_class %>"><%= label[0].upcase %></span>
+            <span class="heist-dash__feed-text">
+              <strong><%= ship.project.user.display_name %></strong> · <%= label %>
+              <%= link_to ship.project.name, admin_project_path(ship.project) %>
+              <% if ship.status == "approved" %>
+                <span class="heist-dash__feed-meta">· <%= fmt_hm.call(ship.approved_seconds) %></span>
+              <% end %>
+            </span>
+            <span class="heist-dash__feed-time"><%= short_time_ago(ship.updated_at) %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="heist-dash__empty">No decisions in the last 24h.</p>
+    <% end %>
+  </section>
+</div>
+
+<%# === Silent cohort + leading indicators ==================================== %>
+<div class="heist-dash__split">
+  <section class="heist-dash__panel">
+    <header class="heist-dash__panel-head">
+      <h2>Silent · signed up &lt; 7d, no project</h2>
+      <%= link_to "Mail cohort →", new_admin_mail_message_path(audience: "silent"), class: "heist-dash__panel-link" %>
+    </header>
+    <% if @silent_users.any? %>
+      <ul class="heist-dash__silent">
+        <% @silent_users.each do |u| %>
+          <li>
+            <% if u[:avatar].present? && u[:avatar].start_with?("http", "/") %>
+              <img src="<%= u[:avatar] %>" alt="" class="heist-dash__board-avatar">
+            <% else %>
+              <span class="heist-dash__board-avatar heist-dash__board-avatar--blank"></span>
+            <% end %>
+            <%= link_to(u[:display_name], admin_user_path(u[:user_id]), class: "heist-dash__board-name") %>
+            <span class="heist-dash__silent-meta">
+              <%= u[:hackatime_linked] ? "Hackatime ✓" : "no Hackatime" %>
+            </span>
+            <span class="heist-dash__board-meta">joined <%= short_time_ago(u[:created_at]) %> ago</span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="heist-dash__empty">Everyone has shipped. Nice.</p>
+    <% end %>
+  </section>
+
+  <section class="heist-dash__panel">
+    <header class="heist-dash__panel-head">
+      <h2>Leading Indicators</h2>
+      <span class="heist-dash__panel-link" style="cursor: default;">7-day window</span>
+    </header>
+    <div class="heist-dash__leading">
+      <% @leading.each do |row| %>
+        <div class="heist-dash__leading-row">
+          <p class="heist-dash__kpi-label"><%= row[:label] %></p>
+          <p class="heist-dash__kpi-value"><%= row[:value] %></p>
+          <p class="heist-dash__kpi-sub"><%= row[:sub] %></p>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+<%# === Movers + Stream impact =============================================== %>
+<div class="heist-dash__split">
+  <section class="heist-dash__panel">
+    <header class="heist-dash__panel-head">
+      <h2>Movers · this week vs last</h2>
+      <span class="heist-dash__panel-link" style="cursor: default;">delta in approved hours</span>
+    </header>
+    <% if @movers.any? %>
+      <ol class="heist-dash__movers">
+        <% @movers.each_with_index do |m, idx| %>
+          <li>
+            <span class="heist-dash__board-rank"><%= format("%02d", idx + 1) %></span>
+            <% if m[:avatar].present? && m[:avatar].start_with?("http", "/") %>
+              <img src="<%= m[:avatar] %>" alt="" class="heist-dash__board-avatar">
+            <% else %>
+              <span class="heist-dash__board-avatar heist-dash__board-avatar--blank"></span>
+            <% end %>
+            <%= link_to(m[:display_name].presence || "User ##{m[:user_id]}", admin_user_path(m[:user_id]), class: "heist-dash__board-name") %>
+            <span class="heist-dash__movers-meta"><%= m[:prev_hours] %>h → <%= m[:curr_hours] %>h</span>
+            <span class="heist-dash__movers-delta <%= m[:delta_hours] >= 0 ? "heist-dash__delta--pos" : "heist-dash__delta--neg" %>">
+              <%= m[:delta_hours] >= 0 ? "+" : "" %><%= m[:delta_hours] %>h
+            </span>
+          </li>
+        <% end %>
+      </ol>
+    <% else %>
+      <p class="heist-dash__empty">No approved hours in the last 14 days yet.</p>
+    <% end %>
+  </section>
+
+  <section class="heist-dash__panel">
+    <header class="heist-dash__panel-head">
+      <h2>Stream Impact · last <%= @stream_impact.size %></h2>
+      <span class="heist-dash__panel-link" style="cursor: default;">approved hours in window</span>
+    </header>
+    <% if @stream_impact.any? %>
+      <ul class="heist-dash__streams">
+        <% @stream_impact.each do |s| %>
+          <li>
+            <span class="heist-dash__streams-date"><%= s[:starts_at].strftime("%b %-d") %></span>
+            <span class="heist-dash__streams-title"><%= s[:title] %></span>
+            <span class="heist-dash__streams-meta"><%= s[:unique_participants] %> ppl</span>
+            <span class="heist-dash__streams-hours"><%= s[:hours_shipped] %>h</span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="heist-dash__empty">No streams have ended yet.</p>
+    <% end %>
+  </section>
 </div>

@@ -756,6 +756,787 @@
   border-right-width: 2px;
 }
 
+/* =========================================================================
+   Admin dashboard (admin/static_pages/index) — calm, tight, single-column-feel
+   ========================================================================= */
+
+.heist-dash__hero {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 12px;
+}
+
+.heist-dash__hero-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.heist-dash__hero-row + .heist-dash__hero-row { margin-top: 0.35rem; }
+
+.heist-dash__hero-label {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #DBC45F;
+}
+
+.heist-dash__hero-pct {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: #FFE572;
+}
+
+.heist-dash__hero-num {
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 40px;
+  letter-spacing: 0.03em;
+  color: #C0F477;
+  line-height: 1;
+}
+
+.heist-dash__hero-unit {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 18px;
+  color: #DBC45F;
+  margin-left: 4px;
+}
+
+.heist-dash__hero-goal {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: #DBC45F;
+}
+
+.heist-dash__progress {
+  margin-top: 0.85rem;
+  width: 100%;
+  height: 8px;
+  border: 1px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.6);
+  overflow: hidden;
+}
+
+.heist-dash__progress-fill {
+  height: 100%;
+  background: #C0F477;
+  transition: width 300ms ease;
+}
+
+/* KPI strip — uniform tiny cards */
+
+.heist-dash__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 760px) {
+  .heist-dash__kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.heist-dash__kpi {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 0.85rem 1rem;
+  display: block;
+  color: inherit;
+}
+
+.heist-dash__main a.heist-dash__kpi--link,
+.heist-dash__kpi--link {
+  cursor: pointer;
+}
+
+.heist-dash__kpi--link:hover {
+  border-color: #FFE572;
+  background: rgba(255, 229, 114, 0.06);
+}
+
+.heist-dash__kpi-label {
+  margin: 0 0 0.5rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #DBC45F;
+}
+
+.heist-dash__kpi-value {
+  margin: 0;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 26px;
+  letter-spacing: 0.03em;
+  color: #C0F477;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.heist-dash__kpi-value--accent { color: #FFE572; }
+
+.heist-dash__kpi-sub {
+  margin: 0.5rem 0 0;
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DAFBAC;
+  opacity: 0.7;
+}
+
+/* Split + panels */
+
+.heist-dash__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 900px) {
+  .heist-dash__split { grid-template-columns: minmax(0, 1fr); }
+}
+
+.heist-dash__panel {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 1rem 1.25rem;
+}
+
+.heist-dash__panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.25);
+}
+
+.heist-dash__panel-head h2 {
+  margin: 0 !important;
+  font-family: "Audiowide", "ModeSeven", monospace !important;
+  font-size: 13px !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #C0F477 !important;
+}
+
+.heist-dash__panel-link {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  letter-spacing: 0.04em;
+}
+
+.heist-admin__main a.heist-dash__panel-link { color: #DBC45F; }
+.heist-admin__main a.heist-dash__panel-link:hover { color: #FFE572; }
+
+.heist-dash__empty {
+  margin: 0.5rem 0;
+  color: #DAFBAC;
+  opacity: 0.6;
+  font-size: 13px;
+}
+
+/* Leaderboard */
+
+.heist-dash__board {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__board li {
+  display: grid;
+  grid-template-columns: auto 24px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__board li:last-child { border-bottom: 0; }
+
+.heist-dash__board-rank {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  font-variant-numeric: tabular-nums;
+}
+
+.heist-dash__board-avatar {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border: 1px solid #DAFBAC;
+}
+
+.heist-dash__board-avatar--blank { background: rgba(192, 244, 119, 0.12); }
+
+.heist-dash__board-name {
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.heist-admin__main a.heist-dash__board-name { color: #DAFBAC; }
+.heist-admin__main a.heist-dash__board-name:hover { color: #FFE572; }
+
+.heist-dash__board-meta {
+  font-size: 11px;
+  color: #DBC45F;
+}
+
+.heist-dash__board-hours {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 12px;
+  color: #FFE572;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Activity feed */
+
+.heist-dash__feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__feed li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.65rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__feed li:last-child { border-bottom: 0; }
+
+.heist-dash__feed-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  border: 1px solid;
+}
+
+.heist-dash__feed-marker--ship {
+  border-color: #C0F477;
+  color: #C0F477;
+  background: rgba(192, 244, 119, 0.1);
+}
+
+.heist-dash__feed-marker--project {
+  border-color: #FFE572;
+  color: #FFE572;
+  background: rgba(255, 229, 114, 0.1);
+}
+
+.heist-dash__feed-text {
+  color: #DAFBAC;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.heist-dash__feed-text strong {
+  color: #C0F477;
+  font-weight: normal;
+}
+
+.heist-dash__feed-meta {
+  color: #DBC45F;
+  font-size: 11px;
+  margin-left: 0.25rem;
+}
+
+.heist-dash__feed-time {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+/* Engagement row */
+
+.heist-dash__engagement-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 760px) {
+  .heist-dash__engagement-row { grid-template-columns: 1fr; }
+}
+
+/* =========================================================================
+   Admin dashboard — additions: banners, pace chart, sparklines, funnel,
+   silent cohort, leading indicators
+   ========================================================================= */
+
+.heist-dash__page-sub {
+  margin: 0.25rem 0 0;
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: #DBC45F;
+  opacity: 0.8;
+}
+
+/* Banners */
+
+.heist-dash__banners {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.heist-dash__banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-left: 3px solid;
+  font-family: "ModeSeven", monospace;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.heist-dash__banner--alert {
+  border-color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.08);
+  color: #FFB1B1;
+}
+
+.heist-dash__banner--warn {
+  border-color: #FFE572;
+  background: rgba(255, 229, 114, 0.08);
+  color: #FFE572;
+}
+
+.heist-dash__banner--ok {
+  border-color: #C0F477;
+  background: rgba(192, 244, 119, 0.08);
+  color: #DAFBAC;
+}
+
+a.heist-dash__banner:hover { background: rgba(255, 229, 114, 0.06); }
+
+.heist-dash__banner-text { flex: 1; }
+
+.heist-dash__banner-cta {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+/* Hero pace chart */
+
+.heist-dash__pace-chart-wrap {
+  margin-top: 1rem;
+}
+
+.heist-dash__pace-canvas {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  background: rgba(0, 0, 0, 0.15);
+  touch-action: pan-y;
+}
+
+.heist-dash__pace-chart {
+  display: block;
+}
+
+.heist-dash__pace-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DAFBAC;
+  opacity: 0.85;
+}
+
+.heist-dash__legend-spacer {
+  flex: 1;
+}
+
+.heist-dash__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.heist-dash__legend-item--projection {
+  margin-left: auto;
+}
+
+.heist-dash__legend-item strong {
+  color: #FFE572;
+  font-weight: normal;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  letter-spacing: 0.04em;
+}
+
+.heist-dash__legend-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+}
+
+.heist-dash__legend-swatch--actual { background: #C0F477; height: 3px; }
+.heist-dash__legend-swatch--pace { background: rgba(255, 229, 114, 0.55); }
+.heist-dash__legend-swatch--proj { background: repeating-linear-gradient(90deg, #DAFBAC, #DAFBAC 3px, transparent 3px, transparent 6px); }
+
+.heist-dash__legend-hint {
+  font-style: italic;
+  opacity: 0.55;
+}
+
+.heist-dash__legend-reset {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #DBC45F;
+  background: transparent;
+  border: 1px solid #DBC45F;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.heist-dash__legend-reset:hover {
+  background: rgba(255, 229, 114, 0.08);
+  color: #FFE572;
+  border-color: #FFE572;
+}
+
+.heist-dash__delta {
+  font-family: "ModeSeven", monospace;
+  letter-spacing: 0.02em;
+}
+
+.heist-dash__delta--pos { color: #C0F477; }
+.heist-dash__delta--neg { color: #FF6B6B; }
+
+/* KPI sparkline + row */
+
+.heist-dash__kpi-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.heist-dash__kpi-unit {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 13px;
+  color: #DBC45F;
+  margin-left: 2px;
+}
+
+.heist-dash__sparkline {
+  width: 80px;
+  height: 24px;
+  flex: 0 0 auto;
+}
+
+.heist-dash__kpi--accent {
+  border-color: #FF6B6B;
+}
+
+.heist-dash__kpi-sub--neg {
+  color: #FFB1B1;
+  opacity: 0.9;
+}
+
+/* Funnel */
+
+.heist-dash__funnel-panel {
+  margin-bottom: 12px;
+}
+
+.heist-dash__funnel {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__funnel-row {
+  display: grid;
+  grid-template-columns: 24px minmax(140px, 1fr) minmax(120px, 3fr) auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__funnel-row:last-child { border-bottom: 0; }
+
+.heist-dash__funnel-step {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  font-variant-numeric: tabular-nums;
+}
+
+.heist-dash__funnel-label {
+  color: #DAFBAC;
+  letter-spacing: 0.02em;
+}
+
+.heist-admin__main a.heist-dash__funnel-label-link { color: #DAFBAC; }
+
+.heist-dash__funnel-bar-wrap {
+  height: 10px;
+  background: rgba(218, 251, 172, 0.07);
+  border: 1px solid rgba(218, 251, 172, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.heist-dash__funnel-bar {
+  display: block;
+  height: 100%;
+  background: #C0F477;
+  transition: width 200ms ease;
+}
+
+.heist-dash__funnel-row--worst .heist-dash__funnel-bar {
+  background: #FF6B6B;
+}
+
+.heist-dash__funnel-row--worst {
+  background: rgba(255, 107, 107, 0.04);
+}
+
+.heist-dash__funnel-count {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 13px;
+  color: #FFE572;
+  font-variant-numeric: tabular-nums;
+  min-width: 60px;
+  text-align: right;
+}
+
+.heist-dash__funnel-pct {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  white-space: nowrap;
+  min-width: 96px;
+  text-align: right;
+}
+
+@media (max-width: 760px) {
+  .heist-dash__funnel-row {
+    grid-template-columns: 24px 1fr auto;
+    grid-template-areas:
+      "step label count"
+      "bar bar bar"
+      "pct pct pct";
+  }
+  .heist-dash__funnel-step { grid-area: step; }
+  .heist-dash__funnel-label { grid-area: label; }
+  .heist-dash__funnel-count { grid-area: count; }
+  .heist-dash__funnel-bar-wrap { grid-area: bar; }
+  .heist-dash__funnel-pct { grid-area: pct; text-align: left; }
+}
+
+/* Decision feed marker variants */
+
+.heist-dash__feed-marker--warn {
+  border-color: #FFE572;
+  color: #FFE572;
+  background: rgba(255, 229, 114, 0.1);
+}
+
+.heist-dash__feed-marker--alert {
+  border-color: #FF6B6B;
+  color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+/* Silent cohort */
+
+.heist-dash__silent {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__silent li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__silent li:last-child { border-bottom: 0; }
+
+.heist-dash__silent-meta {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+/* Leading indicators */
+
+.heist-dash__leading {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 760px) {
+  .heist-dash__leading { grid-template-columns: 1fr; }
+}
+
+.heist-dash__leading-row { display: block; }
+
+/* Movers list (W-over-W) */
+
+.heist-dash__movers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__movers li {
+  display: grid;
+  grid-template-columns: auto 24px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__movers li:last-child { border-bottom: 0; }
+
+.heist-dash__movers-meta {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+.heist-dash__movers-delta {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Stream impact list */
+
+.heist-dash__streams {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__streams li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__streams li:last-child { border-bottom: 0; }
+
+.heist-dash__streams-date {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+.heist-dash__streams-title {
+  color: #DAFBAC;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.heist-dash__streams-meta {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+.heist-dash__streams-hours {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 12px;
+  color: #FFE572;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mail audience selector */
+
+.heist-mail__audience {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.heist-mail__audience-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "ModeSeven", monospace;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #DAFBAC;
+  cursor: pointer;
+}
+
+.heist-mail__audience-option input[type="radio"] {
+  accent-color: #FFE572;
+  width: 16px;
+  height: 16px;
+}
+
+.heist-mail__audience-count {
+  color: #FFE572;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-weight: normal;
+  margin-left: 0.25rem;
+}
+
 .heist-identity__signout-form {
   display: inline-flex;
   margin: 0;
