@@ -25,6 +25,7 @@ class MissionControl::Jobs::BulkRetriesController
     include ::Pagy::UrlHelpers
     include ::Pagy::Frontend
     include ::ApplicationHelper
+    include ::AdminHelper
     include ::HomeHelper
     include ::MarkdownHelper
     include ::Pundit::Helper

@@ -16,6 +16,9 @@ module GeneratedUrlHelpersModule
   def admin_bulletin_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_mail_messages_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_project_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -58,6 +61,9 @@ module GeneratedUrlHelpersModule
   def edit_admin_ship_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_user_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_project_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -86,6 +92,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_bulletin_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_mail_message_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_project_url(*args); end

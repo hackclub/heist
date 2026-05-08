@@ -16,6 +16,9 @@ module GeneratedPathHelpersModule
   def admin_bulletin_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_mail_messages_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_project_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -58,6 +61,9 @@ module GeneratedPathHelpersModule
   def edit_admin_ship_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_user_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_project_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -86,6 +92,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_bulletin_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_mail_message_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_project_path(*args); end
