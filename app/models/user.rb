@@ -2,23 +2,24 @@
 #
 # Table name: users
 #
-#  id                  :bigint           not null, primary key
-#  avatar              :string           not null
-#  discarded_at        :datetime
-#  display_name        :string           not null
-#  email               :string           not null
-#  hackatime_token     :text
-#  hackatime_uid       :string
-#  hca_token           :text
-#  is_adult            :boolean          default(FALSE), not null
-#  is_banned           :boolean          default(FALSE), not null
-#  roles               :string           default([]), not null, is an Array
-#  timezone            :string           not null
-#  verification_status :string
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  hca_id              :string           not null
-#  slack_id            :string           not null
+#  id                    :bigint           not null, primary key
+#  avatar                :string           not null
+#  discarded_at          :datetime
+#  display_name          :string           not null
+#  email                 :string           not null
+#  hackatime_detected_at :datetime
+#  hackatime_token       :text
+#  hackatime_uid         :string
+#  hca_token             :text
+#  is_adult              :boolean          default(FALSE), not null
+#  is_banned             :boolean          default(FALSE), not null
+#  roles                 :string           default([]), not null, is an Array
+#  timezone              :string           not null
+#  verification_status   :string
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  hca_id                :string           not null
+#  slack_id              :string           not null
 #
 # Indexes
 #
@@ -89,6 +90,19 @@ class User < ApplicationRecord
     hackatime_token.present? && hackatime_uid.present?
   end
 
+  def hackatime_detected?
+    hackatime_detected_at.present?
+  end
+
+  def detect_hackatime_account!
+    return if slack_id.blank?
+
+    case HackatimeService.user_exists?(normalized_slack_id)
+    when :exists  then update_columns(hackatime_detected_at: Time.current)
+    when :missing then update_columns(hackatime_detected_at: nil)
+    end
+  end
+
   AVATAR_FALLBACK = "/static-assets/pfp_fallback.webp"
 
   def avatar_url
@@ -147,11 +161,13 @@ class User < ApplicationRecord
 
       user.update(hca_token: access_token, email: email)
       user.refresh_profile_from_slack
+      user.detect_hackatime_account!
       return user
     end
 
     user = create_from_hca(identity, access_token)
     user.refresh_profile_from_slack
+    user.detect_hackatime_account!
     user
   end
 

@@ -19,6 +19,37 @@ module HackatimeService
     ENV.fetch("HACKATIME_URL", BASE_URL)
   end
 
+  sig { returns(T::Boolean) }
+  def configured?
+    ENV["HACKATIME_CLIENT_ID"].present? && ENV["HACKATIME_CLIENT_SECRET"].present?
+  end
+
+  sig { params(slack_id: String).returns(Symbol) }
+  def user_exists?(slack_id)
+    return :unknown if slack_id.blank?
+
+    TRACER.in_span("HackatimeService.user_exists?") do |span|
+      span.set_attribute("hackatime.slack_id", slack_id)
+
+      response = api_connection.get("#{API_PATH}/users/#{slack_id}/stats") do |req|
+        req.headers["Authorization"] = "Bearer #{bypass_token}" if bypass_token.present?
+      end
+
+      span.set_attribute("hackatime.response_status", response.status)
+
+      case response.status
+      when 200 then :exists
+      when 404 then :missing
+      else
+        span.set_attribute("error", true)
+        :unknown
+      end
+    end
+  rescue StandardError => e
+    Rails.logger.error("Hackatime user_exists? error: #{e.class}: #{e.message}")
+    :unknown
+  end
+
   def authorize_url(redirect_uri, state)
     params = {
       client_id: ENV.fetch("HACKATIME_CLIENT_ID"),
