@@ -11,6 +11,34 @@ class ProjectPolicyTest < ActiveSupport::TestCase
     users(:two)
   end
 
+  test "index? requires a signed-in user" do
+    assert_not ProjectPolicy.new(nil, Project).index?
+    assert ProjectPolicy.new(regular, Project).index?
+  end
+
+  test "scope returns nothing for anonymous users" do
+    assert_equal [], ProjectPolicy::Scope.new(nil, Project).resolve.to_a
+  end
+
+  test "scope returns only the user's own kept projects for non-admins" do
+    other = projects(:one) # belongs to admin
+    own = projects(:two)   # belongs to regular
+
+    resolved = ProjectPolicy::Scope.new(regular, Project).resolve
+
+    assert_includes resolved, own
+    assert_not_includes resolved, other
+  end
+
+  test "scope returns all projects for admins, including discarded" do
+    discarded = projects(:two)
+    discarded.discard
+
+    resolved = ProjectPolicy::Scope.new(admin, Project).resolve
+
+    assert_includes resolved, discarded
+  end
+
   test "owner can destroy a project with no approved ships" do
     project = projects(:two) # belongs to regular
     project.ships.destroy_all

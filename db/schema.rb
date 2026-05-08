@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_08_210620) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_08_221052) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -119,7 +119,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_210620) do
     t.string "demo_link"
     t.text "description"
     t.datetime "discarded_at"
-    t.boolean "is_unlisted", default: false, null: false
+    t.boolean "is_unlisted", default: true, null: false
     t.string "name", null: false
     t.string "repo_link"
     t.string "tags", default: [], null: false, array: true

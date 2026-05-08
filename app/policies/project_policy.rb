@@ -2,7 +2,7 @@
 
 class ProjectPolicy < ApplicationPolicy
   def index?
-    true
+    user.present?
   end
 
   def show?
@@ -37,11 +37,10 @@ class ProjectPolicy < ApplicationPolicy
 
   class Scope < ApplicationPolicy::Scope
     def resolve
-      if user&.admin?
-        scope.all
-      else
-        scope.kept.listed.or(scope.kept.where(user: user))
-      end
+      return scope.all if user&.admin?
+      return scope.none if user.blank?
+
+      scope.kept.where(user: user)
     end
   end
 end
