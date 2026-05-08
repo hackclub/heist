@@ -11,7 +11,9 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def create?
-    user.present?
+    return false unless user.present?
+    return true if user.has_hackatime?
+    !user.projects.kept.exists?
   end
 
   def update?

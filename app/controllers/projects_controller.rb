@@ -16,6 +16,11 @@ class ProjectsController < ApplicationController
     authorize @project
   end
 
+  def onboarding
+    @project = current_user.projects.build
+    authorize @project, :create?
+  end
+
   def create
     @project = current_user.projects.build(project_params)
     authorize @project

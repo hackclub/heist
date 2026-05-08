@@ -176,9 +176,12 @@
         <span class="heist-panel__header-stat heist-panel__header-stat--shipped"><%= fmt_hm.call(@user_shipped_seconds) %> shipped time</span>
       </header>
       <div class="heist-panel__body heist-projects">
-        <%= link_to new_project_path, class: "heist-project heist-project--new" do %>
-          <span class="heist-project__plus" aria-hidden="true">+</span>
-          <span class="heist-project__label">Create a project</span>
+        <% if policy(Project).create? %>
+          <% create_path = current_user.projects.kept.empty? ? onboarding_projects_path : new_project_path %>
+          <%= link_to create_path, class: "heist-project heist-project--new" do %>
+            <span class="heist-project__plus" aria-hidden="true">+</span>
+            <span class="heist-project__label">Create a project</span>
+          <% end %>
         <% end %>
         <% @projects.each do |project| %>
           <%= link_to project_path(project), class: "heist-project" do %>

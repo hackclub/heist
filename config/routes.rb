@@ -140,6 +140,9 @@ Rails.application.routes.draw do
   get "shop" => "shop#index", as: :shop
 
   resources :projects do
+    collection do
+      get :onboarding
+    end
     resources :ships, only: [ :create ], module: :projects
   end
 

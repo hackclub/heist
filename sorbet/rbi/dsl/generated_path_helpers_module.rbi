@@ -109,6 +109,9 @@ module GeneratedPathHelpersModule
   def okcomputer_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def onboarding_projects_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def project_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

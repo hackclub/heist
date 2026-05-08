@@ -1,7 +1,21 @@
 <div class="max-w-4xl mx-auto py-8">
   <div class="flex items-center justify-between mb-6">
     <h1 class="font-bold text-4xl">Projects</h1>
-    <%= link_to "New Project", new_project_path, class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
+    <% if policy(Project).create? %>
+      <% if current_user.projects.kept.empty? %>
+        <%= link_to "Start your first heist →", onboarding_projects_path, class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
+      <% else %>
+        <%= link_to "New Project", new_project_path, class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
+      <% end %>
+    <% elsif current_user.present? %>
+      <span class="text-sm text-gray-500">
+        <% if current_user.hackatime_detected? %>
+          We found your Hackatime account. <%= link_to "Link it", hackatime_start_path, class: "text-blue-600 hover:underline" %> to create more projects.
+        <% else %>
+          <%= link_to "Link Hackatime", hackatime_start_path, class: "text-blue-600 hover:underline" %> to create more projects.
+        <% end %>
+      </span>
+    <% end %>
   </div>
 
   <%= form_with url: projects_path, method: :get, class: "mb-6" do |f| %>

@@ -109,6 +109,9 @@ module GeneratedUrlHelpersModule
   def okcomputer_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def onboarding_projects_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def project_ships_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
