@@ -19,7 +19,11 @@ class HomeController < ApplicationController
     @user_shipped_seconds = current_user.ships.approved.sum(:approved_seconds).to_i
     @bulletin_posts = BulletinPost.published.limit(5)
     @activity = recent_activity(limit: 8)
-    @projects = current_user.projects.kept.order(updated_at: :desc).limit(8)
+    @projects = current_user.projects.kept.order(updated_at: :desc).limit(8).to_a
+    @project_shipped_seconds = Ship.approved
+                                   .where(project_id: @projects.map(&:id))
+                                   .group(:project_id)
+                                   .sum(:approved_seconds)
     @ship_segments = build_ship_segments(@week_start, @hour_goal * 3600)
   end
 

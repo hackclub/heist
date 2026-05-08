@@ -25,29 +25,12 @@
     <%= Sentry.get_trace_propagation_meta.html_safe %>
   </head>
 
-  <body class="heist-admin">
-    <header class="heist-admin__header">
-      <div class="heist-admin__brand">
-        <%= link_to home_path, class: "heist-admin__home", title: "Back to home", "aria-label": "Home" do %>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter" stroke-linecap="square" aria-hidden="true">
-            <path d="M3 11 12 3l9 8v10H3V11Z"/>
-          </svg>
-        <% end %>
-        <h1 class="heist-admin__title">ADMIN</h1>
-      </div>
-      <%= render "shared/heist_identity" %>
-    </header>
-
-    <%= render "shared/admin_tabs" %>
-
-    <main class="heist-admin__main">
-      <% if notice %>
-        <div class="heist-admin__flash heist-admin__flash--notice"><%= notice %></div>
-      <% end %>
-      <% if alert %>
-        <div class="heist-admin__flash heist-admin__flash--alert"><%= alert %></div>
-      <% end %>
-      <%= yield %>
-    </main>
+  <body class="heist-body heist-body--admin">
+    <% content_for :sidebar_active, :admin %>
+    <% content_for :main_class, "heist-admin__main" %>
+    <% content_for :sub_nav do %>
+      <%= render "shared/admin_tabs" %>
+    <% end %>
+    <%= render "shared/heist_chrome" %>
   </body>
 </html>

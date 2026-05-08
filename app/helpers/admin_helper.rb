@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
 module AdminHelper
-  def admin_tab_link(label, path)
+  def admin_tab_link(label, path, exact: false)
     classes = [ "heist-admin__tab" ]
-    classes << "heist-admin__tab--active" if request.path.start_with?(path) && path != "/"
+    active = if exact
+               request.path == path
+             else
+               request.path == path || request.path.start_with?("#{path}/")
+             end
+    classes << "heist-admin__tab--active" if active
     link_to label, path, class: classes.join(" ")
   end
 
