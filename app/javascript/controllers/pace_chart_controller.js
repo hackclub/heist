@@ -25,10 +25,31 @@ export default class extends Controller {
   }
 
   connect() {
-    if (!this.hasCanvasTarget) return
+    try {
+      this.#render()
+    } catch (err) {
+      console.error("[pace-chart] failed to render:", err)
+      const note = document.createElement("div")
+      note.style.cssText = "padding:1rem;color:#FF6B6B;font-family:ModeSeven,monospace;font-size:12px"
+      note.textContent = `Chart error: ${err.message}. Open DevTools console for the stack.`
+      this.element.appendChild(note)
+    }
+  }
+
+  #render() {
+    if (!this.hasCanvasTarget) {
+      console.warn("[pace-chart] no canvas target found")
+      return
+    }
     const ctx = this.canvasTarget.getContext("2d")
     const labels = this.labelsValue
     const totalPoints = labels.length
+    console.info("[pace-chart] connecting", {
+      points: totalPoints,
+      todayIndex: this.todayIndexValue,
+      goal: this.goalValue,
+      projection: this.hasProjectionHoursValue ? this.projectionHoursValue : null,
+    })
 
     const paceLine = labels.map((_, i) =>
       this.totalDaysValue > 0 ? (this.goalValue * i) / this.totalDaysValue : 0
@@ -42,9 +63,9 @@ export default class extends Controller {
     const projection = labels.map(() => null)
     const lastActualIdx = this.todayIndexValue
     const lastActualValue = actual[lastActualIdx]
+    const hasProjection = this.hasProjectionHoursValue && this.projectionHoursValue > 0
     if (
-      this.projectionHoursValue !== null &&
-      this.projectionHoursValue !== undefined &&
+      hasProjection &&
       lastActualValue !== null &&
       lastActualIdx >= 0 &&
       lastActualIdx < totalPoints
@@ -54,7 +75,7 @@ export default class extends Controller {
     }
 
     const projColor =
-      this.projectionHoursValue >= this.goalValue ? COLOR_PROJ_AHEAD : COLOR_PROJ_BEHIND
+      hasProjection && this.projectionHoursValue >= this.goalValue ? COLOR_PROJ_AHEAD : COLOR_PROJ_BEHIND
 
     this.chart = new Chart(ctx, {
       type: "line",

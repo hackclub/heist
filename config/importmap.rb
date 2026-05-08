@@ -6,8 +6,5 @@ pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin "gsap", to: "https://ga.jspm.io/npm:gsap@3.15.0/index.js"
-pin "chart.js" # @4.5.1
-pin "chartjs-plugin-zoom" # @2.2.0
-pin "@kurkle/color", to: "@kurkle--color.js" # @0.3.4
-pin "chart.js/helpers", to: "chart.js--helpers.js" # @4.5.1
-pin "hammerjs" # @2.0.8
+pin "chart.js", to: "https://cdn.jsdelivr.net/npm/chart.js@4.4.7/+esm"
+pin "chartjs-plugin-zoom", to: "https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/+esm"

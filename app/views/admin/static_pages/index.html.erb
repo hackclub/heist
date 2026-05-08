@@ -61,7 +61,7 @@
        data-pace-chart-goal-value="<%= @hour_goal %>"
        data-pace-chart-total-days-value="<%= @chart_total_days %>"
        data-pace-chart-expected-hours-value="<%= @expected_hours %>"
-       <%= "data-pace-chart-projection-hours-value=\"#{@projection_hours}\"".html_safe if @projection_hours %>
+       data-pace-chart-projection-hours-value="<%= @projection_hours.to_i %>"
        data-pace-chart-today-index-value="<%= @chart_today_index %>">
     <div class="heist-dash__pace-canvas">
       <canvas data-pace-chart-target="canvas" class="heist-dash__pace-chart"
