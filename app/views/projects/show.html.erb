@@ -37,4 +37,61 @@
   </div>
 
   <p class="text-sm text-gray-500">Created by <%= @project.user.display_name %> on <%= @project.created_at.strftime("%B %d, %Y") %></p>
+
+  <% if current_user&.id == @project.user_id %>
+    <div class="border-t border-gray-200 mt-8 pt-8">
+      <h2 class="font-bold text-2xl mb-4">Shipping</h2>
+
+      <% latest_ship = @project.ships.order(created_at: :desc).first %>
+      <% if latest_ship %>
+        <%
+          pill_classes = case latest_ship.status
+                         when "approved" then "bg-green-100 text-green-800"
+                         when "pending"  then "bg-yellow-100 text-yellow-800"
+                         when "returned" then "bg-orange-100 text-orange-800"
+                         when "rejected" then "bg-red-100 text-red-800"
+                         end
+        %>
+        <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-4">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="<%= pill_classes %> text-xs uppercase font-semibold px-2 py-1 rounded"><%= latest_ship.status %></span>
+            <span class="text-sm text-gray-500">Submitted <%= latest_ship.created_at.strftime("%b %d, %Y") %></span>
+          </div>
+          <% if latest_ship.approved? %>
+            <p class="text-sm text-gray-700"><strong><%= (latest_ship.approved_seconds.to_i / 3600.0).round(1) %> hours</strong> counted toward the program.</p>
+          <% elsif latest_ship.pending? %>
+            <p class="text-sm text-gray-500">Waiting for review.</p>
+          <% elsif latest_ship.feedback.present? %>
+            <p class="text-sm text-gray-700"><span class="font-semibold">Reviewer feedback:</span> <%= latest_ship.feedback %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if policy(@project).ship? %>
+        <%= form_with(url: project_ships_path(@project), scope: :ship, class: "space-y-3") do |f| %>
+          <details class="text-sm text-gray-700">
+            <summary class="cursor-pointer select-none">Add a note for the reviewer (optional)</summary>
+            <%= f.text_area :justification, rows: 3, class: "mt-2 block w-full border border-gray-300 rounded px-3 py-2", placeholder: "What's new since your last submission?" %>
+          </details>
+          <%= f.submit "Submit for Review", class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer" %>
+        <% end %>
+      <% else %>
+        <ul class="text-sm text-gray-500 list-disc list-inside space-y-1">
+          <% if @project.ships.pending.exists? %>
+            <li>A submission is pending review. You'll be able to ship again once it's resolved.</li>
+          <% end %>
+          <% if @project.repo_link.blank? %>
+            <li>Add a repository link to ship this project.</li>
+          <% end %>
+          <% unless current_user.has_hackatime? %>
+            <% if current_user.hackatime_detected? %>
+              <li>We found your Hackatime account. <%= link_to "Link it", hackatime_start_path, class: "text-blue-600 hover:underline" %> to ship this project.</li>
+            <% else %>
+              <li><%= link_to "Link Hackatime", hackatime_start_path, class: "text-blue-600 hover:underline" %> to ship this project.</li>
+            <% end %>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  <% end %>
 </div>
