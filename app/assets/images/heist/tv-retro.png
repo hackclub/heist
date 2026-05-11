@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="tv-retro 1" clip-path="url(#clip0_0_10)">
+<path id="Vector" d="M23.9167 7H17.9072L22.2483 2.65767L19.775 0.183167L14 5.95817L8.225 0.183167L5.7505 2.65767L10.0917 7H4.08333C1.83167 7 0 8.83167 0 11.0833V28H28V11.0833C28 8.83167 26.1683 7 23.9167 7ZM24.5 24.5H3.5V11.0833C3.5 10.7613 3.76133 10.5 4.08333 10.5H23.9167C24.2387 10.5 24.5 10.7613 24.5 11.0833V24.5ZM5.83333 12.8333H16.3333V22.1667H5.83333V12.8333ZM18.6667 12.8333H22.1667V16.3333H18.6667V12.8333ZM18.6667 18.6667H22.1667V22.1667H18.6667V18.6667Z" fill="var(--fill-0, #C0F477)"/>
+</g>
+<defs>
+<clipPath id="clip0_0_10">
+<rect width="28" height="28" fill="white"/>
+</clipPath>
+</defs>
+</svg>

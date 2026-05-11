@@ -1891,3 +1891,256 @@ a.heist-dash__banner:hover { background: rgba(255, 229, 114, 0.06); }
   color: #14251C;
 }
 
+/* =========================================================================
+   Project creation card (views/projects/new.html.erb).
+   ========================================================================= */
+
+.heist-create {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  border: 4px solid #C0F477;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.heist-create__header {
+  border: 4px solid #DBC45F;
+  padding: 7px 10px 6px;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  color: #FFE572;
+  text-transform: lowercase;
+}
+
+.heist-create__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.heist-create__errors {
+  border: 2px solid #FF6B6B;
+  background: rgba(255, 107, 107, 0.08);
+  color: #FFB1B1;
+  padding: 0.75rem 1rem;
+  font-size: 13px;
+}
+
+.heist-create__errors ul { margin: 0; padding-left: 1.1rem; }
+
+.heist-create__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.heist-create__field-label {
+  border: 4px solid #C0F477;
+  padding: 7px 10px 6px;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: #DAFBAC;
+  text-transform: lowercase;
+}
+
+.heist-create__input,
+.heist-create__textarea {
+  border: 4px solid #C0F477;
+  background: transparent;
+  padding: 7px 10px 6px;
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 16px;
+  color: #DAFBAC;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.heist-create__input::placeholder,
+.heist-create__textarea::placeholder {
+  color: #DAFBAC;
+  opacity: 0.5;
+}
+
+.heist-create__input:focus,
+.heist-create__textarea:focus {
+  border-color: #FFE572;
+  box-shadow: 0 0 0 1px rgba(255, 229, 114, 0.4);
+}
+
+.heist-create__textarea { resize: vertical; min-height: 96px; }
+
+.heist-create__hint {
+  border: 4px solid #C0F477;
+  padding: 3px 10px;
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #DAFBAC;
+}
+
+/* Banner upload dropzone */
+
+.heist-create__dropzone {
+  border: 4px solid #C0F477;
+  background: transparent;
+  min-height: 96px;
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.heist-create__dropzone:hover,
+.heist-create__dropzone:focus-within { border-color: #FFE572; }
+
+.heist-create__dropzone--active {
+  background: rgba(255, 229, 114, 0.08);
+  border-color: #FFE572;
+}
+
+.heist-create__dropzone-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.heist-create__dropzone-icon { width: 17px; height: 17px; color: #DAFBAC; opacity: 0.5; }
+
+.heist-create__dropzone-prompt {
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 16px;
+  color: #DAFBAC;
+  opacity: 0.5;
+}
+
+.heist-create__dropzone-meta {
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 14px;
+  color: #DAFBAC;
+  opacity: 0.5;
+}
+
+.heist-create__dropzone-filename {
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 14px;
+  color: #FFE572;
+  word-break: break-all;
+}
+
+/* Project links nested group */
+
+.heist-create__group {
+  border: 4px solid #C0F477;
+  padding: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.heist-create__group-header {
+  border: 4px solid #C0F477;
+  padding: 7px 10px 6px;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: #DAFBAC;
+  text-transform: lowercase;
+}
+
+.heist-create__sub-field { display: flex; flex-direction: column; }
+
+.heist-create__sub-field-label {
+  border: 4px solid #DBC45F;
+  padding: 3px 10px;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #FFE572;
+  text-transform: lowercase;
+}
+
+.heist-create__sub-field-input {
+  border: 4px solid #DBC45F;
+  border-top: 0;
+  background: transparent;
+  padding: 7px 10px 6px;
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 14px;
+  color: #DBC45F;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.heist-create__sub-field-input::placeholder {
+  color: #DBC45F;
+  opacity: 0.5;
+}
+
+.heist-create__sub-field-input:focus {
+  border-color: #FFE572;
+  color: #FFE572;
+}
+
+/* Footer actions */
+
+.heist-create__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  margin-top: 4px;
+}
+
+.heist-create__cancel {
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  color: #DAFBAC;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 6px 4px;
+  border-bottom: 1px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.heist-create__cancel:hover {
+  color: #FFE572;
+  border-bottom-color: #FFE572;
+}
+
+.heist-create__submit {
+  background: #DBC45F;
+  color: #14251C;
+  border: none;
+  padding: 7px 16px 6px 15px;
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 120ms ease, transform 80ms ease;
+}
+
+.heist-create__submit:hover { background: #FFE572; }
+.heist-create__submit:active { transform: translate(1px, 1px); }

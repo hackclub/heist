@@ -1,0 +1,66 @@
+<%= form_with(model: project, class: "heist-create__form", multipart: true) do |f| %>
+  <% if project.errors.any? %>
+    <div class="heist-create__errors">
+      <ul>
+        <% project.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="heist-create__field">
+    <%= f.label :name, "title", class: "heist-create__field-label" %>
+    <%= f.text_field :name, class: "heist-create__input", placeholder: "Project Title", required: true %>
+    <p class="heist-create__hint">Give your project a name.</p>
+  </div>
+
+  <div class="heist-create__field">
+    <%= f.label :description, "description", class: "heist-create__field-label" %>
+    <%= f.text_area :description, rows: 3, class: "heist-create__textarea", placeholder: "Project description" %>
+    <p class="heist-create__hint">Describe what your project is all about.</p>
+  </div>
+
+  <div class="heist-create__field"
+       data-controller="banner-upload"
+       data-action="dragover->banner-upload#onDragOver dragleave->banner-upload#onDragLeave drop->banner-upload#onDrop click->banner-upload#open">
+    <%= f.label :banner_image, "banner image", class: "heist-create__field-label" %>
+    <div class="heist-create__dropzone" tabindex="0" role="button" aria-label="Upload banner image">
+      <%= f.file_field :banner_image,
+            accept: "image/png,image/jpeg,image/heic,image/heif,image/webp",
+            class: "heist-create__dropzone-input",
+            data: { banner_upload_target: "input", action: "change->banner-upload#onChange" } %>
+      <svg class="heist-create__dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+        <path d="M12 16V4m0 0l-4 4m4-4l4 4"/>
+        <path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>
+      </svg>
+      <p class="heist-create__dropzone-prompt" data-banner-upload-target="prompt">Drag an image here or click to browse.</p>
+      <p class="heist-create__dropzone-filename" data-banner-upload-target="filename" hidden></p>
+      <p class="heist-create__dropzone-meta">PNG / JPG / HEIC / WEBP up to 5 MB</p>
+    </div>
+  </div>
+
+  <div class="heist-create__group">
+    <p class="heist-create__group-header">project links</p>
+
+    <div class="heist-create__sub-field">
+      <%= f.label :readme_link, "readme link", class: "heist-create__sub-field-label" %>
+      <%= f.url_field :readme_link, class: "heist-create__sub-field-input", placeholder: "https://..." %>
+    </div>
+
+    <div class="heist-create__sub-field">
+      <%= f.label :demo_link, "demo link", class: "heist-create__sub-field-label" %>
+      <%= f.url_field :demo_link, class: "heist-create__sub-field-input", placeholder: "https://..." %>
+    </div>
+
+    <div class="heist-create__sub-field">
+      <%= f.label :repo_link, "repository", class: "heist-create__sub-field-label" %>
+      <%= f.url_field :repo_link, class: "heist-create__sub-field-input", placeholder: "https://..." %>
+    </div>
+  </div>
+
+  <div class="heist-create__actions">
+    <%= link_to "CANCEL", projects_path, class: "heist-create__cancel" %>
+    <%= f.submit "CREATE PROJECT", class: "heist-create__submit" %>
+  </div>
+<% end %>

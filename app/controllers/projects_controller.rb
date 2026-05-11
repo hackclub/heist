@@ -59,6 +59,6 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.expect(project: [ :name, :description, :demo_link, :repo_link, :is_unlisted, tags: [] ])
+    params.expect(project: [ :name, :description, :demo_link, :repo_link, :readme_link, :banner_image, :is_unlisted, tags: [] ])
   end
 end
