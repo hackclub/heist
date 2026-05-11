@@ -1706,6 +1706,164 @@ a.heist-dash__banner:hover { background: rgba(255, 229, 114, 0.06); }
   margin-left: 0.25rem;
 }
 
+/* =========================================================================
+   Transmission design system (heist-tx).
+   Bracket-cornered frame, overlapping label, scanline overlay, meta grid,
+   prompt prefix, lime <mark> highlight. Shared across welcome / inbox /
+   mail-show / future heist surfaces.
+   ========================================================================= */
+
+.heist-body mark {
+  background: #C0F477;
+  color: #14251C;
+  padding: 0.05em 0.4em;
+  border-radius: 0;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 8px rgba(192, 244, 119, 0.45);
+}
+
+.heist-tx__scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(192, 244, 119, 0.05) 0,
+    rgba(192, 244, 119, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 1;
+}
+
+.heist-tx__frame {
+  position: relative;
+  padding: 26px 22px 22px;
+  border: 1px solid rgba(218, 251, 172, 0.22);
+  background: rgba(10, 19, 9, 0.55);
+}
+
+.heist-tx__frame--flush {
+  padding: 14px 16px;
+}
+
+.heist-tx__frame > *:not(.heist-tx__corner):not(.heist-tx__label):not(.heist-tx__scan) {
+  position: relative;
+  z-index: 2;
+}
+
+.heist-tx__label {
+  position: absolute;
+  top: -10px;
+  left: 18px;
+  padding: 0 10px;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #FFE572;
+  background: #0E1A10;
+  text-shadow: 0 0 6px rgba(255, 229, 114, 0.4);
+  z-index: 3;
+}
+
+.heist-tx__corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 3;
+}
+.heist-tx__corner--tl { top: -2px; left: -2px;   border-left: 3px solid #C0F477; border-top: 3px solid #C0F477; }
+.heist-tx__corner--tr { top: -2px; right: -2px;  border-right: 3px solid #C0F477; border-top: 3px solid #C0F477; }
+.heist-tx__corner--bl { bottom: -2px; left: -2px;  border-left: 3px solid #C0F477; border-bottom: 3px solid #C0F477; }
+.heist-tx__corner--br { bottom: -2px; right: -2px; border-right: 3px solid #C0F477; border-bottom: 3px solid #C0F477; }
+
+.heist-tx__meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 24px;
+  margin: 0;
+}
+
+.heist-tx__meta > div {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.heist-tx__meta dt {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: #DBC45F;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.heist-tx__meta dt::before { content: ">> "; opacity: 0.6; }
+
+.heist-tx__meta dd {
+  margin: 0;
+  font-size: 13px;
+  color: #C0F477;
+  letter-spacing: 0.04em;
+  word-break: break-word;
+}
+
+.heist-tx__prompt {
+  display: inline-block;
+  margin-right: 6px;
+  color: #FFE572;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  text-shadow: 0 0 6px rgba(255, 229, 114, 0.5);
+}
+
+.heist-tx__cursor {
+  display: inline-block;
+  margin-right: 6px;
+  color: #FFE572;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  animation: heist-tx-blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes heist-tx-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .heist-tx__cursor { animation: none; } }
+
+.heist-tx__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heist-tx__list li {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid #DBC45F;
+  background: rgba(20, 37, 28, 0.55);
+  font-size: 14px;
+  color: #DAFBAC;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.heist-tx__list li:hover {
+  border-left-color: #FFE572;
+  background: rgba(20, 37, 28, 0.85);
+}
+
+@media (max-width: 640px) {
+  .heist-tx__frame { padding: 22px 14px 16px; }
+  .heist-tx__meta { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .heist-tx__meta > div { grid-template-columns: 56px 1fr; gap: 10px; }
+}
+
 .heist-identity__signout-form {
   display: inline-flex;
   margin: 0;
@@ -1732,3 +1890,4 @@ a.heist-dash__banner:hover { background: rgba(255, 229, 114, 0.06); }
   background: #DBC45F;
   color: #14251C;
 }
+

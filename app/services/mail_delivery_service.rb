@@ -29,33 +29,16 @@ module MailDeliveryService
     return if MailMessage.where(user: user, kind: "welcome").exists?
 
     handle = user.display_name.to_s.downcase.presence || "partner"
-    date   = Time.current.strftime("%Y-%m-%d")
-
-    body = <<~MAIL
-                      ___________________________________
-                     /  THE HEIST :: NODE 01 :: 2026     /
-                    /__________________________________/
-
-      >> TRANSMISSION 001
-      >> FROM: heist control
-      >> TO:   #{handle}
-      >> DATE: #{date}
-
+    body = <<~MAIL.strip
       welcome, #{handle}. you've been added to the manifest.
 
-      the score is 1,000 hours of code, logged collectively
-      across the weekend. your crew is everyone else who
-      signed in. you log time, the leaderboard moves, the
-      take gets closer to open.
+      the score is 1,000 hours of code, logged collectively across the weekend. your crew is everyone else who signed in. you log time, the leaderboard moves, the take gets closer to open.
 
       two things to do now:
-
       > link hackatime so your hours count
       > ship your first project when you have something to show
 
       the wire goes live when we go live. see you on the floor.
-
-                                                  -- the heist
     MAIL
 
     MailMessage.create!(

@@ -2,6 +2,8 @@
 <% content_for :sidebar_active, :inbox %>
 
 <div class="heist-inbox">
+  <span class="heist-tx__scan" aria-hidden="true"></span>
+
   <header class="heist-inbox__header">
     <div class="heist-inbox__title-group">
       <span class="heist-inbox__prompt">&gt;&gt;</span>
@@ -12,36 +14,55 @@
     </div>
   </header>
 
-  <main class="heist-inbox__main">
-    <% if @mail_messages.any? %>
+  <% if @mail_messages.any? %>
+    <section class="heist-tx__frame heist-inbox__main">
+      <span class="heist-tx__label">&gt;&gt;: INBOX</span>
+      <span class="heist-tx__corner heist-tx__corner--tl" aria-hidden="true"></span>
+      <span class="heist-tx__corner heist-tx__corner--tr" aria-hidden="true"></span>
+      <span class="heist-tx__corner heist-tx__corner--bl" aria-hidden="true"></span>
+      <span class="heist-tx__corner heist-tx__corner--br" aria-hidden="true"></span>
+
       <ol class="heist-inbox__list">
-        <% @mail_messages.each_with_index do |message, idx| %>
+        <% @mail_messages.each do |message| %>
           <li class="heist-inbox__item <%= 'heist-inbox__item--unread' unless message.read? %>">
             <%= link_to mail_message_path(message), class: "heist-inbox__row" do %>
               <span class="heist-inbox__index">#<%= format("%04d", message.id % 10_000) %></span>
               <span class="heist-inbox__dot" aria-hidden="true"></span>
               <span class="heist-inbox__subject"><%= message.subject.upcase %></span>
-              <span class="heist-inbox__kind">[<%= message.kind %>]</span>
+              <% if message.read? %>
+                <span class="heist-inbox__kind">[<%= message.kind %>]</span>
+              <% else %>
+                <span class="heist-inbox__kind"><mark><%= message.kind %></mark></span>
+              <% end %>
               <span class="heist-inbox__time"><%= time_ago_in_words(message.created_at).upcase.gsub("ABOUT ", "") %> AGO</span>
             <% end %>
             <% if message.kind == "welcome" %>
-              <p class="heist-inbox__preview">&gt; transmission received. open to read.</p>
+              <p class="heist-inbox__preview"><span class="heist-tx__prompt" aria-hidden="true">&gt;</span>transmission received. open to read.</p>
             <% elsif message.body.present? %>
-              <p class="heist-inbox__preview">&gt; <%= truncate(message.body, length: 160) %></p>
+              <p class="heist-inbox__preview"><span class="heist-tx__prompt" aria-hidden="true">&gt;</span><%= truncate(message.body, length: 160) %></p>
             <% end %>
           </li>
         <% end %>
       </ol>
+
       <div class="heist-inbox__pager">
         <%== pagy_nav(@pagy) %>
       </div>
-    <% else %>
+    </section>
+  <% else %>
+    <section class="heist-tx__frame heist-inbox__empty-frame">
+      <span class="heist-tx__label">&gt;&gt;: INBOX</span>
+      <span class="heist-tx__corner heist-tx__corner--tl" aria-hidden="true"></span>
+      <span class="heist-tx__corner heist-tx__corner--tr" aria-hidden="true"></span>
+      <span class="heist-tx__corner heist-tx__corner--bl" aria-hidden="true"></span>
+      <span class="heist-tx__corner heist-tx__corner--br" aria-hidden="true"></span>
+
       <div class="heist-inbox__empty">
         <p class="heist-inbox__empty-line">&gt; NO TRANSMISSIONS RECEIVED.</p>
         <p class="heist-inbox__empty-hint">SHIP A PROJECT FOR REVIEW AND THE LINE WILL OPEN UP.</p>
       </div>
-    <% end %>
-  </main>
+    </section>
+  <% end %>
 </div>
 
 <style>
@@ -54,11 +75,15 @@
     --heist-stripe-amber: repeating-linear-gradient(135deg, rgba(255, 229, 114, 0.13) 0 6px, transparent 6px 12px);
     --heist-stripe-lime: repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.14) 0 6px, transparent 6px 12px);
 
+    position: relative;
     color: var(--heist-lime);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 18px;
+    overflow: hidden;
   }
+
+  .heist-inbox > *:not(.heist-tx__scan) { position: relative; z-index: 2; }
 
   .heist-inbox__header {
     display: flex;
@@ -103,12 +128,9 @@
     box-shadow: 0 0 12px rgba(255, 229, 114, 0.5);
   }
 
-  /* Main panel */
-  .heist-inbox__main {
-    border: 4px solid var(--heist-lime-soft);
-    background: rgba(10, 19, 9, 0.55);
-    padding: 1rem;
-  }
+  /* Frame overrides — list/empty share the same .heist-tx__frame primitive */
+  .heist-inbox__main,
+  .heist-inbox__empty-frame { padding: 28px 22px 22px; }
 
   .heist-inbox__list {
     list-style: none;
@@ -193,11 +215,13 @@
   }
 
   .heist-inbox__preview {
-    margin: 0.5rem 0 0 1.5rem;
+    margin: 0.5rem 0 0 1.65rem;
     font-size: 14px;
     color: var(--heist-lime-soft);
-    opacity: 0.75;
+    opacity: 0.85;
   }
+
+  .heist-inbox__preview .heist-tx__prompt { margin-left: -1.4rem; }
 
   .heist-inbox__empty {
     padding: 2rem 1rem;
