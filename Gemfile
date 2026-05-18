@@ -82,7 +82,7 @@ end
 
 gem "hotwire-livereload", "~> 2.0", group: :development
 
-gem "faraday", "~> 2.13"
+gem "faraday", "~> 2.14"
 
 gem "slack-ruby-client", "~> 3.0"
 
