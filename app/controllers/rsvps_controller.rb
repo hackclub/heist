@@ -10,7 +10,6 @@ class RsvpsController < ApplicationController
     rsvp.source ||= "landing"
 
     if rsvp.persisted? || rsvp.save
-      cookies.permanent[:heist_rsvpd] = "1"
       redirect_to root_path(rsvp: "ok"), allow_other_host: false
     else
       redirect_to root_path(rsvp: "error", message: rsvp.errors.full_messages.first), allow_other_host: false

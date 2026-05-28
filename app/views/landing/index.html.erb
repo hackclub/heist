@@ -13,6 +13,8 @@
     <%= image_tag "https://assets.hackclub.com/banners/2026.svg", class: "heist-ribbon__img", alt: "Hack Club" %>
   </a>
 
+  <%= link_to "LOG IN", signin_path, class: "heist-btn heist-btn--login" %>
+
   <div class="heist-landing__inner">
     <section class="heist-hero">
       <h1 class="heist-title">
@@ -52,12 +54,11 @@
         <%= image_tag "landing/crt1.webp", class: "heist-crt__img", alt: "", "aria-hidden": true, decoding: "async" %>
         <p class="heist-crt__counter-text">
           <span class="heist-crt__counter-line">
-            <span class="heist-crt__counter-number<%= " heist-crt__counter-number--blurred" unless @rsvpd %>"><%= @active_hackers %></span>
+            <span class="heist-crt__counter-number"><%= @active_hackers %></span>
             people <span class="heist-crt__counter-accent">hacking</span>
           </span>
           <span class="heist-crt__counter-big">right now</span>
         </p>
-
       </div>
 
       <div class="heist-crt heist-crt--scene">
@@ -233,6 +234,28 @@
 
   .heist-btn:hover { filter: brightness(1.1); }
   .heist-btn:active { transform: translateY(1px); }
+
+  .heist-btn--login {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    padding: 0.4rem 1.6rem;
+    font-size: 1.05rem;
+    background: var(--heist-amber);
+    color: var(--heist-ink);
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(222, 195, 95, 0.25), 0 0 18px rgba(222, 195, 95, 0.35);
+    z-index: 5;
+  }
+
+  @media (min-width: 900px) {
+    .heist-btn--login {
+      top: 2rem;
+      right: 2rem;
+      padding: 0.45rem 1.9rem;
+      font-size: 1.25rem;
+    }
+  }
 
   .heist-hero {
     position: relative;
@@ -438,11 +461,6 @@
   .heist-crt__counter-number {
     color: var(--heist-yellow);
     text-shadow: 0 0 8px rgba(255, 229, 114, 0.55);
-  }
-
-  .heist-crt__counter-number--blurred {
-    filter: blur(5px);
-    user-select: none;
   }
 
   .heist-crt__counter-accent {
