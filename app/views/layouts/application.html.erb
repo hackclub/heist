@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Hc Rails Starter" %></title>
+    <title><%= content_for(:title) || "The Heist" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -10,51 +10,34 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
     <style>
-      @font-face {
-        font-family: "Audiowide";
-        src: url("/static-assets/Audiowide-Regular.ttf") format("truetype");
-        font-display: swap;
-      }
-      @font-face {
-        font-family: "ModeSeven";
-        src: url("/static-assets/Modeseven-L3n5.ttf") format("truetype");
-        font-display: swap;
-      }
+      @font-face { font-family: "Audiowide"; src: url("/static-assets/Audiowide-Regular.ttf") format("truetype"); font-display: swap; }
+      @font-face { font-family: "ModeSeven"; src: url("/static-assets/Modeseven-L3n5.ttf") format("truetype"); font-display: swap; }
+      @font-face { font-family: "Blade Runner"; src: url("/static-assets/BLADRMF_.TTF") format("truetype"); font-display: swap; }
     </style>
 
     <link rel="preload" as="font" type="font/ttf" href="/static-assets/Audiowide-Regular.ttf" crossorigin>
     <link rel="preload" as="font" type="font/ttf" href="/static-assets/Modeseven-L3n5.ttf" crossorigin>
+    <link rel="preload" as="font" type="font/ttf" href="/static-assets/BLADRMF_.TTF" crossorigin>
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%= Sentry.get_trace_propagation_meta.html_safe %>
   </head>
 
-  <body>
-    <main>
-      <% unless content_for?(:hide_default_chrome) %>
-        <% if user_signed_in? %>
-          <%= button_to "Sign Out", signout_path, method: :delete %>
-        <% else %>
-          <%= link_to "Sign In with Slack", signin_path %>
-        <% end %>
-        <% if notice %>
-          <p>Notice: <%= notice %></p>
-        <% end %>
-        <% if alert %>
-          <p>Alert: <%= alert %></p>
-        <% end %>
-      <% end %>
-      <%= yield %>
-    </main>
+  <body class="heist-body">
+    <% if user_signed_in? %>
+      <%= render "shared/heist_chrome" %>
+    <% else %>
+      <main class="heist-chrome heist-chrome--bare">
+        <% if notice %><div class="heist-chrome__flash heist-chrome__flash--notice"><%= notice %></div><% end %>
+        <% if alert %><div class="heist-chrome__flash heist-chrome__flash--alert"><%= alert %></div><% end %>
+        <%= yield %>
+      </main>
+    <% end %>
   </body>
 </html>

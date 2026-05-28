@@ -1,0 +1,31 @@
+<div class="heist-admin__page-header">
+  <h1>EDIT ROLES — <%= @user.display_name %></h1>
+</div>
+
+<p class="heist-admin__hint"><%= @user.email %></p>
+
+<div class="heist-admin__panel">
+  <%= form_with url: admin_user_path(@user), method: :patch, class: "heist-admin__form-stack" do |f| %>
+    <fieldset class="heist-admin__form-field" style="border: none; padding: 0; margin: 0;">
+      <legend class="heist-admin__label">Roles</legend>
+      <% User::ROLES.each do |role| %>
+        <label style="display: flex; align-items: center; gap: 0.5rem; font-family: 'ModeSeven', monospace; padding: 0.4rem 0; text-transform: none; letter-spacing: 0; color: #DAFBAC;">
+          <%= check_box_tag "user[roles][]", role, @user.has_role?(role), style: "accent-color: #FFE572; width: 16px; height: 16px;" %>
+          <span><%= role %></span>
+        </label>
+      <% end %>
+      <%= hidden_field_tag "user[roles][]", "" %>
+    </fieldset>
+
+    <% if @user == current_user %>
+      <p class="heist-admin__hint" style="color: #FFE572;">
+        ! You cannot remove your own ADMIN role.
+      </p>
+    <% end %>
+
+    <div class="heist-admin__btn-row">
+      <%= f.submit "SAVE", class: "heist-admin__btn" %>
+      <%= link_to "CANCEL", admin_user_path(@user), class: "heist-admin__btn heist-admin__btn--ghost" %>
+    </div>
+  <% end %>
+</div>

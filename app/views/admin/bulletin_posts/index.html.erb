@@ -1,0 +1,31 @@
+<div class="heist-admin__page-header">
+  <h1>BULLETIN</h1>
+  <%= link_to "+ NEW POST", new_admin_bulletin_post_path, class: "heist-admin__btn" %>
+</div>
+
+<% if @bulletin_posts.any? %>
+  <% @bulletin_posts.each do |post| %>
+    <div class="heist-admin__panel" <% if post.discarded? %>style="opacity: 0.5"<% end %>>
+      <div class="heist-admin__page-header" style="margin-bottom: 0.5rem;">
+        <h2 style="margin: 0;"><%= post.title %></h2>
+        <div class="heist-admin__btn-row" style="margin: 0;">
+          <%= link_to "EDIT", edit_admin_bulletin_post_path(post), class: "heist-admin__btn heist-admin__btn--ghost" %>
+          <% unless post.discarded? %>
+            <%= button_to "REMOVE", admin_bulletin_post_path(post), method: :delete,
+                  data: { turbo_confirm: "Remove this bulletin?" },
+                  class: "heist-admin__btn heist-admin__btn--danger",
+                  form: { style: "display:inline" } %>
+          <% end %>
+        </div>
+      </div>
+      <p class="heist-admin__hint">
+        POSTED <%= l(post.posted_at, format: :short).upcase %>
+        <% if post.author %> · <%= post.author.display_name %><% end %>
+        <% if post.discarded? %> · <span class="heist-admin__pill heist-admin__pill--rejected">REMOVED</span><% end %>
+      </p>
+      <div style="margin-top: 0.75rem;"><%= simple_format(post.body) %></div>
+    </div>
+  <% end %>
+<% else %>
+  <p class="heist-admin__table-empty">No bulletin posts yet.</p>
+<% end %>

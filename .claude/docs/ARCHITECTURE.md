@@ -1,3 +1,6 @@
+> **Load when**: designing a new feature, deciding where new code lives, or onboarding to the system.
+> **Skip when**: routine edits in known files.
+
 # The Heist Architecture
 
 This document provides an overview of The Heist's architecture and core systems.
@@ -115,23 +118,7 @@ All external calls route through service objects. Never call an external service
 
 ## Type Safety
 
-The Heist uses **Sorbet** (static + runtime type checker) with **Tapioca** (RBI generator). Configuration lives in `sorbet/`:
-
-- `sorbet/config` — Sorbet CLI flags.
-- `sorbet/rbi/gems/` — auto-generated signatures for every gem (run `bundle exec tapioca gem` after `bundle install`).
-- `sorbet/rbi/dsl/` — auto-generated signatures for Rails DSLs: ActiveRecord columns and associations, enum methods, URL helpers, Pundit policies (run `bundle exec tapioca dsl` after any model/association/enum/scope/job change).
-- `sorbet/tapioca/require.rb` — preloads required to make RBI generation work, plus a small monkey-patch that restores `has_rest` / `has_keyrest` on `T::Private::Methods::Signature` (tapioca 0.19.0 vs. sorbet-runtime 0.6.13153 mismatch — remove when upstream ships a fix).
-
-**Strictness ladder** (Shopify convention):
-
-- `# typed: false` — default. Syntax + constant resolution only. Existing files.
-- `# typed: true` — new service objects, policies, jobs. Method-level checks when `sig` is present.
-- `# typed: strict` — reserve for hot paths where every method must have a `sig`. Not used yet.
-- `# typed: ignore` — **banned**. It silences errors in downstream files.
-
-**Runtime behavior**: `sorbet-runtime` is a runtime gem (ships in all environments). Every `sig` is wrapped at load time so arg and return types are validated at runtime. Default check level is `:always`. Narrow with `.checked(:tests)` on hot methods if profiling shows overhead.
-
-See `.claude/docs/RAILS.md` for concrete `T::Struct`, `Data.define`, and `sig` patterns.
+Sorbet (static + runtime checker) with Tapioca (RBI generator). `sorbet-runtime` ships in all environments; `sorbet` and `tapioca` are development-only. Configuration and full runbook are in [SORBET.md](./SORBET.md).
 
 ## Testing Framework
 

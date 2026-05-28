@@ -1,0 +1,51 @@
+<div class="heist-admin__page-header">
+  <h1>COMPOSE MAIL</h1>
+</div>
+
+<div class="heist-admin__panel">
+  <%= form_with url: admin_mail_messages_path, method: :post, local: true, class: "heist-admin__form-stack" do |f| %>
+    <div class="heist-admin__form-field">
+      <label class="heist-admin__label">Audience</label>
+      <div class="heist-mail__audience">
+        <label class="heist-mail__audience-option">
+          <%= radio_button_tag :audience, "individual", @audience == "individual" %>
+          <span>Single user</span>
+        </label>
+        <label class="heist-mail__audience-option">
+          <%= radio_button_tag :audience, "broadcast", @audience == "broadcast" %>
+          <span>All kept users (broadcast)</span>
+        </label>
+        <label class="heist-mail__audience-option">
+          <%= radio_button_tag :audience, "silent", @audience == "silent" %>
+          <span>
+            Silent · signed up &lt; 7d, no project
+            <strong class="heist-mail__audience-count">(<%= @silent_count %>)</strong>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div class="heist-admin__form-field">
+      <%= label_tag :recipient_id, "Recipient (single user only)" %>
+      <%= select_tag :recipient_id,
+            options_from_collection_for_select(@users, :id, :display_name),
+            include_blank: "— Select a user —" %>
+      <span class="heist-admin__hint">Ignored unless audience is set to single user.</span>
+    </div>
+
+    <div class="heist-admin__form-field">
+      <%= label_tag :subject %>
+      <%= text_field_tag :subject, params[:subject], required: true %>
+    </div>
+
+    <div class="heist-admin__form-field">
+      <%= label_tag :body %>
+      <%= text_area_tag :body, params[:body], rows: 8 %>
+    </div>
+
+    <div class="heist-admin__btn-row">
+      <%= f.submit "SEND", class: "heist-admin__btn" %>
+      <%= link_to "CANCEL", admin_mail_messages_path, class: "heist-admin__btn heist-admin__btn--ghost" %>
+    </div>
+  <% end %>
+</div>

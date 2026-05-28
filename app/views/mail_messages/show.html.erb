@@ -1,0 +1,148 @@
+<% content_for :title, "TRANSMISSION — The Heist" %>
+<% content_for :sidebar_active, :inbox %>
+
+<div class="heist-mail">
+  <span class="heist-tx__scan" aria-hidden="true"></span>
+
+  <header class="heist-mail__header">
+    <%= link_to "← INBOX", mail_messages_path, class: "heist-mail__back" %>
+    <span class="heist-mail__id">TRANSMISSION #<%= format("%04d", @mail_message.id % 10_000) %></span>
+  </header>
+
+  <main class="heist-mail__main">
+    <% if @mail_message.kind == "welcome" %>
+      <%= render "welcome", mail_message: @mail_message %>
+    <% else %>
+      <article class="heist-mail__panel">
+        <section class="heist-tx__frame">
+          <span class="heist-tx__label">[ HEADER ]</span>
+          <span class="heist-tx__corner heist-tx__corner--tl" aria-hidden="true"></span>
+          <span class="heist-tx__corner heist-tx__corner--tr" aria-hidden="true"></span>
+          <span class="heist-tx__corner heist-tx__corner--bl" aria-hidden="true"></span>
+          <span class="heist-tx__corner heist-tx__corner--br" aria-hidden="true"></span>
+
+          <dl class="heist-tx__meta">
+            <div><dt>FROM</dt><dd>heist control</dd></div>
+            <div><dt>KIND</dt><dd><%= @mail_message.kind %></dd></div>
+            <div><dt>TIME</dt><dd><%= @mail_message.created_at.to_fs(:long) %></dd></div>
+            <div><dt>NODE</dt><dd>01</dd></div>
+          </dl>
+        </section>
+
+        <h1 class="heist-mail__subject"><%= @mail_message.subject.upcase %></h1>
+
+        <section class="heist-tx__frame">
+          <span class="heist-tx__label">&gt;&gt;: MESSAGE</span>
+          <span class="heist-tx__corner heist-tx__corner--tl" aria-hidden="true"></span>
+          <span class="heist-tx__corner heist-tx__corner--tr" aria-hidden="true"></span>
+          <span class="heist-tx__corner heist-tx__corner--bl" aria-hidden="true"></span>
+          <span class="heist-tx__corner heist-tx__corner--br" aria-hidden="true"></span>
+
+          <div class="heist-mail__body">
+            <%= simple_format(@mail_message.body) %>
+          </div>
+        </section>
+
+        <% if @mail_message.mailable_type == "Ship" && (ship = @mail_message.mailable) %>
+          <footer class="heist-mail__footer">
+            <%= link_to "VIEW SHIP →", project_path(ship.project), class: "heist-mail__cta" %>
+          </footer>
+        <% end %>
+      </article>
+    <% end %>
+  </main>
+</div>
+
+<style>
+  .heist-mail {
+    --heist-lime: #C0F477;
+    --heist-lime-soft: #DAFBAC;
+    --heist-amber: #FFE572;
+    --heist-amber-dim: #DBC45F;
+    --heist-ink: #14251C;
+    --heist-stripe-lime: repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.14) 0 6px, transparent 6px 12px);
+
+    position: relative;
+    color: var(--heist-lime);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow: hidden;
+  }
+
+  .heist-mail > *:not(.heist-tx__scan) { position: relative; z-index: 2; }
+
+  .heist-mail__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    border: 4px solid var(--heist-lime);
+    background: var(--heist-stripe-lime), rgba(10, 19, 9, 0.7);
+    box-shadow: 0 0 18px rgba(192, 244, 119, 0.18);
+  }
+
+  .heist-mail__back {
+    color: var(--heist-lime);
+    text-decoration: none;
+    font-family: "Audiowide", "ModeSeven", monospace;
+    letter-spacing: 0.08em;
+    font-size: 16px;
+  }
+
+  .heist-mail__back:hover { color: var(--heist-amber); }
+
+  .heist-mail__id {
+    color: var(--heist-amber-dim);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Main + panel are layout shells; visual frames come from .heist-tx__frame */
+  .heist-mail__main { display: block; }
+
+  .heist-mail__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 800px;
+  }
+
+  .heist-mail__subject {
+    font-family: "Blade Runner", "ModeSeven", ui-monospace, monospace;
+    font-size: 28px;
+    letter-spacing: 0.06em;
+    color: var(--heist-amber);
+    text-shadow: 0 0 10px rgba(255, 229, 114, 0.4);
+    margin: 0;
+  }
+
+  .heist-mail__body {
+    color: var(--heist-lime-soft);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  .heist-mail__body p { margin: 0 0 1rem; }
+  .heist-mail__body p:last-child { margin-bottom: 0; }
+
+  .heist-mail__footer {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 2px dashed rgba(218, 251, 172, 0.3);
+  }
+
+  .heist-mail__cta {
+    display: inline-block;
+    background: var(--heist-amber);
+    color: var(--heist-ink);
+    font-family: "Audiowide", "ModeSeven", monospace;
+    padding: 0.65rem 1.25rem;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    font-size: 15px;
+    box-shadow: 0 0 16px rgba(255, 229, 114, 0.4);
+  }
+
+  .heist-mail__cta:hover { filter: brightness(1.1); }
+</style>

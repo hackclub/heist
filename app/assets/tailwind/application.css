@@ -161,3 +161,1986 @@
   border-top: 1px solid #e2e8f0;
   font-size: 0.875rem;
 }
+
+/* Brand sidebar (shared/_heist_sidebar.html.erb). Pages place it via grid-area: sidebar. */
+.heist-sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 4px;
+  border: 4px solid #DAFBAC;
+  box-sizing: border-box;
+}
+
+.heist-sidebar__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 64px;
+  box-sizing: border-box;
+  color: #DAFBAC;
+  border: 4px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  transition: filter 150ms ease;
+}
+
+.heist-sidebar__nav svg { width: 28px; height: 28px; }
+.heist-sidebar__nav:hover { filter: brightness(1.3); }
+
+.heist-sidebar__nav--active {
+  background:
+    repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.32) 0 5px, transparent 5px 10px),
+    rgba(10, 19, 9, 0.55);
+  color: #FFE572;
+  border-color: #FFE572;
+}
+
+/* Admin shortcut: amber accent so it reads as elevated. */
+.heist-sidebar__nav--admin {
+  margin-top: auto;
+  color: #DBC45F;
+  border-color: #DBC45F;
+}
+
+.heist-sidebar__nav--admin:hover { color: #FFE572; border-color: #FFE572; }
+
+/* Identity chip rendered in page headers via shared/_heist_identity.html.erb. */
+.heist-identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.7);
+  color: #DAFBAC;
+  font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  text-decoration: none;
+}
+
+.heist-identity:hover {
+  border-color: #C0F477;
+  filter: brightness(1.1);
+}
+
+.heist-identity__avatar {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border: 2px solid #C0F477;
+  flex-shrink: 0;
+}
+
+.heist-identity__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1;
+}
+
+.heist-identity__name {
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: #C0F477;
+}
+
+.heist-identity__email {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: #DAFBAC;
+  opacity: 0.65;
+}
+
+.heist-identity__role {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  flex-shrink: 0;
+}
+
+.heist-identity__role--admin {
+  background: #FFE572;
+  color: #14251C;
+  box-shadow: 0 0 8px rgba(255, 229, 114, 0.5);
+}
+
+.heist-identity__role--reviewer {
+  background: #DBC45F;
+  color: #14251C;
+}
+
+/* =========================================================================
+   Global chrome (shared/_heist_chrome.html.erb)
+   Top bar + pinned sidebar + sub-nav slot + main content.
+   ========================================================================= */
+
+.heist-body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #0E1A10;
+  background-image:
+    linear-gradient(to right, rgba(90, 180, 96, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(90, 180, 96, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  color: #DAFBAC;
+  font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+.heist-chrome {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    "header  header"
+    "sidebar subnav"
+    "sidebar main";
+}
+
+.heist-chrome--bare {
+  display: block;
+  min-height: 100vh;
+}
+
+/* Top bar */
+
+.heist-chrome__topbar {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1.25rem;
+  border-bottom: 4px solid #C0F477;
+  background: rgba(10, 19, 9, 0.85);
+}
+
+.heist-chrome__brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid transparent;
+  transition: border-color 150ms ease, filter 150ms ease;
+}
+
+.heist-chrome__brand:hover {
+  border-color: #FFE572;
+  filter: drop-shadow(0 0 6px rgba(255, 229, 114, 0.45));
+}
+
+.heist-chrome__brand-img {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
+@media (max-width: 760px) {
+  .heist-chrome__brand-img { height: 32px; }
+}
+
+.heist-chrome__topbar-spacer { flex: 1; }
+
+/* Sidebar cell (pins the heist_sidebar partial). */
+
+.heist-chrome__sidebar-cell {
+  grid-area: sidebar;
+  padding: 12px;
+  border-right: 2px solid rgba(218, 251, 172, 0.18);
+  background: rgba(10, 19, 9, 0.5);
+}
+
+/* Override the partial's grid-area: sidebar inside the chrome cell. */
+.heist-chrome__sidebar-cell .heist-sidebar {
+  grid-area: auto;
+  width: 64px;
+  border-width: 2px;
+  position: sticky;
+  top: 12px;
+  align-self: start;
+}
+
+/* Sub-nav row (e.g. admin_tabs). */
+
+.heist-chrome__subnav {
+  grid-area: subnav;
+  background: rgba(10, 19, 9, 0.5);
+  border-bottom: 2px solid rgba(218, 251, 172, 0.25);
+}
+
+/* Main content area */
+
+.heist-chrome__main {
+  grid-area: main;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1400px;
+  box-sizing: border-box;
+}
+
+.heist-chrome__flash {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-family: "ModeSeven", monospace;
+  font-size: 13px;
+  border-left: 3px solid;
+}
+
+.heist-chrome__flash--notice {
+  border-color: #C0F477;
+  background: rgba(192, 244, 119, 0.08);
+  color: #DAFBAC;
+}
+
+.heist-chrome__flash--alert {
+  border-color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.08);
+  color: #FFB1B1;
+}
+
+@media (max-width: 760px) {
+  .heist-chrome {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "header"
+      "sidebar"
+      "subnav"
+      "main";
+  }
+
+  .heist-chrome__sidebar-cell {
+    border-right: none;
+    border-bottom: 2px solid rgba(218, 251, 172, 0.18);
+    padding: 8px;
+  }
+
+  .heist-chrome__sidebar-cell .heist-sidebar {
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    overflow-x: auto;
+    position: static;
+  }
+
+  .heist-chrome__sidebar-cell .heist-sidebar__nav {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+
+  .heist-chrome__sidebar-cell .heist-sidebar__nav--admin {
+    margin-top: 0;
+    margin-left: auto;
+  }
+
+  .heist-chrome__main { padding: 1rem; }
+
+  .heist-chrome__brand-text { font-size: 16px; }
+}
+
+/* =========================================================================
+   Admin chrome (layouts/admin.html.erb).
+   ========================================================================= */
+
+.heist-admin,
+.heist-body--admin {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #0E1A10;
+  background-image:
+    linear-gradient(to right, rgba(90, 180, 96, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(90, 180, 96, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  color: #DAFBAC;
+  font-family: "ModeSeven", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+.heist-admin__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 4px solid #C0F477;
+  background: rgba(10, 19, 9, 0.7);
+}
+
+.heist-admin__brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.heist-admin__home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: #C0F477;
+  border: 2px solid #C0F477;
+  background: rgba(10, 19, 9, 0.55);
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.heist-admin__home svg { width: 18px; height: 18px; }
+
+.heist-admin__home:hover {
+  background: #C0F477;
+  color: #14251C;
+}
+
+.heist-admin__title {
+  margin: 0;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 28px;
+  letter-spacing: 0.1em;
+  color: #FFE572;
+  text-shadow: 0 0 8px rgba(255, 229, 114, 0.3);
+}
+
+/* Tabs */
+
+.heist-admin__tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 1.5rem;
+  border-bottom: 2px solid rgba(218, 251, 172, 0.25);
+  background: rgba(10, 19, 9, 0.5);
+  overflow-x: auto;
+}
+
+.heist-admin__tab {
+  padding: 0.85rem 1.5rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: #DAFBAC;
+  text-decoration: none;
+  border-bottom: 4px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.heist-admin__tab:hover {
+  color: #FFE572;
+  text-decoration: none;
+}
+
+.heist-admin__tab--active {
+  color: #FFE572;
+  border-bottom-color: #FFE572;
+}
+
+/* Main content area */
+
+.heist-admin__main {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.heist-admin__main h1 {
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 36px;
+  letter-spacing: 0.06em;
+  color: #FFE572;
+  margin: 0 0 1.5rem 0;
+}
+
+.heist-admin__main h2 {
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  color: #C0F477;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.heist-admin__main a {
+  color: #FFE572;
+}
+
+.heist-admin__main a:hover {
+  text-decoration: underline;
+}
+
+/* Flash banners */
+
+.heist-admin__flash {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 2px solid;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.heist-admin__flash--notice {
+  border-color: #C0F477;
+  background: rgba(192, 244, 119, 0.1);
+  color: #C0F477;
+}
+
+.heist-admin__flash--alert {
+  border-color: #FFE572;
+  background: rgba(255, 229, 114, 0.1);
+  color: #FFE572;
+}
+
+/* Panel container for grouping content */
+
+.heist-admin__panel {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.heist-admin__panel + .heist-admin__panel { margin-top: 0; }
+
+/* Tables */
+
+.heist-admin__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  border: 2px solid #DAFBAC;
+}
+
+.heist-admin__table thead {
+  background: rgba(10, 19, 9, 0.7);
+}
+
+.heist-admin__table thead tr {
+  border-bottom: 2px solid #C0F477;
+}
+
+.heist-admin__table th {
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #FFE572;
+  text-transform: uppercase;
+}
+
+.heist-admin__table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.25);
+  color: #DAFBAC;
+}
+
+.heist-admin__table tr:last-child td { border-bottom: 0; }
+.heist-admin__table tr:hover td { background: rgba(255, 229, 114, 0.06); }
+
+.heist-admin__table-empty {
+  color: #DAFBAC;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Forms */
+
+.heist-admin__form-stack > * + * { margin-top: 1rem; }
+
+.heist-admin__form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.heist-admin__label,
+.heist-admin__form-field label {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #FFE572;
+  text-transform: uppercase;
+}
+
+.heist-admin__input,
+.heist-admin__textarea,
+.heist-admin__select,
+.heist-admin__form-field input[type="text"],
+.heist-admin__form-field input[type="email"],
+.heist-admin__form-field input[type="url"],
+.heist-admin__form-field input[type="number"],
+.heist-admin__form-field input[type="datetime-local"],
+.heist-admin__form-field input[type="date"],
+.heist-admin__form-field textarea,
+.heist-admin__form-field select {
+  padding: 0.6rem 0.75rem;
+  background: rgba(10, 19, 9, 0.7);
+  border: 2px solid #DAFBAC;
+  color: #DAFBAC;
+  font-family: "ModeSeven", monospace;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.heist-admin__input:focus,
+.heist-admin__textarea:focus,
+.heist-admin__select:focus,
+.heist-admin__form-field input:focus,
+.heist-admin__form-field textarea:focus,
+.heist-admin__form-field select:focus {
+  outline: none;
+  border-color: #FFE572;
+}
+
+.heist-admin__textarea,
+.heist-admin__form-field textarea {
+  font-family: "ModeSeven", monospace;
+  resize: vertical;
+}
+
+.heist-admin__hint {
+  font-size: 11px;
+  color: #DAFBAC;
+  opacity: 0.7;
+  letter-spacing: 0.04em;
+}
+
+/* Buttons */
+
+.heist-admin__btn,
+.heist-admin__main a.heist-admin__btn {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background: #FFE572;
+  color: #14251C;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  border: 2px solid #14251C;
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+  cursor: pointer;
+  transition: transform 80ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.heist-admin__btn:hover,
+.heist-admin__main a.heist-admin__btn:hover {
+  background: #C0F477;
+  color: #14251C;
+  text-decoration: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 1px 1px 0 0 #14251C;
+}
+
+.heist-admin__btn:active {
+  transform: translate(2px, 2px);
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+  box-shadow: none;
+}
+
+.heist-admin__btn--ghost,
+.heist-admin__main a.heist-admin__btn--ghost {
+  background: rgba(10, 19, 9, 0.6);
+  color: #C0F477;
+  border-color: #C0F477;
+}
+
+.heist-admin__btn--ghost:hover,
+.heist-admin__main a.heist-admin__btn--ghost:hover {
+  background: rgba(192, 244, 119, 0.12);
+  color: #FFE572;
+  border-color: #FFE572;
+}
+
+.heist-admin__btn--danger,
+.heist-admin__main a.heist-admin__btn--danger {
+  background: rgba(10, 19, 9, 0.6);
+  color: #FF6B6B;
+  border-color: #FF6B6B;
+}
+
+.heist-admin__btn--danger:hover,
+.heist-admin__main a.heist-admin__btn--danger:hover {
+  background: #FF6B6B;
+  color: #14251C;
+}
+
+.heist-admin__btn-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* Page header (h1 with action buttons) */
+
+.heist-admin__page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.heist-admin__page-header h1 { margin: 0; }
+
+/* Status pills */
+
+.heist-admin__pill {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid #DAFBAC;
+  color: #DAFBAC;
+}
+
+.heist-admin__pill--approved { border-color: #C0F477; background: rgba(192, 244, 119, 0.15); color: #C0F477; }
+.heist-admin__pill--pending  { border-color: #FFE572; background: rgba(255, 229, 114, 0.15); color: #FFE572; }
+.heist-admin__pill--returned { border-color: #DBC45F; background: rgba(219, 196, 95, 0.15); color: #DBC45F; }
+.heist-admin__pill--rejected { border-color: #FF6B6B; background: rgba(255, 107, 107, 0.15); color: #FF6B6B; }
+
+/* Search input cluster */
+
+.heist-admin__search {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.heist-admin__search input { flex: 1; }
+
+/* Stats grid (above review queue) */
+
+.heist-admin__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 4px;
+  margin-bottom: 1rem;
+}
+
+.heist-admin__stat-card {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 1rem 1.25rem;
+}
+
+.heist-admin__stat-label {
+  margin: 0 0 0.5rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #DBC45F;
+}
+
+.heist-admin__stat-value {
+  margin: 0;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 38px;
+  letter-spacing: 0.04em;
+  color: #C0F477;
+  line-height: 1;
+}
+
+.heist-admin__stat-value--accent { color: #FFE572; }
+
+.heist-admin__stat-unit {
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: #DBC45F;
+  margin-left: 4px;
+}
+
+.heist-admin__stat-sub {
+  margin: 0.5rem 0 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #DAFBAC;
+  opacity: 0.75;
+}
+
+/* Sub-tabs (status filter on review queue) */
+
+.heist-admin__subtabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid rgba(218, 251, 172, 0.25);
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.heist-admin__subtab {
+  padding: 0.6rem 1rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: #DAFBAC;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.heist-admin__main a.heist-admin__subtab { color: #DAFBAC; }
+.heist-admin__main a.heist-admin__subtab:hover { color: #FFE572; text-decoration: none; }
+
+.heist-admin__subtab--active,
+.heist-admin__main a.heist-admin__subtab--active {
+  color: #FFE572;
+  border-bottom-color: #FFE572;
+}
+
+.heist-admin__subtab-count {
+  display: inline-block;
+  min-width: 22px;
+  padding: 1px 6px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  background: rgba(192, 244, 119, 0.15);
+  border: 1px solid rgba(192, 244, 119, 0.3);
+  color: #C0F477;
+  text-align: center;
+}
+
+.heist-admin__subtab--active .heist-admin__subtab-count {
+  background: rgba(255, 229, 114, 0.18);
+  border-color: rgba(255, 229, 114, 0.5);
+  color: #FFE572;
+}
+
+/* Small button variant for table action cells */
+
+.heist-admin__btn--small {
+  padding: 0.35rem 0.75rem;
+  font-size: 11px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+}
+
+/* =========================================================================
+   Admin dashboard (admin/static_pages/index) — calm, tight, single-column-feel
+   ========================================================================= */
+
+.heist-dash__hero {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 12px;
+}
+
+.heist-dash__hero-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.heist-dash__hero-row + .heist-dash__hero-row { margin-top: 0.35rem; }
+
+.heist-dash__hero-label {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #DBC45F;
+}
+
+.heist-dash__hero-pct {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: #FFE572;
+}
+
+.heist-dash__hero-num {
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 40px;
+  letter-spacing: 0.03em;
+  color: #C0F477;
+  line-height: 1;
+}
+
+.heist-dash__hero-unit {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 18px;
+  color: #DBC45F;
+  margin-left: 4px;
+}
+
+.heist-dash__hero-goal {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: #DBC45F;
+}
+
+.heist-dash__progress {
+  margin-top: 0.85rem;
+  width: 100%;
+  height: 8px;
+  border: 1px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.6);
+  overflow: hidden;
+}
+
+.heist-dash__progress-fill {
+  height: 100%;
+  background: #C0F477;
+  transition: width 300ms ease;
+}
+
+/* KPI strip — uniform tiny cards */
+
+.heist-dash__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 760px) {
+  .heist-dash__kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.heist-dash__kpi {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 0.85rem 1rem;
+  display: block;
+  color: inherit;
+}
+
+.heist-dash__main a.heist-dash__kpi--link,
+.heist-dash__kpi--link {
+  cursor: pointer;
+}
+
+.heist-dash__kpi--link:hover {
+  border-color: #FFE572;
+  background: rgba(255, 229, 114, 0.06);
+}
+
+.heist-dash__kpi-label {
+  margin: 0 0 0.5rem;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #DBC45F;
+}
+
+.heist-dash__kpi-value {
+  margin: 0;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 26px;
+  letter-spacing: 0.03em;
+  color: #C0F477;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.heist-dash__kpi-value--accent { color: #FFE572; }
+
+.heist-dash__kpi-sub {
+  margin: 0.5rem 0 0;
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DAFBAC;
+  opacity: 0.7;
+}
+
+/* Split + panels */
+
+.heist-dash__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 900px) {
+  .heist-dash__split { grid-template-columns: minmax(0, 1fr); }
+}
+
+.heist-dash__panel {
+  border: 2px solid #DAFBAC;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 1rem 1.25rem;
+}
+
+.heist-dash__panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.25);
+}
+
+.heist-dash__panel-head h2 {
+  margin: 0 !important;
+  font-family: "Audiowide", "ModeSeven", monospace !important;
+  font-size: 13px !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #C0F477 !important;
+}
+
+.heist-dash__panel-link {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  letter-spacing: 0.04em;
+}
+
+.heist-admin__main a.heist-dash__panel-link { color: #DBC45F; }
+.heist-admin__main a.heist-dash__panel-link:hover { color: #FFE572; }
+
+.heist-dash__empty {
+  margin: 0.5rem 0;
+  color: #DAFBAC;
+  opacity: 0.6;
+  font-size: 13px;
+}
+
+/* Leaderboard */
+
+.heist-dash__board {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__board li {
+  display: grid;
+  grid-template-columns: auto 24px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__board li:last-child { border-bottom: 0; }
+
+.heist-dash__board-rank {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  font-variant-numeric: tabular-nums;
+}
+
+.heist-dash__board-avatar {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border: 1px solid #DAFBAC;
+}
+
+.heist-dash__board-avatar--blank { background: rgba(192, 244, 119, 0.12); }
+
+.heist-dash__board-name {
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.heist-admin__main a.heist-dash__board-name { color: #DAFBAC; }
+.heist-admin__main a.heist-dash__board-name:hover { color: #FFE572; }
+
+.heist-dash__board-meta {
+  font-size: 11px;
+  color: #DBC45F;
+}
+
+.heist-dash__board-hours {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 12px;
+  color: #FFE572;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Activity feed */
+
+.heist-dash__feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__feed li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.65rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__feed li:last-child { border-bottom: 0; }
+
+.heist-dash__feed-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  border: 1px solid;
+}
+
+.heist-dash__feed-marker--ship {
+  border-color: #C0F477;
+  color: #C0F477;
+  background: rgba(192, 244, 119, 0.1);
+}
+
+.heist-dash__feed-marker--project {
+  border-color: #FFE572;
+  color: #FFE572;
+  background: rgba(255, 229, 114, 0.1);
+}
+
+.heist-dash__feed-text {
+  color: #DAFBAC;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.heist-dash__feed-text strong {
+  color: #C0F477;
+  font-weight: normal;
+}
+
+.heist-dash__feed-meta {
+  color: #DBC45F;
+  font-size: 11px;
+  margin-left: 0.25rem;
+}
+
+.heist-dash__feed-time {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+/* Engagement row */
+
+.heist-dash__engagement-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 760px) {
+  .heist-dash__engagement-row { grid-template-columns: 1fr; }
+}
+
+/* =========================================================================
+   Admin dashboard — additions: banners, pace chart, sparklines, funnel,
+   silent cohort, leading indicators
+   ========================================================================= */
+
+.heist-dash__page-sub {
+  margin: 0.25rem 0 0;
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: #DBC45F;
+  opacity: 0.8;
+}
+
+/* Banners */
+
+.heist-dash__banners {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.heist-dash__banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-left: 3px solid;
+  font-family: "ModeSeven", monospace;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.heist-dash__banner--alert {
+  border-color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.08);
+  color: #FFB1B1;
+}
+
+.heist-dash__banner--warn {
+  border-color: #FFE572;
+  background: rgba(255, 229, 114, 0.08);
+  color: #FFE572;
+}
+
+.heist-dash__banner--ok {
+  border-color: #C0F477;
+  background: rgba(192, 244, 119, 0.08);
+  color: #DAFBAC;
+}
+
+a.heist-dash__banner:hover { background: rgba(255, 229, 114, 0.06); }
+
+.heist-dash__banner-text { flex: 1; }
+
+.heist-dash__banner-cta {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+/* Hero pace chart */
+
+.heist-dash__pace-chart-wrap {
+  margin-top: 1rem;
+}
+
+.heist-dash__pace-canvas {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  background: rgba(0, 0, 0, 0.15);
+  touch-action: pan-y;
+}
+
+.heist-dash__pace-chart {
+  display: block;
+}
+
+.heist-dash__pace-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DAFBAC;
+  opacity: 0.85;
+}
+
+.heist-dash__legend-spacer {
+  flex: 1;
+}
+
+.heist-dash__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.heist-dash__legend-item--projection {
+  margin-left: auto;
+}
+
+.heist-dash__legend-item strong {
+  color: #FFE572;
+  font-weight: normal;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  letter-spacing: 0.04em;
+}
+
+.heist-dash__legend-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+}
+
+.heist-dash__legend-swatch--actual { background: #C0F477; height: 3px; }
+.heist-dash__legend-swatch--pace { background: rgba(255, 229, 114, 0.55); }
+.heist-dash__legend-swatch--proj { background: repeating-linear-gradient(90deg, #DAFBAC, #DAFBAC 3px, transparent 3px, transparent 6px); }
+
+.heist-dash__legend-hint {
+  font-style: italic;
+  opacity: 0.55;
+}
+
+.heist-dash__legend-reset {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #DBC45F;
+  background: transparent;
+  border: 1px solid #DBC45F;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.heist-dash__legend-reset:hover {
+  background: rgba(255, 229, 114, 0.08);
+  color: #FFE572;
+  border-color: #FFE572;
+}
+
+.heist-dash__delta {
+  font-family: "ModeSeven", monospace;
+  letter-spacing: 0.02em;
+}
+
+.heist-dash__delta--pos { color: #C0F477; }
+.heist-dash__delta--neg { color: #FF6B6B; }
+
+/* KPI sparkline + row */
+
+.heist-dash__kpi-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.heist-dash__kpi-unit {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 13px;
+  color: #DBC45F;
+  margin-left: 2px;
+}
+
+.heist-dash__sparkline {
+  width: 80px;
+  height: 24px;
+  flex: 0 0 auto;
+}
+
+.heist-dash__kpi--accent {
+  border-color: #FF6B6B;
+}
+
+.heist-dash__kpi-sub--neg {
+  color: #FFB1B1;
+  opacity: 0.9;
+}
+
+/* Funnel */
+
+.heist-dash__funnel-panel {
+  margin-bottom: 12px;
+}
+
+.heist-dash__funnel {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__funnel-row {
+  display: grid;
+  grid-template-columns: 24px minmax(140px, 1fr) minmax(120px, 3fr) auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__funnel-row:last-child { border-bottom: 0; }
+
+.heist-dash__funnel-step {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  font-variant-numeric: tabular-nums;
+}
+
+.heist-dash__funnel-label {
+  color: #DAFBAC;
+  letter-spacing: 0.02em;
+}
+
+.heist-admin__main a.heist-dash__funnel-label-link { color: #DAFBAC; }
+
+.heist-dash__funnel-bar-wrap {
+  height: 10px;
+  background: rgba(218, 251, 172, 0.07);
+  border: 1px solid rgba(218, 251, 172, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.heist-dash__funnel-bar {
+  display: block;
+  height: 100%;
+  background: #C0F477;
+  transition: width 200ms ease;
+}
+
+.heist-dash__funnel-row--worst .heist-dash__funnel-bar {
+  background: #FF6B6B;
+}
+
+.heist-dash__funnel-row--worst {
+  background: rgba(255, 107, 107, 0.04);
+}
+
+.heist-dash__funnel-count {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 13px;
+  color: #FFE572;
+  font-variant-numeric: tabular-nums;
+  min-width: 60px;
+  text-align: right;
+}
+
+.heist-dash__funnel-pct {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  white-space: nowrap;
+  min-width: 96px;
+  text-align: right;
+}
+
+@media (max-width: 760px) {
+  .heist-dash__funnel-row {
+    grid-template-columns: 24px 1fr auto;
+    grid-template-areas:
+      "step label count"
+      "bar bar bar"
+      "pct pct pct";
+  }
+  .heist-dash__funnel-step { grid-area: step; }
+  .heist-dash__funnel-label { grid-area: label; }
+  .heist-dash__funnel-count { grid-area: count; }
+  .heist-dash__funnel-bar-wrap { grid-area: bar; }
+  .heist-dash__funnel-pct { grid-area: pct; text-align: left; }
+}
+
+/* Decision feed marker variants */
+
+.heist-dash__feed-marker--warn {
+  border-color: #FFE572;
+  color: #FFE572;
+  background: rgba(255, 229, 114, 0.1);
+}
+
+.heist-dash__feed-marker--alert {
+  border-color: #FF6B6B;
+  color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+/* Silent cohort */
+
+.heist-dash__silent {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__silent li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__silent li:last-child { border-bottom: 0; }
+
+.heist-dash__silent-meta {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+/* Leading indicators */
+
+.heist-dash__leading {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 760px) {
+  .heist-dash__leading { grid-template-columns: 1fr; }
+}
+
+.heist-dash__leading-row { display: block; }
+
+/* Movers list (W-over-W) */
+
+.heist-dash__movers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__movers li {
+  display: grid;
+  grid-template-columns: auto 24px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__movers li:last-child { border-bottom: 0; }
+
+.heist-dash__movers-meta {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+.heist-dash__movers-delta {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Stream impact list */
+
+.heist-dash__streams {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.heist-dash__streams li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed rgba(218, 251, 172, 0.18);
+  font-size: 13px;
+}
+
+.heist-dash__streams li:last-child { border-bottom: 0; }
+
+.heist-dash__streams-date {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+.heist-dash__streams-title {
+  color: #DAFBAC;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.heist-dash__streams-meta {
+  font-family: "ModeSeven", monospace;
+  font-size: 11px;
+  color: #DBC45F;
+  white-space: nowrap;
+}
+
+.heist-dash__streams-hours {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 12px;
+  color: #FFE572;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mail audience selector */
+
+.heist-mail__audience {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.heist-mail__audience-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "ModeSeven", monospace;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #DAFBAC;
+  cursor: pointer;
+}
+
+.heist-mail__audience-option input[type="radio"] {
+  accent-color: #FFE572;
+  width: 16px;
+  height: 16px;
+}
+
+.heist-mail__audience-count {
+  color: #FFE572;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-weight: normal;
+  margin-left: 0.25rem;
+}
+
+/* =========================================================================
+   Transmission design system (heist-tx).
+   Bracket-cornered frame, overlapping label, scanline overlay, meta grid,
+   prompt prefix, lime <mark> highlight. Shared across welcome / inbox /
+   mail-show / future heist surfaces.
+   ========================================================================= */
+
+.heist-body mark {
+  background: #C0F477;
+  color: #14251C;
+  padding: 0.05em 0.4em;
+  border-radius: 0;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 8px rgba(192, 244, 119, 0.45);
+}
+
+.heist-tx__scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(192, 244, 119, 0.05) 0,
+    rgba(192, 244, 119, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 1;
+}
+
+.heist-tx__frame {
+  position: relative;
+  padding: 26px 22px 22px;
+  border: 1px solid rgba(218, 251, 172, 0.22);
+  background: rgba(10, 19, 9, 0.55);
+}
+
+.heist-tx__frame--flush {
+  padding: 14px 16px;
+}
+
+.heist-tx__frame > *:not(.heist-tx__corner):not(.heist-tx__label):not(.heist-tx__scan) {
+  position: relative;
+  z-index: 2;
+}
+
+.heist-tx__label {
+  position: absolute;
+  top: -10px;
+  left: 18px;
+  padding: 0 10px;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #FFE572;
+  background: #0E1A10;
+  text-shadow: 0 0 6px rgba(255, 229, 114, 0.4);
+  z-index: 3;
+}
+
+.heist-tx__corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 3;
+}
+.heist-tx__corner--tl { top: -2px; left: -2px;   border-left: 3px solid #C0F477; border-top: 3px solid #C0F477; }
+.heist-tx__corner--tr { top: -2px; right: -2px;  border-right: 3px solid #C0F477; border-top: 3px solid #C0F477; }
+.heist-tx__corner--bl { bottom: -2px; left: -2px;  border-left: 3px solid #C0F477; border-bottom: 3px solid #C0F477; }
+.heist-tx__corner--br { bottom: -2px; right: -2px; border-right: 3px solid #C0F477; border-bottom: 3px solid #C0F477; }
+
+.heist-tx__meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 24px;
+  margin: 0;
+}
+
+.heist-tx__meta > div {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.heist-tx__meta dt {
+  font-family: "Audiowide", "ModeSeven", monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: #DBC45F;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.heist-tx__meta dt::before { content: ">> "; opacity: 0.6; }
+
+.heist-tx__meta dd {
+  margin: 0;
+  font-size: 13px;
+  color: #C0F477;
+  letter-spacing: 0.04em;
+  word-break: break-word;
+}
+
+.heist-tx__prompt {
+  display: inline-block;
+  margin-right: 6px;
+  color: #FFE572;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  text-shadow: 0 0 6px rgba(255, 229, 114, 0.5);
+}
+
+.heist-tx__cursor {
+  display: inline-block;
+  margin-right: 6px;
+  color: #FFE572;
+  font-family: "Audiowide", "ModeSeven", monospace;
+  animation: heist-tx-blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes heist-tx-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .heist-tx__cursor { animation: none; } }
+
+.heist-tx__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heist-tx__list li {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid #DBC45F;
+  background: rgba(20, 37, 28, 0.55);
+  font-size: 14px;
+  color: #DAFBAC;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.heist-tx__list li:hover {
+  border-left-color: #FFE572;
+  background: rgba(20, 37, 28, 0.85);
+}
+
+@media (max-width: 640px) {
+  .heist-tx__frame { padding: 22px 14px 16px; }
+  .heist-tx__meta { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .heist-tx__meta > div { grid-template-columns: 56px 1fr; gap: 10px; }
+}
+
+.heist-identity__signout-form {
+  display: inline-flex;
+  margin: 0;
+  margin-left: 0.5rem;
+}
+
+.heist-identity__signout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid #DBC45F;
+  background: transparent;
+  color: #DBC45F;
+  cursor: pointer;
+  padding: 0;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.heist-identity__signout svg { width: 18px; height: 18px; }
+
+.heist-identity__signout:hover {
+  background: #DBC45F;
+  color: #14251C;
+}
+
+/* =========================================================================
+   Project creation card (views/projects/new.html.erb).
+   ========================================================================= */
+
+.heist-create {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  border: 4px solid #C0F477;
+  background: rgba(10, 19, 9, 0.55);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.heist-create__header {
+  border: 4px solid #DBC45F;
+  padding: 7px 10px 6px;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  color: #FFE572;
+  text-transform: lowercase;
+}
+
+.heist-create__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.heist-create__errors {
+  border: 2px solid #FF6B6B;
+  background: rgba(255, 107, 107, 0.08);
+  color: #FFB1B1;
+  padding: 0.75rem 1rem;
+  font-size: 13px;
+}
+
+.heist-create__errors ul { margin: 0; padding-left: 1.1rem; }
+
+.heist-create__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.heist-create__field-label {
+  border: 4px solid #C0F477;
+  padding: 7px 10px 6px;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: #DAFBAC;
+  text-transform: lowercase;
+}
+
+.heist-create__input,
+.heist-create__textarea {
+  border: 4px solid #C0F477;
+  background: transparent;
+  padding: 7px 10px 6px;
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 16px;
+  color: #DAFBAC;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.heist-create__input::placeholder,
+.heist-create__textarea::placeholder {
+  color: #DAFBAC;
+  opacity: 0.5;
+}
+
+.heist-create__input:focus,
+.heist-create__textarea:focus {
+  border-color: #FFE572;
+  box-shadow: 0 0 0 1px rgba(255, 229, 114, 0.4);
+}
+
+.heist-create__textarea { resize: vertical; min-height: 96px; }
+
+.heist-create__hint {
+  border: 4px solid #C0F477;
+  padding: 3px 10px;
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #DAFBAC;
+}
+
+/* Banner upload dropzone */
+
+.heist-create__dropzone {
+  border: 4px solid #C0F477;
+  background: transparent;
+  min-height: 96px;
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.heist-create__dropzone:hover,
+.heist-create__dropzone:focus-within { border-color: #FFE572; }
+
+.heist-create__dropzone--active {
+  background: rgba(255, 229, 114, 0.08);
+  border-color: #FFE572;
+}
+
+.heist-create__dropzone-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.heist-create__dropzone-icon { width: 17px; height: 17px; color: #DAFBAC; opacity: 0.5; }
+
+.heist-create__dropzone-prompt {
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 16px;
+  color: #DAFBAC;
+  opacity: 0.5;
+}
+
+.heist-create__dropzone-meta {
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 14px;
+  color: #DAFBAC;
+  opacity: 0.5;
+}
+
+.heist-create__dropzone-filename {
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 14px;
+  color: #FFE572;
+  word-break: break-all;
+}
+
+/* Project links nested group */
+
+.heist-create__group {
+  border: 4px solid #C0F477;
+  padding: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.heist-create__group-header {
+  border: 4px solid #C0F477;
+  padding: 7px 10px 6px;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: #DAFBAC;
+  text-transform: lowercase;
+}
+
+.heist-create__sub-field { display: flex; flex-direction: column; }
+
+.heist-create__sub-field-label {
+  border: 4px solid #DBC45F;
+  padding: 3px 10px;
+  font-family: "Blade Runner", "ModeSeven", monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #FFE572;
+  text-transform: lowercase;
+}
+
+.heist-create__sub-field-input {
+  border: 4px solid #DBC45F;
+  border-top: 0;
+  background: transparent;
+  padding: 7px 10px 6px;
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 14px;
+  color: #DBC45F;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.heist-create__sub-field-input::placeholder {
+  color: #DBC45F;
+  opacity: 0.5;
+}
+
+.heist-create__sub-field-input:focus {
+  border-color: #FFE572;
+  color: #FFE572;
+}
+
+/* Footer actions */
+
+.heist-create__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  margin-top: 4px;
+}
+
+.heist-create__cancel {
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  color: #DAFBAC;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 6px 4px;
+  border-bottom: 1px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.heist-create__cancel:hover {
+  color: #FFE572;
+  border-bottom-color: #FFE572;
+}
+
+.heist-create__submit {
+  background: #DBC45F;
+  color: #14251C;
+  border: none;
+  padding: 7px 16px 6px 15px;
+  font-family: "ModeSeven", ui-monospace, monospace;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 120ms ease, transform 80ms ease;
+}
+
+.heist-create__submit:hover { background: #FFE572; }
+.heist-create__submit:active { transform: translate(1px, 1px); }

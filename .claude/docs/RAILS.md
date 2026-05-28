@@ -1,3 +1,6 @@
+> **Load when**: writing models, controllers, scopes, or service objects, or in doubt about Rails 8 / Ruby 3.4 idioms.
+> **Skip when**: view-only or pure JS/CSS changes.
+
 # Modern Rails (8.x) and Ruby 3.4
 
 Reference for writing idiomatic Rails in this codebase. Respect the versions declared in `.ruby-version` (3.4.4) and `Gemfile` (Rails ~> 8.1). Do not emit features from a version newer than what the project declares.
@@ -99,131 +102,13 @@ Reference for writing idiomatic Rails in this codebase. Respect the versions dec
 - Use `StandardError` subclasses for domain errors. Never `rescue Exception`.
 - Always include context in error messages (IDs, not just "failed").
 
-## Type safety (Sorbet + Tapioca)
+## Type safety
 
-The Heist uses Sorbet for gradual static typing and Tapioca to generate RBIs. `sorbet-runtime` ships in all environments; `sorbet` and `tapioca` are development-only.
+Sorbet + Tapioca is the type system. The full runbook (sig syntax, `T::Struct`, `T::Enum`, escape hatches, Pundit/AR specifics, error patterns) lives in [SORBET.md](./SORBET.md). Three rules to remember:
 
-### Daily commands
-
-| Command                          | When                                                                              |
-|----------------------------------|-----------------------------------------------------------------------------------|
-| `bundle exec srb tc`             | Before finishing any change. Required tier with rubocop + brakeman.               |
-| `bundle exec tapioca dsl`        | After touching a model, association, `enum`, scope, or job.                       |
-| `bundle exec tapioca gem`        | After `bundle install` adds or upgrades a gem.                                    |
-| `bundle exec tapioca dsl --verify` | In CI (and locally before pushing) to confirm DSL RBIs are in sync.             |
-
-Commit every generated `sorbet/rbi/gems/*.rbi` and `sorbet/rbi/dsl/*.rbi` file. Drift in these files is the #1 reason CI fails on a typed project.
-
-### Strictness ladder
-
-- `# typed: false` (default, no sigil needed) — Sorbet checks syntax and constant resolution. Existing files.
-- `# typed: true` — use on new service objects, new policies, new jobs, new form objects, new Data classes. Method-level type checks when `sig` is present.
-- `# typed: strict` — every method must have a `sig`. Every instance variable must be annotated. Reserve for hot paths after the codebase is broadly typed. Not used yet.
-- `# typed: ignore` — **banned.** Shopify's rule: "`typed: ignore` means `typed: debt`." If a file can't be typed, use `# typed: false`, not ignore.
-
-### Writing a sig
-
-```ruby
-# typed: true
-# frozen_string_literal: true
-
-module HackatimeService
-  extend T::Sig
-
-  sig { params(code: String, redirect_uri: String).returns(T.nilable(T::Hash[String, T.untyped])) }
-  def self.exchange_code_for_token(code, redirect_uri)
-    # ...
-  end
-end
-```
-
-- `extend T::Sig` at the top of every class/module that defines sigs.
-- `sig { ... }` immediately above the `def`. No blank line between them.
-- `params(name: Type)` lists every argument. Kwargs too.
-- `.returns(Type)` always. Use `.void` for methods that return nothing meaningful.
-- `T.nilable(T)` for nil-able returns. Callers must handle nil.
-- `T::Hash[K, V]`, `T::Array[V]`, `T::Set[V]` for collections.
-- `T.untyped` as a last resort. Prefer to narrow.
-
-### T::Struct and T::Enum
-
-Prefer these over raw Hashes and stringly-typed values.
-
-```ruby
-class LeaderboardEntry < T::Struct
-  const :user_id, Integer
-  const :display_name, String
-  const :hours, Float
-  const :rank, Integer
-end
-
-class Ship::Status < T::Enum
-  enums do
-    Pending  = new("pending")
-    Approved = new("approved")
-    Returned = new("returned")
-    Rejected = new("rejected")
-  end
-end
-```
-
-`T::Struct` fails loudly on missing or mistyped keys. `T::Enum` gives exhaustiveness in `case/when`.
-
-For Rails-native enums on ActiveRecord models, use `enum :status, { pending: 0, approved: 1, returned: 2, rejected: 3 }`. Tapioca generates matching predicate/scope sigs in `sorbet/rbi/dsl/ship.rbi`.
-
-### Escape hatches are code smells
-
-- `T.unsafe(x)` — disables all type checks on `x`. Never use outside an RBI file.
-- `T.must(x)` — asserts non-nil. Prefer `#fetch`, explicit guards, or `is_a?` narrowing.
-- `T.cast(x, Type)` — runtime-checked type assertion. Prefer narrowing via control flow.
-- `T.let(x, Type)` — annotates a local variable or `@ivar`. Fine to use; Sorbet often requires it for ivars in `typed: strict`.
-
-If you reach for `T.must` or `T.unsafe`, leave a one-line comment explaining why the type system can't see the invariant.
-
-### Rails-specific tricky spots
-
-- **`ActiveSupport::Concern`**: Sorbet can't infer the host class. Annotate `requires_ancestor` in an `interface!` module, or accept `# typed: false` on the concern itself.
-- **`find_by` vs `find`**: `find_by` returns `T.nilable(Model)`. `find` returns `Model` (or raises). Call sites must handle nil for `find_by`. Don't paper over with `&.`.
-- **Strong params**: After `params.expect(...)`, coerce into a `T::Struct` or `Data.define` before handing off to a service object. Services take typed value objects, not `ActionController::Parameters`.
-- **Polymorphic associations**: type the association as `T.untyped` or use `T.any(ModelA, ModelB)` if the set is closed.
-- **`Current.user` / `current_user`**: nil in background jobs and public endpoints. Type as `T.nilable(User)` unless the controller guarantees a signed-in user.
-
-### Pundit policies
-
-`sorbet-typed` ships Pundit signatures. In your policies:
-
-```ruby
-# typed: true
-class ProjectPolicy < ApplicationPolicy
-  extend T::Sig
-
-  sig { returns(T::Boolean) }
-  def show?
-    return false if record.discarded? && !admin?
-    admin? || !record.is_unlisted || owner?
-  end
-end
-```
-
-The `record` is typed via Tapioca's DSL compiler for Pundit. `user` is `T.nilable(User)`.
-
-### When a sig is wrong
-
-- `srb tc` red: the signature doesn't match the implementation. Fix the sig or the code.
-- Runtime `TypeError` from `sorbet-runtime`: someone called the method with the wrong type. Fix the caller, don't widen the sig.
-- If the check level is too aggressive: `sig { ... .checked(:tests) }` runs the runtime check only in tests, not production. Use sparingly.
-
-### Tapioca plugin ecosystem
-
-- `tapioca-rails` — built in, handles ActiveRecord.
-- `tapioca-pundit` — ships RBIs for Pundit base classes. Add to the Gemfile if you want richer policy typing.
-- `tapioca-sorbet-typed` — community RBIs. Already pulled transitively.
-
-Run `bundle exec tapioca annotations` periodically to fetch community-maintained RBIs for gems that don't ship their own.
-
-### Migration strategy
-
-Adopt at `typed: false` everywhere (the default). Ratchet files to `typed: true` as you touch them. Do not do a big-bang upgrade. Shopify ratcheted 99% of 75,000 files over several years.
+- `bundle exec srb tc` must pass before finishing.
+- New service objects, policies, jobs, and form objects start at `# typed: true` with `extend T::Sig` and a `sig` on every public method.
+- After model / association / enum / scope / job changes, run `bundle exec tapioca dsl` and commit the updated RBIs.
 
 ## Pitfalls
 

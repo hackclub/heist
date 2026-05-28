@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Admin — The Heist" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+
+    <style>
+      @font-face { font-family: "Audiowide"; src: url("/static-assets/Audiowide-Regular.ttf") format("truetype"); font-display: swap; }
+      @font-face { font-family: "ModeSeven"; src: url("/static-assets/Modeseven-L3n5.ttf") format("truetype"); font-display: swap; }
+      @font-face { font-family: "Blade Runner"; src: url("/static-assets/BLADRMF_.TTF") format("truetype"); font-display: swap; }
+    </style>
+
+    <link rel="preload" as="font" type="font/ttf" href="/static-assets/Audiowide-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" type="font/ttf" href="/static-assets/Modeseven-L3n5.ttf" crossorigin>
+    <link rel="preload" as="font" type="font/ttf" href="/static-assets/BLADRMF_.TTF" crossorigin>
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <%= Sentry.get_trace_propagation_meta.html_safe %>
+  </head>
+
+  <body class="heist-body heist-body--admin">
+    <% content_for :sidebar_active, :admin %>
+    <% content_for :main_class, "heist-admin__main" %>
+    <% content_for :sub_nav do %>
+      <%= render "shared/admin_tabs" %>
+    <% end %>
+    <%= render "shared/heist_chrome" %>
+  </body>
+</html>

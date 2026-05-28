@@ -25,6 +25,7 @@ class Rails::Conductor::BaseController
     include ::ActionText::TagHelper
     include ::Importmap::ImportmapTagsHelper
     include ::ActionController::Base::HelperMethods
+    include ::AdminHelper
     include ::Pagy::UrlHelpers
     include ::Pagy::Frontend
     include ::ApplicationHelper

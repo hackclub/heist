@@ -10,6 +10,15 @@ module GeneratedPathHelpersModule
   include ::ActionDispatch::Routing::PolymorphicRoutes
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_bulletin_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_bulletin_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_mail_messages_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_project_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -46,7 +55,13 @@ module GeneratedPathHelpersModule
   def docs_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_bulletin_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_admin_ship_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_admin_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_project_path(*args); end
@@ -67,7 +82,19 @@ module GeneratedPathHelpersModule
   def home_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def mail_message_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def mail_messages_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def mission_control_jobs_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_bulletin_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_mail_message_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_project_path(*args); end
@@ -82,7 +109,13 @@ module GeneratedPathHelpersModule
   def okcomputer_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def onboarding_projects_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def project_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def project_ships_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def projects_path(*args); end
@@ -175,6 +208,9 @@ module GeneratedPathHelpersModule
   def rsvps_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def shop_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def signin_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -182,6 +218,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def sorry_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def stream_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def turbo_recede_historical_location_path(*args); end

@@ -1,0 +1,18 @@
+<p class="heist-dash__kpi-label"><%= kpi[:label] %></p>
+<div class="heist-dash__kpi-row">
+  <p class="heist-dash__kpi-value <%= "heist-dash__kpi-value--accent" if kpi[:accent] %>">
+    <%= kpi[:value] %><% if kpi[:unit].present? %><span class="heist-dash__kpi-unit"><%= kpi[:unit] %></span><% end %>
+  </p>
+  <% if kpi[:sparkline].present? %>
+    <svg class="heist-dash__sparkline" viewBox="0 0 80 24" preserveAspectRatio="none" aria-hidden="true">
+      <polyline
+        fill="none"
+        stroke="<%= kpi[:delta_positive] ? "#C0F477" : "#FF6B6B" %>"
+        stroke-width="1.5"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        points="<%= sparkline_points(kpi[:sparkline]) %>" />
+    </svg>
+  <% end %>
+</div>
+<p class="heist-dash__kpi-sub <%= "heist-dash__kpi-sub--neg" unless kpi[:delta_positive] %>"><%= kpi[:delta_label] %></p>

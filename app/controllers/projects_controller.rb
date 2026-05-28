@@ -16,6 +16,11 @@ class ProjectsController < ApplicationController
     authorize @project
   end
 
+  def onboarding
+    @project = current_user.projects.build
+    authorize @project, :create?
+  end
+
   def create
     @project = current_user.projects.build(project_params)
     authorize @project
@@ -54,6 +59,6 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.expect(project: [ :name, :description, :demo_link, :repo_link, :is_unlisted, tags: [] ])
+    params.expect(project: [ :name, :description, :demo_link, :repo_link, :readme_link, :banner_image, :is_unlisted, tags: [] ])
   end
 end

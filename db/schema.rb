@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_23_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_08_230030) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -85,13 +85,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_000000) do
     t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
   end
 
+  create_table "bulletin_posts", force: :cascade do |t|
+    t.bigint "author_id"
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "discarded_at"
+    t.datetime "posted_at", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discarded_at"], name: "index_bulletin_posts_on_discarded_at"
+    t.index ["posted_at"], name: "index_bulletin_posts_on_posted_at"
+  end
+
+  create_table "mail_messages", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "discarded_at"
+    t.string "kind", null: false
+    t.bigint "mailable_id"
+    t.string "mailable_type"
+    t.datetime "read_at"
+    t.string "subject", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["discarded_at"], name: "index_mail_messages_on_discarded_at"
+    t.index ["mailable_type", "mailable_id"], name: "index_mail_messages_on_mailable_type_and_mailable_id"
+    t.index ["user_id", "read_at"], name: "index_mail_messages_unread_per_user", where: "(read_at IS NULL)"
+    t.index ["user_id"], name: "index_mail_messages_on_user_id"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "demo_link"
     t.text "description"
     t.datetime "discarded_at"
-    t.boolean "is_unlisted", default: false, null: false
+    t.boolean "is_unlisted", default: true, null: false
     t.string "name", null: false
+    t.string "readme_link"
     t.string "repo_link"
     t.string "tags", default: [], null: false, array: true
     t.datetime "updated_at", null: false
@@ -112,6 +142,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_000000) do
 
   create_table "ships", force: :cascade do |t|
     t.integer "approved_seconds"
+    t.datetime "claim_expires_at"
     t.datetime "created_at", null: false
     t.text "feedback"
     t.string "frozen_demo_link"
@@ -123,6 +154,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_000000) do
     t.bigint "reviewer_id"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["claim_expires_at"], name: "index_ships_on_claim_expires_at", where: "(claim_expires_at IS NOT NULL)"
     t.index ["project_id"], name: "index_ships_on_project_id"
     t.index ["reviewer_id"], name: "index_ships_on_reviewer_id"
     t.index ["status"], name: "index_ships_on_status"
@@ -298,6 +330,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_000000) do
     t.datetime "discarded_at"
     t.string "display_name", null: false
     t.string "email", null: false
+    t.datetime "hackatime_detected_at"
     t.text "hackatime_token"
     t.string "hackatime_uid"
     t.string "hca_id", null: false
@@ -324,6 +357,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_000000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "bulletin_posts", "users", column: "author_id", on_delete: :nullify
+  add_foreign_key "mail_messages", "users"
   add_foreign_key "projects", "users"
   add_foreign_key "ships", "projects"
   add_foreign_key "ships", "users", column: "reviewer_id"

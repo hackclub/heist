@@ -1,0 +1,14 @@
+<nav class="heist-admin__tabs" aria-label="Admin sections">
+  <% if current_user&.admin? %>
+    <%= admin_tab_link "DASHBOARD", admin_root_path, exact: true %>
+  <% end %>
+  <% if current_user&.staff? %>
+    <%= admin_tab_link "REVIEWS", admin_ships_path %>
+  <% end %>
+  <% if current_user&.admin? %>
+    <%= admin_tab_link "PROJECTS", admin_projects_path %>
+    <%= admin_tab_link "USERS", admin_users_path %>
+    <%= admin_tab_link "BULLETIN", admin_bulletin_posts_path %>
+    <%= admin_tab_link "MAIL", admin_mail_messages_path %>
+  <% end %>
+</nav>

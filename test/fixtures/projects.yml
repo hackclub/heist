@@ -8,8 +8,9 @@
 #  demo_link    :string
 #  description  :text
 #  discarded_at :datetime
-#  is_unlisted  :boolean          default(FALSE), not null
+#  is_unlisted  :boolean          default(TRUE), not null
 #  name         :string           not null
+#  readme_link  :string
 #  repo_link    :string
 #  tags         :string           default([]), not null, is an Array
 #  created_at   :datetime         not null
@@ -31,8 +32,8 @@ one:
   user: one
   name: MyString
   description: MyText
-  demo_link: MyString
-  repo_link: MyString
+  demo_link: https://example.com
+  repo_link: https://github.com/heist/example
   tags: []
   is_unlisted: false
 
@@ -40,7 +41,7 @@ two:
   user: two
   name: MyString
   description: MyText
-  demo_link: MyString
-  repo_link: MyString
+  demo_link: https://example.com
+  repo_link: https://github.com/heist/example
   tags: []
   is_unlisted: false

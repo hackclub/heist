@@ -1,3 +1,6 @@
+> **Load when**: editing views, partials, Stimulus controllers, or Turbo responses.
+> **Skip when**: backend-only changes, or surgical fixes covered by [Small fix mode](../../AGENTS.md#small-fix-mode).
+
 # Frontend Development Guidelines (Hotwire + Stimulus + Tailwind)
 
 This project uses server-rendered HTML with Hotwire (Turbo + Stimulus), Tailwind CSS 4, and Importmap. No React, no bundler. The equivalent of a "component library" is ERB partials plus Stimulus controllers.
@@ -13,7 +16,13 @@ This project uses server-rendered HTML with Hotwire (Turbo + Stimulus), Tailwind
 
 - Partials live alongside the view that uses them: `app/views/projects/_card.html.erb`.
 - Shared partials live in `app/views/shared/`.
-- **Before creating any new partial, search the codebase** for an existing one. Check `app/views/shared/` and sibling view directories. Duplicating markup creates maintenance burden.
+- **Before creating any new partial, grep first.** Run:
+
+  ```sh
+  rg -l "<%= render" app/views/shared/ app/views/<feature>/
+  ```
+
+  Read anything that looks close. State explicitly that you grepped and found nothing matching before creating a new partial. Duplicating markup creates maintenance burden.
 - Keep partials small. If a partial grows past ~100 lines, split it into sub-partials.
 - Pass data via `locals:`, not instance variables:
 

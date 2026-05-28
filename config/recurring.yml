@@ -18,3 +18,8 @@ production:
     class: UptimePingJob
     queue: uptime
     schedule: every minute
+
+  hackatime_fanout:
+    class: HackatimeFanoutJob
+    queue: default
+    schedule: every 2 minutes

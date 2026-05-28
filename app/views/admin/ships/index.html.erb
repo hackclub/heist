@@ -1,32 +1,101 @@
-<div class="max-w-6xl mx-auto py-8">
-  <h1 class="font-bold text-4xl mb-6">Admin: Reviews</h1>
+<div class="heist-admin__page-header">
+  <h1>REVIEW QUEUE</h1>
+</div>
 
-  <table class="w-full border-collapse">
-    <thead>
-      <tr class="border-b text-left">
-        <th class="py-2 px-3">Project</th>
-        <th class="py-2 px-3">Owner</th>
-        <th class="py-2 px-3">Status</th>
-        <th class="py-2 px-3">Reviewer</th>
-        <th class="py-2 px-3">Created</th>
-        <th class="py-2 px-3"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @ships.each do |ship| %>
-        <tr class="border-b hover:bg-gray-50">
-          <td class="py-2 px-3"><%= ship.project.name %></td>
-          <td class="py-2 px-3"><%= ship.project.user.display_name %></td>
-          <td class="py-2 px-3"><span class="capitalize"><%= ship.status %></span></td>
-          <td class="py-2 px-3"><%= ship.reviewer&.display_name || "Unassigned" %></td>
-          <td class="py-2 px-3"><%= ship.created_at.strftime("%b %d, %Y") %></td>
-          <td class="py-2 px-3">
-            <%= link_to "View", admin_ship_path(ship), class: "text-blue-600 hover:underline" %>
-          </td>
+<div class="heist-admin__stats-grid">
+  <div class="heist-admin__stat-card">
+    <p class="heist-admin__stat-label">Pending</p>
+    <p class="heist-admin__stat-value heist-admin__stat-value--accent"><%= @status_counts["pending"] %></p>
+    <p class="heist-admin__stat-sub"><%= (@pending_seconds / 3600.0).round(1) %>h claimed</p>
+  </div>
+  <div class="heist-admin__stat-card">
+    <p class="heist-admin__stat-label">Approved Total</p>
+    <p class="heist-admin__stat-value"><%= @approved_hours %><span class="heist-admin__stat-unit">h</span></p>
+    <p class="heist-admin__stat-sub"><%= @status_counts["approved"] %> ships shipped</p>
+  </div>
+  <div class="heist-admin__stat-card">
+    <p class="heist-admin__stat-label">Last 24h</p>
+    <p class="heist-admin__stat-value"><%= @approved_last_24h %></p>
+    <p class="heist-admin__stat-sub">approvals</p>
+  </div>
+</div>
+
+<nav class="heist-admin__subtabs" aria-label="Filter by status">
+  <%= link_to admin_ships_path, class: "heist-admin__subtab #{'heist-admin__subtab--active' unless Ship.statuses.key?(params[:status])}" do %>
+    ALL <span class="heist-admin__subtab-count"><%= @total_count %></span>
+  <% end %>
+  <% Ship.statuses.keys.each do |status| %>
+    <%= link_to admin_ships_path(status: status), class: "heist-admin__subtab #{'heist-admin__subtab--active' if params[:status] == status}" do %>
+      <%= status.upcase %> <span class="heist-admin__subtab-count"><%= @status_counts[status] %></span>
+    <% end %>
+  <% end %>
+</nav>
+
+<% if @ships.any? %>
+  <div class="heist-admin__panel" style="padding: 0; overflow-x: auto;">
+    <table class="heist-admin__table" style="border: 0;">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Owner</th>
+          <th>Status</th>
+          <th style="text-align: right;">Hours</th>
+          <th>Reviewer</th>
+          <th style="text-align: right;">Waiting</th>
+          <th style="text-align: center;">Action</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @ships.each do |ship| %>
+          <% claimed_by_other = ship.reviewer_id.present? && ship.reviewer_id != current_user.id && ship.claim_expires_at&.future? %>
+          <tr<% if claimed_by_other %> style="opacity: 0.55"<% end %>>
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <% if ship.frozen_screenshot.present? %>
+                  <img src="<%= ship.frozen_screenshot %>" alt="" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #DAFBAC;">
+                <% else %>
+                  <span style="display: inline-block; width: 32px; height: 32px; border: 1px solid #DAFBAC; background: rgba(192, 244, 119, 0.08); display: inline-flex; align-items: center; justify-content: center; color: #C0F477; font-family: 'Audiowide', monospace; font-size: 12px;">▣</span>
+                <% end %>
+                <%= link_to ship.project.name, admin_ship_path(ship), style: "font-weight: 500;" %>
+              </div>
+            </td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <%= image_tag ship.project.user.avatar_url, alt: "", style: "width: 18px; height: 18px; border: 1px solid #DAFBAC;" %>
+                <span><%= ship.project.user.display_name %></span>
+              </div>
+            </td>
+            <td><span class="heist-admin__pill heist-admin__pill--<%= ship.status %>"><%= ship.status %></span></td>
+            <td style="text-align: right; font-variant-numeric: tabular-nums;">
+              <%= (ship.approved_seconds.to_i / 3600.0).round(1) %>h
+            </td>
+            <td>
+              <% if ship.reviewer %>
+                <% mine = ship.reviewer_id == current_user.id %>
+                <span style="<%= 'color: #FFE572;' if mine %>"><%= ship.reviewer.display_name %><%= " (you)" if mine %></span>
+              <% else %>
+                <span class="heist-admin__hint">—</span>
+              <% end %>
+            </td>
+            <td style="text-align: right; font-variant-numeric: tabular-nums;">
+              <%= time_ago_in_words(ship.created_at).gsub(/about /, "").upcase %>
+            </td>
+            <td style="text-align: center;">
+              <% if claimed_by_other %>
+                <span class="heist-admin__hint">CLAIMED</span>
+              <% else %>
+                <%= link_to "REVIEW →", edit_admin_ship_path(ship), class: "heist-admin__btn heist-admin__btn--ghost heist-admin__btn--small" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
   <%== pagy_nav(@pagy) %>
-</div>
+<% else %>
+  <div class="heist-admin__panel" style="text-align: center; padding: 3rem 1rem;">
+    <p class="heist-admin__table-empty">No ships matching this filter.</p>
+  </div>
+<% end %>

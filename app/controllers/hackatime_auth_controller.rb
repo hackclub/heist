@@ -2,6 +2,12 @@ class HackatimeAuthController < ApplicationController
   rate_limit to: 10, within: 3.minutes, only: :callback, with: -> { redirect_to home_path, alert: "Try again later." }
 
   def start
+    unless HackatimeService.configured?
+      Rails.logger.warn("HackatimeAuthController#start blocked: HACKATIME_CLIENT_ID and/or HACKATIME_CLIENT_SECRET not set.")
+      redirect_to home_path, alert: "Hackatime sign-in is unavailable right now."
+      return
+    end
+
     state = SecureRandom.hex(24)
     session[:hackatime_state] = state
 

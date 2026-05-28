@@ -1,0 +1,32 @@
+<div class="heist-admin__page-header">
+  <h1>SENT MAIL</h1>
+  <%= link_to "+ COMPOSE", new_admin_mail_message_path, class: "heist-admin__btn" %>
+</div>
+
+<% if @mail_messages.any? %>
+  <table class="heist-admin__table">
+    <thead>
+      <tr>
+        <th>Recipient</th>
+        <th>Subject</th>
+        <th>Kind</th>
+        <th>Read?</th>
+        <th>Sent</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @mail_messages.each do |message| %>
+        <tr>
+          <td><%= link_to message.user.display_name, admin_user_path(message.user) %></td>
+          <td><%= message.subject %></td>
+          <td><span class="heist-admin__pill"><%= message.kind %></span></td>
+          <td><%= message.read? ? "✓" : "—" %></td>
+          <td><%= message.created_at.strftime("%b %d, %Y %H:%M") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%== pagy_nav(@pagy) %>
+<% else %>
+  <p class="heist-admin__table-empty">No mail sent yet.</p>
+<% end %>

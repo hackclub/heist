@@ -1,0 +1,39 @@
+<%# Global page chrome: top bar + pinned left sidebar + sub-nav slot + main yield.
+    Pages drive it via content_for slots:
+      :sidebar_active   one of :home, :stream, :shop, :inbox, :help, :admin
+      :sub_nav          markup placed in the sub-nav row below the top bar (e.g. admin tabs)
+      :bare_layout      truthy → render only the main content (sign-in, error pages) %>
+<% bare = content_for?(:bare_layout) %>
+<% sidebar_active = content_for?(:sidebar_active) ? content_for(:sidebar_active).to_s.strip.to_sym : nil %>
+
+<% if bare %>
+  <main class="heist-chrome heist-chrome--bare">
+    <% if notice %><div class="heist-chrome__flash heist-chrome__flash--notice"><%= notice %></div><% end %>
+    <% if alert %><div class="heist-chrome__flash heist-chrome__flash--alert"><%= alert %></div><% end %>
+    <%= yield %>
+  </main>
+<% else %>
+  <div class="heist-chrome">
+    <header class="heist-chrome__topbar">
+      <%= link_to home_path, class: "heist-chrome__brand", title: "Home", "aria-label": "The Heist — home" do %>
+        <%= image_tag "landing/heist-title.webp", class: "heist-chrome__brand-img", alt: "THE HEIST", decoding: "async" %>
+      <% end %>
+      <div class="heist-chrome__topbar-spacer"></div>
+      <%= render "shared/heist_identity" %>
+    </header>
+
+    <div class="heist-chrome__sidebar-cell">
+      <%= render "shared/heist_sidebar", active: sidebar_active %>
+    </div>
+
+    <% if content_for?(:sub_nav) %>
+      <div class="heist-chrome__subnav"><%= yield :sub_nav %></div>
+    <% end %>
+
+    <main class="heist-chrome__main <%= content_for(:main_class) %>">
+      <% if notice %><div class="heist-chrome__flash heist-chrome__flash--notice"><%= notice %></div><% end %>
+      <% if alert %><div class="heist-chrome__flash heist-chrome__flash--alert"><%= alert %></div><% end %>
+      <%= yield %>
+    </main>
+  </div>
+<% end %>

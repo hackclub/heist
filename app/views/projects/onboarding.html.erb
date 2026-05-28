@@ -1,0 +1,51 @@
+<div class="max-w-2xl mx-auto py-12" data-controller="onboarding-steps">
+  <div data-onboarding-steps-target="step">
+    <p class="text-sm text-gray-500 uppercase tracking-wide mb-2">Step 1 of 2</p>
+    <h1 class="font-bold text-4xl mb-4">Welcome to the heist.</h1>
+    <p class="text-gray-700 mb-4">
+      The Heist is a 1,000-hour collective coding sprint. Every hour your project logs counts toward shared
+      grants and prizes the whole community unlocks together.
+    </p>
+    <p class="text-gray-700 mb-8">
+      Pull together a quick plan for your first project. We'll keep it short.
+    </p>
+    <button type="button" data-action="click->onboarding-steps#next" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer">
+      Plan the heist →
+    </button>
+  </div>
+
+  <div data-onboarding-steps-target="step" hidden>
+    <p class="text-sm text-gray-500 uppercase tracking-wide mb-2">Step 2 of 2</p>
+    <h1 class="font-bold text-4xl mb-4">Name the heist.</h1>
+    <p class="text-gray-700 mb-6">Just the basics. You can fill in the rest after.</p>
+
+    <%= form_with(model: @project, url: projects_path, class: "space-y-4") do |f| %>
+      <% if @project.errors.any? %>
+        <div class="bg-red-50 text-red-700 p-4 rounded mb-4">
+          <ul>
+            <% @project.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :name, "Project name", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :name, class: "mt-1 block w-full border border-gray-300 rounded px-3 py-2", required: true, placeholder: "What are you building?" %>
+      </div>
+
+      <div>
+        <%= f.label :description, "What's the plan?", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_area :description, rows: 4, class: "mt-1 block w-full border border-gray-300 rounded px-3 py-2", placeholder: "A sentence or two on what you're going to ship." %>
+      </div>
+
+      <div class="flex gap-2">
+        <button type="button" data-action="click->onboarding-steps#prev" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300 cursor-pointer">
+          ← Back
+        </button>
+        <%= f.submit "Pull off the heist", class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -11,6 +11,12 @@ class Project
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  sig { returns(ActiveStorage::Attached::One) }
+  def banner_image; end
+
+  sig { params(attachable: T.untyped).returns(T.untyped) }
+  def banner_image=(attachable); end
+
   private
 
   sig { returns(NilClass) }
@@ -361,8 +367,38 @@ class Project
   end
 
   module GeneratedAssociationMethods
+    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
+    def banner_image_attachment; end
+
+    sig { params(value: T.nilable(::ActiveStorage::Attachment)).void }
+    def banner_image_attachment=(value); end
+
+    sig { returns(T.nilable(::ActiveStorage::Blob)) }
+    def banner_image_blob; end
+
+    sig { params(value: T.nilable(::ActiveStorage::Blob)).void }
+    def banner_image_blob=(value); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
+    def build_banner_image_attachment(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
+    def build_banner_image_blob(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_user(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
+    def create_banner_image_attachment(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
+    def create_banner_image_attachment!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
+    def create_banner_image_blob(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
+    def create_banner_image_blob!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user(*args, &blk); end
@@ -370,8 +406,20 @@ class Project
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
+    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
+    def reload_banner_image_attachment; end
+
+    sig { returns(T.nilable(::ActiveStorage::Blob)) }
+    def reload_banner_image_blob; end
+
     sig { returns(T.nilable(::User)) }
     def reload_user; end
+
+    sig { void }
+    def reset_banner_image_attachment; end
+
+    sig { void }
+    def reset_banner_image_blob; end
 
     sig { void }
     def reset_user; end
@@ -567,6 +615,9 @@ class Project
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def with_attached_banner_image(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with_recursive(*args, &blk); end
@@ -937,6 +988,51 @@ class Project
     def name_will_change!; end
 
     sig { returns(T.nilable(::String)) }
+    def readme_link; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def readme_link=(value); end
+
+    sig { returns(T::Boolean) }
+    def readme_link?; end
+
+    sig { returns(T.nilable(::String)) }
+    def readme_link_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def readme_link_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def readme_link_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def readme_link_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def readme_link_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def readme_link_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def readme_link_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def readme_link_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def readme_link_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def readme_link_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def readme_link_was; end
+
+    sig { void }
+    def readme_link_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
     def repo_link; end
 
     sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
@@ -1006,6 +1102,9 @@ class Project
     def restore_name!; end
 
     sig { void }
+    def restore_readme_link!; end
+
+    sig { void }
     def restore_repo_link!; end
 
     sig { void }
@@ -1064,6 +1163,12 @@ class Project
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_readme_link; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_readme_link?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_repo_link; end
@@ -1249,6 +1354,9 @@ class Project
     def will_save_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_readme_link?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_repo_link?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1411,6 +1519,9 @@ class Project
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def with_attached_banner_image(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_recursive(*args, &blk); end

@@ -2,23 +2,24 @@
 #
 # Table name: users
 #
-#  id                  :bigint           not null, primary key
-#  avatar              :string           not null
-#  discarded_at        :datetime
-#  display_name        :string           not null
-#  email               :string           not null
-#  hackatime_token     :text
-#  hackatime_uid       :string
-#  hca_token           :text
-#  is_adult            :boolean          default(FALSE), not null
-#  is_banned           :boolean          default(FALSE), not null
-#  roles               :string           default([]), not null, is an Array
-#  timezone            :string           not null
-#  verification_status :string
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  hca_id              :string           not null
-#  slack_id            :string           not null
+#  id                    :bigint           not null, primary key
+#  avatar                :string           not null
+#  discarded_at          :datetime
+#  display_name          :string           not null
+#  email                 :string           not null
+#  hackatime_detected_at :datetime
+#  hackatime_token       :text
+#  hackatime_uid         :string
+#  hca_token             :text
+#  is_adult              :boolean          default(FALSE), not null
+#  is_banned             :boolean          default(FALSE), not null
+#  roles                 :string           default([]), not null, is an Array
+#  timezone              :string           not null
+#  verification_status   :string
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  hca_id                :string           not null
+#  slack_id              :string           not null
 #
 # Indexes
 #
@@ -30,6 +31,8 @@ class User < ApplicationRecord
 
   has_paper_trail skip: [ :hca_token, :hackatime_token ]
 
+  after_create_commit :send_welcome_mail
+
   pg_search_scope :search, against: [ :display_name, :email ], using: { tsearch: { prefix: true } }
 
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :nullify
@@ -38,8 +41,16 @@ class User < ApplicationRecord
   has_many :ships, through: :projects
   has_many :reviewed_ships, class_name: "Ship", foreign_key: :reviewer_id, dependent: :nullify, inverse_of: :reviewer
 
+  ROLES = %w[admin reviewer user].freeze
+  SILENT_SIGNUP_WINDOW = 7.days
+
   encrypts :hca_token
   encrypts :hackatime_token
+
+  scope :silent_signups, -> {
+    kept.where(created_at: SILENT_SIGNUP_WINDOW.ago..)
+        .where.not(id: User.joins(:projects).where(projects: { discarded_at: nil }).select("users.id"))
+  }
 
   validates :avatar, :display_name, :email, :timezone, presence: true
   validates :slack_id, presence: true
@@ -79,6 +90,28 @@ class User < ApplicationRecord
 
   def has_hackatime?
     hackatime_token.present? && hackatime_uid.present?
+  end
+
+  def hackatime_detected?
+    hackatime_detected_at.present?
+  end
+
+  def detect_hackatime_account!
+    return if slack_id.blank?
+
+    case HackatimeService.user_exists?(normalized_slack_id)
+    when :exists  then update_columns(hackatime_detected_at: Time.current)
+    when :missing then update_columns(hackatime_detected_at: nil)
+    end
+  end
+
+  AVATAR_FALLBACK = "/static-assets/pfp_fallback.webp"
+
+  def avatar_url
+    return AVATAR_FALLBACK if avatar.blank?
+    return avatar if avatar.start_with?("http://", "https://", "/")
+
+    AVATAR_FALLBACK
   end
 
   def hackatime_projects(start_date: nil, end_date: nil)
@@ -130,11 +163,13 @@ class User < ApplicationRecord
 
       user.update(hca_token: access_token, email: email)
       user.refresh_profile_from_slack
+      user.detect_hackatime_account!
       return user
     end
 
     user = create_from_hca(identity, access_token)
     user.refresh_profile_from_slack
+    user.detect_hackatime_account!
     user
   end
 
@@ -247,6 +282,12 @@ class User < ApplicationRecord
   end
 
   private
+
+  def send_welcome_mail
+    MailDeliveryService.welcome(self)
+  rescue StandardError => e
+    Rails.logger.error("User#send_welcome_mail failed for user #{id}: #{e.class}: #{e.message}")
+  end
 
   def self.determine_is_adult(identity)
     birthday_str = identity["birthday"]

@@ -1,0 +1,220 @@
+<%# Welcome transmission. Composes shared .heist-tx__* primitives (frame,
+    corner, label, meta, scan, list, prompt, mark) with a welcome-specific
+    hero + sign-off + checksum. %>
+<% handle = (mail_message.user.display_name.presence || "partner").downcase %>
+<% date   = mail_message.created_at.strftime("%Y-%m-%d") %>
+
+<article class="heist-welcome">
+  <span class="heist-tx__scan" aria-hidden="true"></span>
+
+  <header class="heist-welcome__hero">
+    <span class="heist-welcome__hero-glyph" aria-hidden="true">⌗</span>
+    <div class="heist-welcome__hero-text">
+      <p class="heist-welcome__hero-eyebrow">welcome.heist</p>
+      <h2 class="heist-welcome__hero-title">YOU&apos;RE IN</h2>
+      <p class="heist-welcome__hero-sub">
+        <span class="heist-tx__cursor" aria-hidden="true">&gt;</span>
+        transmission received <%= date %>
+      </p>
+    </div>
+  </header>
+
+  <section class="heist-tx__frame">
+    <span class="heist-tx__label">[ TRANSMISSION 001 ]</span>
+    <span class="heist-tx__corner heist-tx__corner--tl" aria-hidden="true"></span>
+    <span class="heist-tx__corner heist-tx__corner--tr" aria-hidden="true"></span>
+    <span class="heist-tx__corner heist-tx__corner--bl" aria-hidden="true"></span>
+    <span class="heist-tx__corner heist-tx__corner--br" aria-hidden="true"></span>
+
+    <dl class="heist-tx__meta">
+      <div><dt>FROM</dt><dd>heist control</dd></div>
+      <div><dt>TO</dt><dd><%= handle %></dd></div>
+      <div><dt>DATE</dt><dd><%= date %></dd></div>
+      <div><dt>NODE</dt><dd>01</dd></div>
+    </dl>
+  </section>
+
+  <section class="heist-tx__frame">
+    <span class="heist-tx__label">&gt;&gt;: MANIFEST</span>
+    <span class="heist-tx__corner heist-tx__corner--tl" aria-hidden="true"></span>
+    <span class="heist-tx__corner heist-tx__corner--tr" aria-hidden="true"></span>
+    <span class="heist-tx__corner heist-tx__corner--bl" aria-hidden="true"></span>
+    <span class="heist-tx__corner heist-tx__corner--br" aria-hidden="true"></span>
+
+    <p class="heist-welcome__lede">
+      welcome, <strong><%= handle %></strong>. you&apos;ve been added to the manifest.
+    </p>
+    <p class="heist-welcome__prose">
+      the score is <mark>1,000 hours</mark> of code, logged collectively across the weekend.
+      your crew is everyone else who signed in. you log time, the leaderboard moves,
+      <mark>the take</mark> gets closer to open.
+    </p>
+  </section>
+
+  <section class="heist-tx__frame">
+    <span class="heist-tx__label">&gt;&gt;: TWO THINGS TO DO NOW</span>
+    <span class="heist-tx__corner heist-tx__corner--tl" aria-hidden="true"></span>
+    <span class="heist-tx__corner heist-tx__corner--tr" aria-hidden="true"></span>
+    <span class="heist-tx__corner heist-tx__corner--bl" aria-hidden="true"></span>
+    <span class="heist-tx__corner heist-tx__corner--br" aria-hidden="true"></span>
+
+    <ol class="heist-tx__list">
+      <li>
+        <span class="heist-tx__prompt" aria-hidden="true">&gt;</span>
+        link <mark>hackatime</mark> so your hours count
+      </li>
+      <li>
+        <span class="heist-tx__prompt" aria-hidden="true">&gt;</span>
+        ship your <mark>first project</mark> when you have something to show
+      </li>
+    </ol>
+  </section>
+
+  <footer class="heist-welcome__footer">
+    <p class="heist-welcome__close">
+      the wire goes live when we go live. see you on the floor.
+    </p>
+    <p class="heist-welcome__sign">
+      <span class="heist-welcome__sign-rule" aria-hidden="true"></span>
+      the heist
+    </p>
+    <p class="heist-welcome__checksum" aria-hidden="true">
+      :: end of transmission :: chk <%= "%08x" % (mail_message.id ^ 0xDEADBEEF) %>
+    </p>
+  </footer>
+</article>
+
+<style>
+  .heist-welcome {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: #DAFBAC;
+    font-family: "ModeSeven", ui-monospace, "Courier New", monospace;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    overflow: hidden;
+  }
+
+  .heist-welcome__hero {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 22px;
+    border: 3px solid #C0F477;
+    background:
+      repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.10) 0 6px, transparent 6px 12px),
+      rgba(10, 19, 9, 0.85);
+    box-shadow:
+      0 0 24px rgba(192, 244, 119, 0.18),
+      inset 0 0 36px rgba(192, 244, 119, 0.06);
+  }
+
+  .heist-welcome__hero-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    font-family: "Blade Runner", "ModeSeven", monospace;
+    font-size: 38px;
+    color: #FFE572;
+    border: 3px solid #DBC45F;
+    background:
+      repeating-linear-gradient(135deg, rgba(192, 244, 119, 0.10) 0 6px, transparent 6px 12px),
+      rgba(20, 37, 28, 0.85);
+    text-shadow: 0 0 8px rgba(255, 229, 114, 0.55);
+  }
+
+  .heist-welcome__hero-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+  .heist-welcome__hero-eyebrow {
+    margin: 0;
+    font-family: "Audiowide", "ModeSeven", monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: #DBC45F;
+    text-transform: lowercase;
+  }
+
+  .heist-welcome__hero-title {
+    margin: 0;
+    font-family: "Blade Runner", "ModeSeven", monospace;
+    font-size: 36px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: #FFE572;
+    text-shadow: 0 0 12px rgba(255, 229, 114, 0.4);
+    line-height: 1;
+  }
+
+  .heist-welcome__hero-sub {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #C0F477;
+    letter-spacing: 0.06em;
+  }
+
+  .heist-welcome__lede {
+    margin: 0 0 0.85rem;
+    font-family: "Blade Runner", "ModeSeven", monospace;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    color: #C0F477;
+    text-shadow: 0 0 6px rgba(192, 244, 119, 0.35);
+  }
+
+  .heist-welcome__lede strong {
+    color: #FFE572;
+    font-weight: normal;
+  }
+
+  .heist-welcome__prose { margin: 0; font-size: 14px; color: #DAFBAC; }
+
+  .heist-welcome__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 6px;
+  }
+
+  .heist-welcome__close { margin: 0; font-size: 14px; color: #DAFBAC; }
+
+  .heist-welcome__sign {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    font-family: "Audiowide", "ModeSeven", monospace;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    color: #FFE572;
+    text-transform: lowercase;
+  }
+
+  .heist-welcome__sign-rule {
+    flex: 1;
+    height: 0;
+    border-bottom: 1px dashed rgba(255, 229, 114, 0.4);
+  }
+
+  .heist-welcome__checksum {
+    margin: 0;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: #DBC45F;
+    opacity: 0.6;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 640px) {
+    .heist-welcome__hero { gap: 12px; padding: 14px 16px; }
+    .heist-welcome__hero-glyph { width: 44px; height: 44px; font-size: 28px; }
+    .heist-welcome__hero-title { font-size: 26px; }
+    .heist-welcome__lede { font-size: 16px; }
+  }
+</style>

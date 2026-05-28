@@ -19,6 +19,12 @@ module HcRailsStarter
     # Enable Rack::Attack middleware
     config.middleware.use Rack::Attack
 
+    # Active Record encryption keys. In dev/test we allow ENV fallback so the
+    # app can boot without encrypted credentials.
+    config.active_record.encryption.primary_key = ENV.fetch("ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY", nil)
+    config.active_record.encryption.deterministic_key = ENV.fetch("ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY", nil)
+    config.active_record.encryption.key_derivation_salt = ENV.fetch("ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT", nil)
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

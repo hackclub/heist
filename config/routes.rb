@@ -13,7 +13,21 @@
 #                           admin_projects GET    /admin/projects(.:format)                                                                         admin/projects#index
 #                            admin_project GET    /admin/projects/:id(.:format)                                                                     admin/projects#show
 #                              admin_users GET    /admin/users(.:format)                                                                            admin/users#index
+#                          edit_admin_user GET    /admin/users/:id/edit(.:format)                                                                   admin/users#edit
 #                               admin_user GET    /admin/users/:id(.:format)                                                                        admin/users#show
+#                                          PATCH  /admin/users/:id(.:format)                                                                        admin/users#update
+#                                          PUT    /admin/users/:id(.:format)                                                                        admin/users#update
+#                     admin_bulletin_posts GET    /admin/bulletin_posts(.:format)                                                                   admin/bulletin_posts#index
+#                                          POST   /admin/bulletin_posts(.:format)                                                                   admin/bulletin_posts#create
+#                  new_admin_bulletin_post GET    /admin/bulletin_posts/new(.:format)                                                               admin/bulletin_posts#new
+#                 edit_admin_bulletin_post GET    /admin/bulletin_posts/:id/edit(.:format)                                                          admin/bulletin_posts#edit
+#                      admin_bulletin_post GET    /admin/bulletin_posts/:id(.:format)                                                               admin/bulletin_posts#show
+#                                          PATCH  /admin/bulletin_posts/:id(.:format)                                                               admin/bulletin_posts#update
+#                                          PUT    /admin/bulletin_posts/:id(.:format)                                                               admin/bulletin_posts#update
+#                                          DELETE /admin/bulletin_posts/:id(.:format)                                                               admin/bulletin_posts#destroy
+#                      admin_mail_messages GET    /admin/mail_messages(.:format)                                                                    admin/mail_messages#index
+#                                          POST   /admin/mail_messages(.:format)                                                                    admin/mail_messages#create
+#                   new_admin_mail_message GET    /admin/mail_messages/new(.:format)                                                                admin/mail_messages#new
 #                       rails_health_check GET    /up(.:format)                                                                                     rails/health#show
 #                                     root GET    /                                                                                                 landing#index
 #                                    rsvps POST   /rsvps(.:format)                                                                                  rsvps#create
@@ -25,6 +39,10 @@
 #                     hackatime_disconnect DELETE /auth/hackatime/disconnect(.:format)                                                              hackatime_auth#disconnect
 #                                    sorry GET    /sorry(.:format)                                                                                  bans#show
 #                                     home GET    /home(.:format)                                                                                   home#index
+#                                   stream GET    /stream(.:format)                                                                                 stream#index
+#                                     shop GET    /shop(.:format)                                                                                   shop#index
+#                      onboarding_projects GET    /projects/onboarding(.:format)                                                                    projects#onboarding
+#                            project_ships POST   /projects/:project_id/ships(.:format)                                                             projects/ships#create
 #                                 projects GET    /projects(.:format)                                                                               projects#index
 #                                          POST   /projects(.:format)                                                                               projects#create
 #                              new_project GET    /projects/new(.:format)                                                                           projects#new
@@ -33,6 +51,10 @@
 #                                          PATCH  /projects/:id(.:format)                                                                           projects#update
 #                                          PUT    /projects/:id(.:format)                                                                           projects#update
 #                                          DELETE /projects/:id(.:format)                                                                           projects#destroy
+#                            mail_messages GET    /mails(.:format)                                                                                  mail_messages#index
+#                             mail_message GET    /mails/:id(.:format)                                                                              mail_messages#show
+#                                          PATCH  /mails/:id(.:format)                                                                              mail_messages#update
+#                                          PUT    /mails/:id(.:format)                                                                              mail_messages#update
 #                                     docs GET    /docs(.:format)                                                                                   markdown#show
 #                                      doc GET    /docs/*slug(.:format)                                                                             markdown#show
 #                          api_v1_projects GET    /api/v1/projects(.:format)                                                                        api/v1/projects#index
@@ -113,7 +135,9 @@ Rails.application.routes.draw do
 
     namespace :admin do
       resources :projects, only: [ :index, :show ]
-      resources :users, only: [ :index, :show ]
+      resources :users, only: [ :index, :show, :edit, :update ]
+      resources :bulletin_posts
+      resources :mail_messages, only: [ :index, :new, :create ]
     end
   end
 
@@ -134,8 +158,17 @@ Rails.application.routes.draw do
   get "sorry" => "bans#show", as: :sorry
 
   get "home" => "home#index", as: :home
+  get "stream" => "stream#index", as: :stream
+  get "shop" => "shop#index", as: :shop
 
-  resources :projects
+  resources :projects do
+    collection do
+      get :onboarding
+    end
+    resources :ships, only: [ :create ], module: :projects
+  end
+
+  resources :mail_messages, only: %i[index show update], path: "mails"
 
   get "docs" => "markdown#show", as: :docs
   get "docs/*slug" => "markdown#show", as: :doc

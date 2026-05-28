@@ -72,6 +72,12 @@ group :development do
 
   gem "annotaterb"
   gem "letter_opener"
+
+  # In-page speed badge with SQL/render breakdowns [https://github.com/MiniProfiler/rack-mini-profiler]
+  gem "rack-mini-profiler", "~> 4.0"
+
+  # N+1 query detection [https://github.com/flyerhzm/bullet]
+  gem "bullet", "~> 8.1"
 end
 
 group :test do

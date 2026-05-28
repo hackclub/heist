@@ -6,8 +6,9 @@
 #  demo_link    :string
 #  description  :text
 #  discarded_at :datetime
-#  is_unlisted  :boolean          default(FALSE), not null
+#  is_unlisted  :boolean          default(TRUE), not null
 #  name         :string           not null
+#  readme_link  :string
 #  repo_link    :string
 #  tags         :string           default([]), not null, is an Array
 #  created_at   :datetime         not null

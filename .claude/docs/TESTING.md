@@ -1,3 +1,6 @@
+> **Load when**: writing or fixing tests, debugging fixtures, or working with system tests.
+> **Skip when**: only editing non-test code (the test suite is still required to pass).
+
 # Testing Patterns and Best Practices
 
 ## Overview

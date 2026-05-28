@@ -1,3 +1,6 @@
+> **Load when**: writing a migration, changing a schema, or doing query work.
+> **Skip when**: view, controller, or job-only changes that do not touch the database.
+
 # Database Development Patterns
 
 ## Database Work Overview
