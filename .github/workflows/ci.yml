@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [ main, staging ]
+
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
@@ -104,38 +105,81 @@ jobs:
           bundle exec annotaterb models --frozen --show-migration
           bundle exec annotaterb routes --frozen
 
-  # test:
-  #   runs-on: ubuntu-latest
+  deploy:
+    # Only deploy on pushes to main (prod) or staging (staging), after CI passes.
+    # PRs don't deploy.
+    needs: [scan_ruby, scan_js, lint, type_check, annotate_check]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - name: Determine target environment
+        id: target
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "uuid=usf96zz45j1ht3hadz562bv9" >> "$GITHUB_OUTPUT"
+            echo "env_name=production" >> "$GITHUB_OUTPUT"
+          else
+            echo "uuid=xa3p1q33eryfws2pwqp60sdx" >> "$GITHUB_OUTPUT"
+            echo "env_name=staging" >> "$GITHUB_OUTPUT"
+          fi
 
-  #   # services:
-  #   #  redis:
-  #   #    image: redis
-  #   #    ports:
-  #   #      - 6379:6379
-  #   #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-  #   steps:
-  #     - name: Install packages
-  #       run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config google-chrome-stable
+      - name: Trigger Coolify deploy
+        env:
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          UUID: ${{ steps.target.outputs.uuid }}
+          ENV_NAME: ${{ steps.target.outputs.env_name }}
+        run: |
+          set -euo pipefail
+          echo "::notice::Triggering Coolify deploy for $ENV_NAME (uuid=$UUID, sha=${GITHUB_SHA:0:7})"
+          response=$(curl -sS -w "\n%{http_code}" -X GET \
+            -H "Authorization: Bearer $COOLIFY_TOKEN" \
+            "https://coolify.tier3.infra.hackclub.com/api/v1/deploy?uuid=$UUID&force=false")
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          echo "HTTP $http_code"
+          echo "Response: $body"
+          if [ "$http_code" != "200" ]; then
+            echo "::error::Coolify deploy trigger failed with HTTP $http_code"
+            exit 1
+          fi
+          echo "::notice::Deploy queued. Watch progress at https://coolify.tier3.infra.hackclub.com/"
 
-  #     - name: Checkout code
-  #       uses: actions/checkout@v6
+# test:
+#   runs-on: ubuntu-latest
 
-  #     - name: Set up Ruby
-  #       uses: ruby/setup-ruby@v1
-  #       with:
-  #         ruby-version: .ruby-version
-  #         bundler-cache: true
+#   # services:
+#   #   redis:
+#   #     image: redis
+#   #     ports:
+#   #       - 6379:6379
+#   #     options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+#   steps:
+#     - name: Install packages
+#       run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config google-chrome-stable
 
-  #     - name: Run tests
-  #       env:
-  #         RAILS_ENV: test
-  #         # REDIS_URL: redis://localhost:6379/0
-  #       run: bin/rails db:test:prepare test test:system
+#     - name: Checkout code
+#       uses: actions/checkout@v6
 
-  #     - name: Keep screenshots from failed system tests
-  #       uses: actions/upload-artifact@v4
-  #       if: failure()
-  #       with:
-  #         name: screenshots
-  #         path: ${{ github.workspace }}/tmp/screenshots
-  #         if-no-files-found: ignore
+#     - name: Set up Ruby
+#       uses: ruby/setup-ruby@v1
+#       with:
+#         ruby-version: .ruby-version
+#         bundler-cache: true
+
+#     - name: Run tests
+#       env:
+#         RAILS_ENV: test
+#         # REDIS_URL: redis://localhost:6379/0
+#       run: bin/rails db:test:prepare test test:system
+
+#     - name: Keep screenshots from failed system tests
+#       uses: actions/upload-artifact@v4
+#       if: failure()
+#       with:
+#         name: screenshots
+#         path: ${{ github.workspace }}/tmp/screenshots
+#         if-no-files-found: ignore
