@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/support/:path*",
+      "destination": "https://COOLIFY_PLACEHOLDER_URL/:path*"
+    },
+    {
+      "source": "/support",
+      "destination": "https://COOLIFY_PLACEHOLDER_URL/"
+    }
+  ]
+}
