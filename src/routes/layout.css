@@ -1,1 +1,17 @@
 @import 'tailwindcss';
+
+* {
+	cursor: url('/cursor.svg') 39 40, auto;
+}
+
+:is(a, button, summary, label, select, input[type='button'], input[type='submit'], input[type='reset'], [role='button'], [tabindex]:not([tabindex='-1'])) {
+	cursor: url('/cursor-pointer.svg') 52 53, pointer;
+}
+
+@font-face {
+	font-family: "Mode Seven";
+	src: url("/fonts/Modeseven.ttf");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
