@@ -104,6 +104,10 @@
 	</div>
 </main>
 
+<div class="heist-coins-separator" aria-hidden="true">
+	<img src="/landing/coins-separator.png" alt="" />
+</div>
+
 <footer class="heist-footer">
 	<div class="heist-footer-glow" aria-hidden="true"></div>
 	<div class="heist-footer-inner">
@@ -423,9 +427,29 @@
 		outline-offset: 4px;
 	}
 
+	.heist-coins-separator {
+		position: relative;
+		z-index: 2;
+		height: clamp(7rem, 16.67vw, 16rem);
+		margin-top: clamp(-12rem, -13vw, -6rem);
+		margin-bottom: clamp(-6rem, -6vw, -2.5rem);
+		overflow: hidden;
+		pointer-events: none;
+	}
+
+	.heist-coins-separator img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		user-select: none;
+		-webkit-user-drag: none;
+	}
+
 	.heist-footer {
-		--heist-grid: rgba(92, 157, 91, 0.045);
-		--heist-grid-major: rgba(105, 178, 101, 0.1);
+		--heist-grid: rgba(192, 244, 118, 0.032);
+		--heist-grid-major: rgba(222, 195, 95, 0.07);
 		--heist-lime: #c0f476;
 		--heist-lime-soft: #dafbac;
 		--heist-green: #dafbac;
@@ -435,19 +459,47 @@
 		min-height: min(100vh, 46rem);
 		color: var(--heist-green);
 		background:
+			repeating-linear-gradient(to bottom, rgba(218, 251, 172, 0.035) 0 1px, transparent 1px 7px),
 			linear-gradient(to right, var(--heist-grid-major) 1px, transparent 1px),
 			linear-gradient(to bottom, var(--heist-grid-major) 1px, transparent 1px),
 			linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
 			linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px),
-			radial-gradient(ellipse 40rem 18rem at 18% 66%, rgba(91, 142, 62, 0.22), rgba(8, 22, 14, 0) 72%),
-			linear-gradient(90deg, rgba(19, 43, 23, 0.97) 0%, rgba(13, 33, 21, 0.99) 42%, rgba(7, 20, 14, 1) 100%);
+			radial-gradient(ellipse 42rem 22rem at 86% 20%, rgba(222, 195, 95, 0.09), rgba(7, 18, 13, 0) 72%),
+			linear-gradient(180deg, rgba(19, 31, 19, 0.98) 0%, rgba(8, 18, 13, 1) 52%, rgba(3, 10, 8, 1) 100%),
+			linear-gradient(90deg, rgba(9, 20, 14, 1) 0%, rgba(12, 24, 15, 1) 44%, rgba(5, 14, 11, 1) 100%);
 		background-size:
+			auto,
 			233.57px 233.57px,
 			233.57px 233.57px,
 			46.71px 46.71px,
 			46.71px 46.71px,
 			auto,
 			auto;
+	}
+
+	.heist-footer::before {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(to bottom, rgba(222, 195, 95, 0.12), transparent 10rem),
+			repeating-linear-gradient(
+				to right,
+				transparent 0 7.75rem,
+				rgba(218, 251, 172, 0.04) 7.75rem 7.82rem,
+				transparent 7.82rem 10.5rem
+			);
+		content: '';
+		pointer-events: none;
+	}
+
+	.heist-footer::after {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(to bottom, transparent 0%, rgba(3, 10, 8, 0.38) 100%),
+			linear-gradient(to right, rgba(3, 10, 8, 0.34), transparent 22%, transparent 76%, rgba(3, 10, 8, 0.42));
+		content: '';
+		pointer-events: none;
 	}
 
 	.heist-footer img {
@@ -458,17 +510,19 @@
 
 	.heist-footer-glow {
 		position: absolute;
+		z-index: 1;
 		inset: auto auto -16rem -10rem;
 		width: 46rem;
 		height: 36rem;
 		border-radius: 50%;
-		background: radial-gradient(circle, rgba(124, 173, 82, 0.22), rgba(14, 35, 20, 0) 68%);
+		background: radial-gradient(circle, rgba(192, 244, 118, 0.1), rgba(14, 35, 20, 0) 68%);
 		filter: blur(6px);
 		pointer-events: none;
 	}
 
 	.heist-footer-inner {
 		position: relative;
+		z-index: 2;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(22rem, 36rem);
 		gap: clamp(2rem, 7vw, 6rem);
@@ -615,6 +669,12 @@
 	}
 
 	@media (max-width: 640px) {
+		.heist-coins-separator {
+			height: 7rem;
+			margin-top: -5.5rem;
+			margin-bottom: -2.75rem;
+		}
+
 		.heist-scrolled-header {
 			min-height: 3.85rem;
 			padding: 0.65rem 0.7rem 0.8rem;
