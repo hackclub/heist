@@ -5,6 +5,21 @@
 	let joined = $state(false);
 	let showScrolledHeader = $state(false);
 
+	const footerLinks = {
+		'Hack Club': [
+			{ label: 'Philosophy', href: 'https://hackclub.com/philosophy/' },
+			{ label: 'Our Team & Board', href: 'https://hackclub.com/team/' },
+			{ label: 'Branding', href: 'https://hackclub.com/brand/' },
+			{ label: 'Donate', href: 'https://hackclub.com/donate/' }
+		],
+		Resources: [
+			{ label: 'Community Events', href: 'https://hackclub.com/events/' },
+			{ label: 'Jams', href: 'https://jams.hackclub.com/' },
+			{ label: 'Workshops', href: 'https://workshops.hackclub.com/' },
+			{ label: 'Code of Conduct', href: 'https://hackclub.com/conduct/' }
+		]
+	};
+
 	const joinOperation = () => {
 		joined = true;
 	};
@@ -89,9 +104,33 @@
 	</div>
 </main>
 
-<section class="heist-after-landing" aria-label="The Heist details">
-	<div class="heist-after-landing-grid" aria-hidden="true"></div>
-</section>
+<footer class="heist-footer">
+	<div class="heist-footer-glow" aria-hidden="true"></div>
+	<div class="heist-footer-inner">
+		<div class="heist-footer-content">
+			<h2 class="heist-footer-title">Start Heisting now!</h2>
+
+			<nav class="heist-footer-links" aria-label="Footer">
+				{#each Object.entries(footerLinks) as [group, links]}
+					<div class="heist-footer-link-group">
+						<h3>{group}</h3>
+						<ul>
+							{#each links as link}
+								<li><a href={link.href}>{link.label}</a></li>
+							{/each}
+						</ul>
+					</div>
+				{/each}
+			</nav>
+		</div>
+
+		<div class="heist-footer-crts" aria-hidden="true">
+			<img class="heist-footer-crt heist-footer-crt-counter" src="/landing/crt1.png" alt="" />
+			<img class="heist-footer-crt heist-footer-crt-scene" src="/landing/crt2.png" alt="" />
+			<img class="heist-footer-crt heist-footer-crt-stream" src="/landing/crt3.png" alt="" />
+		</div>
+	</div>
+</footer>
 
 <style>
 	* {
@@ -384,23 +423,163 @@
 		outline-offset: 4px;
 	}
 
-	.heist-after-landing {
+	.heist-footer {
 		--heist-grid: rgba(92, 157, 91, 0.045);
 		--heist-grid-major: rgba(105, 178, 101, 0.1);
+		--heist-lime: #c0f476;
+		--heist-lime-soft: #dafbac;
+		--heist-green: #dafbac;
+		--heist-amber: #dec35f;
 		position: relative;
-		min-height: 100vh;
+		overflow: hidden;
+		min-height: min(100vh, 46rem);
+		color: var(--heist-green);
 		background:
 			linear-gradient(to right, var(--heist-grid-major) 1px, transparent 1px),
 			linear-gradient(to bottom, var(--heist-grid-major) 1px, transparent 1px),
 			linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
 			linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(19, 43, 23, 0.96) 0%, rgba(13, 33, 21, 0.98) 42%, rgba(7, 20, 14, 1) 100%);
+			radial-gradient(ellipse 40rem 18rem at 18% 66%, rgba(91, 142, 62, 0.22), rgba(8, 22, 14, 0) 72%),
+			linear-gradient(90deg, rgba(19, 43, 23, 0.97) 0%, rgba(13, 33, 21, 0.99) 42%, rgba(7, 20, 14, 1) 100%);
 		background-size:
 			233.57px 233.57px,
 			233.57px 233.57px,
 			46.71px 46.71px,
 			46.71px 46.71px,
+			auto,
 			auto;
+	}
+
+	.heist-footer img {
+		user-select: none;
+		pointer-events: none;
+		-webkit-user-drag: none;
+	}
+
+	.heist-footer-glow {
+		position: absolute;
+		inset: auto auto -16rem -10rem;
+		width: 46rem;
+		height: 36rem;
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(124, 173, 82, 0.22), rgba(14, 35, 20, 0) 68%);
+		filter: blur(6px);
+		pointer-events: none;
+	}
+
+	.heist-footer-inner {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(22rem, 36rem);
+		gap: clamp(2rem, 7vw, 6rem);
+		width: min(100%, 78rem);
+		min-height: inherit;
+		margin: 0 auto;
+		padding: clamp(5rem, 12vh, 8rem) clamp(1.25rem, 4vw, 2.5rem) clamp(3rem, 8vh, 5rem);
+		align-items: end;
+	}
+
+	.heist-footer-content {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: clamp(2.25rem, 5vw, 3.5rem);
+		min-width: 0;
+	}
+
+	.heist-footer-title {
+		max-width: 42rem;
+		margin: 0;
+		color: var(--heist-lime);
+		font-size: clamp(2.35rem, 5.5vw, 5rem);
+		font-weight: 400;
+		line-height: 0.92;
+		letter-spacing: 0.01em;
+		text-shadow:
+			0 0 10px rgba(192, 244, 118, 0.34),
+			0 0 30px rgba(192, 244, 118, 0.14);
+	}
+
+	.heist-footer-title span {
+		color: var(--heist-lime);
+	}
+
+	.heist-footer-links {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(8rem, 1fr));
+		gap: clamp(2rem, 5vw, 4rem);
+	}
+
+	.heist-footer-link-group h3 {
+		margin: 0 0 1.45rem;
+		color: #ffffff;
+		font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+		font-size: clamp(1.1rem, 2vw, 1.35rem);
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	.heist-footer-link-group ul {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.heist-footer-link-group a {
+		color: rgba(255, 255, 255, 0.92);
+		font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+		font-size: 0.95rem;
+		line-height: 1.1;
+		text-decoration: none;
+		transition:
+			color 120ms ease,
+			text-shadow 120ms ease;
+	}
+
+	.heist-footer-link-group a:hover {
+		color: var(--heist-lime);
+		text-shadow: 0 0 8px rgba(192, 244, 118, 0.32);
+	}
+
+	.heist-footer-crts {
+		position: relative;
+		width: min(100%, 36rem);
+		min-height: 24rem;
+		justify-self: end;
+		filter: drop-shadow(0 2rem 3rem rgba(0, 0, 0, 0.38));
+	}
+
+	.heist-footer-crt {
+		position: absolute;
+		display: block;
+		height: auto;
+	}
+
+	.heist-footer-crt-counter {
+		top: 0;
+		left: 1%;
+		z-index: 1;
+		width: 52%;
+		opacity: 0.96;
+		transform: rotate(-4deg);
+	}
+
+	.heist-footer-crt-scene {
+		top: 1.75rem;
+		right: 0;
+		z-index: 2;
+		width: 52%;
+		transform: rotate(3deg);
+	}
+
+	.heist-footer-crt-stream {
+		right: 6%;
+		bottom: 0;
+		z-index: 3;
+		width: 78%;
 	}
 
 	@media (max-width: 899px) {
@@ -410,6 +589,28 @@
 
 		.heist-title {
 			width: min(34rem, 88vw);
+		}
+
+		.heist-footer-inner {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 3rem;
+			padding-top: 4.5rem;
+		}
+
+		.heist-footer-content {
+			align-items: center;
+			text-align: center;
+		}
+
+		.heist-footer-links {
+			width: min(100%, 28rem);
+			text-align: left;
+		}
+
+		.heist-footer-crts {
+			width: min(100%, 32rem);
+			min-height: 21rem;
+			justify-self: center;
 		}
 	}
 
@@ -449,6 +650,40 @@
 		.heist-tagline {
 			font-size: clamp(1.15rem, 5.8vw, 1.45rem);
 			line-height: 1.05;
+		}
+
+		.heist-footer {
+			min-height: auto;
+		}
+
+		.heist-footer-inner {
+			padding: 4rem 1rem 3rem;
+		}
+
+		.heist-footer-kicker {
+			font-size: 0.72rem;
+		}
+
+		.heist-footer-title {
+			font-size: clamp(2rem, 12vw, 3.35rem);
+		}
+
+		.heist-footer-links {
+			grid-template-columns: 1fr 1fr;
+			gap: 1.5rem;
+		}
+
+		.heist-footer-link-group h3 {
+			margin-bottom: 1rem;
+			font-size: 1rem;
+		}
+
+		.heist-footer-link-group a {
+			font-size: 0.82rem;
+		}
+
+		.heist-footer-crts {
+			min-height: 15rem;
 		}
 	}
 </style>
