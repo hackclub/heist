@@ -1,0 +1,19 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0a0a14 url(https://cdn.hackclub.com/019efbe9-dfb5-7efe-bf10-544a34a0fedd/abstract-perspective-graph-pattern-grid-vector-design_1017-45232.avif) center/cover fixed;
+  color: #fff;
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* remove heavy overlay for perf */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  pointer-events: none;
+  z-index: -1;
+}
