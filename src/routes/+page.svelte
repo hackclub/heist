@@ -5,6 +5,34 @@
 	let joined = $state(false);
 	let showScrolledHeader = $state(false);
 
+	const revealStep = (node: HTMLElement) => {
+		if (!('IntersectionObserver' in window)) {
+			node.classList.add('heist-step--visible');
+			return;
+		}
+
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (!entry?.isIntersecting) return;
+
+				node.classList.add('heist-step--visible');
+				observer.disconnect();
+			},
+			{
+				rootMargin: '0px 0px -18% 0px',
+				threshold: 0.28
+			}
+		);
+
+		observer.observe(node);
+
+		return {
+			destroy() {
+				observer.disconnect();
+			}
+		};
+	};
+
 	const footerLinks = {
 		'Hack Club': [
 			{ label: 'Philosophy', href: 'https://hackclub.com/philosophy/' },
@@ -19,6 +47,29 @@
 			{ label: 'Code of Conduct', href: 'https://hackclub.com/conduct/' }
 		]
 	};
+
+	const steps = [
+		{
+			title: 'Join the stream',
+			copy: 'Tune into the live streams throughout the weekend and build alongside everyone else in the operation.',
+			image: '/landing/steps/1.png'
+		},
+		{
+			title: 'Start a project',
+			copy: 'Make anything you want: hardware, software, a tiny tool, a strange experiment, or the thing you have been meaning to ship.',
+			image: '/landing/steps/2.png'
+		},
+		{
+			title: 'Hit 1,000 hrs together',
+			copy: 'Every hour of real making adds to the shared goal. The crew wins by collectively shipping 1,000 hours.',
+			image: '/landing/steps/3.png'
+		},
+		{
+			title: 'Steal the prizes',
+			copy: 'Redeem rewards once the vault opens, from useful gear to odd little treasures worth bragging about.',
+			image: '/landing/steps/4.png'
+		}
+	];
 
 	const joinOperation = () => {
 		joined = true;
@@ -108,11 +159,41 @@
 	<img src="/landing/coins-separator.png" alt="" />
 </div>
 
+<section class="heist-steps" aria-labelledby="heist-steps-title">
+	<div class="heist-steps-inner">
+		<div class="heist-steps-intro">
+			<p class="heist-steps-kicker">How it works</p>
+			<h2 id="heist-steps-title" class="heist-steps-title">
+				<span class="visually-hidden">The plan</span>
+				<img src="/landing/the-plan.svg" alt="" aria-hidden="true" />
+			</h2>
+		</div>
+
+		<div class="heist-steps-list">
+			{#each steps as step, index}
+				<article use:revealStep class:heist-step--reversed={index % 2 === 1} class="heist-step">
+					<div class="heist-step-copy">
+						<span class="heist-step-number">{String(index + 1).padStart(2, '0')}</span>
+						<h3>{step.title}</h3>
+						<p>{step.copy}</p>
+					</div>
+
+					<figure class="heist-step-art">
+						<div class="heist-step-image-mask">
+							<img src={step.image} alt="" aria-hidden="true" loading="lazy" />
+						</div>
+					</figure>
+				</article>
+			{/each}
+		</div>
+	</div>
+</section>
+
 <footer class="heist-footer">
 	<div class="heist-footer-glow" aria-hidden="true"></div>
 	<div class="heist-footer-inner">
 		<div class="heist-footer-content">
-			<h2 class="heist-footer-title">Start Heisting now!</h2>
+			<h2 class="heist-footer-title">Join in now!</h2>
 
 			<nav class="heist-footer-links" aria-label="Footer">
 				{#each Object.entries(footerLinks) as [group, links]}
@@ -172,24 +253,18 @@
 		align-items: flex-start;
 		justify-content: space-between;
 		padding: 0.8rem 1.15rem 0.95rem 1.75rem;
-		background:
-			linear-gradient(to right, var(--heist-grid-major) 1px, transparent 1px),
-			linear-gradient(to bottom, var(--heist-grid-major) 1px, transparent 1px),
-			linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
-			linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(19, 43, 23, 0.98) 0%, rgba(13, 33, 21, 0.98) 42%, rgba(7, 20, 14, 0.98) 100%);
-		background-size:
-			233.57px 233.57px,
-			233.57px 233.57px,
-			46.71px 46.71px,
-			46.71px 46.71px,
-			auto;
+		background: transparent;
 		opacity: 0;
 		pointer-events: none;
 		transform: translateY(-0.9rem);
 		transition:
 			opacity 160ms ease,
 			transform 160ms ease;
+	}
+
+	.heist-scrolled-header::before,
+	.heist-scrolled-header::after {
+		display: none;
 	}
 
 	.heist-scrolled-header--visible {
@@ -447,6 +522,269 @@
 		-webkit-user-drag: none;
 	}
 
+	.heist-steps {
+		--heist-grid: rgba(222, 195, 95, 0.05);
+		--heist-grid-major: rgba(222, 195, 95, 0.12);
+		position: relative;
+		overflow: hidden;
+		color: #dafbac;
+		background:
+			linear-gradient(135deg, rgba(222, 195, 95, 0.07) 0 1px, transparent 1px 18px),
+			linear-gradient(to right, var(--heist-grid-major) 1px, transparent 1px),
+			linear-gradient(to bottom, var(--heist-grid-major) 1px, transparent 1px),
+			linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
+			linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px),
+			radial-gradient(ellipse 42rem 22rem at 18% 22%, rgba(222, 195, 95, 0.16), rgba(7, 20, 14, 0) 72%),
+			linear-gradient(180deg, rgba(43, 36, 17, 0.98) 0%, rgba(14, 29, 17, 0.98) 48%, rgba(8, 20, 14, 1) 100%);
+		background-size:
+			24px 24px,
+			233.57px 233.57px,
+			233.57px 233.57px,
+			46.71px 46.71px,
+			46.71px 46.71px,
+			auto,
+			auto;
+	}
+
+	.heist-steps::before,
+	.heist-steps::after {
+		position: absolute;
+		left: 0;
+		z-index: 1;
+		width: 100%;
+		content: '';
+		pointer-events: none;
+	}
+
+	.heist-steps::before {
+		top: 0;
+		height: clamp(7rem, 14vw, 12rem);
+		background: linear-gradient(to bottom, rgba(18, 42, 23, 0.55), rgba(43, 36, 17, 0));
+	}
+
+	.heist-steps::after {
+		bottom: 0;
+		height: clamp(12rem, 20vw, 18rem);
+		background:
+			linear-gradient(to bottom, rgba(17, 31, 17, 0), rgba(17, 31, 17, 0.82)),
+			linear-gradient(135deg, transparent 0 1px, rgba(222, 195, 95, 0.045) 1px 2px, transparent 2px 18px);
+	}
+
+	.heist-steps-inner {
+		position: relative;
+		z-index: 2;
+		width: min(100%, 78rem);
+		margin: 0 auto;
+		padding: clamp(10rem, 17vw, 15rem) clamp(1.25rem, 4vw, 2.5rem) clamp(7rem, 12vw, 10rem);
+	}
+
+	.heist-steps-intro {
+		display: flex;
+		align-items: end;
+		justify-content: space-between;
+		gap: 2rem;
+		margin-bottom: clamp(3.5rem, 7vw, 5.5rem);
+		border-bottom: 1px solid rgba(218, 251, 172, 0.24);
+		padding-bottom: 1.35rem;
+	}
+
+	.heist-steps-kicker {
+		margin: 0;
+		color: rgba(255, 229, 114, 0.8);
+		font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.heist-steps-title {
+		width: min(100%, clamp(13rem, 25vw, 18rem));
+		margin: 0;
+		line-height: 0;
+	}
+
+	.heist-steps-title img {
+		display: block;
+		width: 100%;
+		height: auto;
+		user-select: none;
+		-webkit-user-drag: none;
+	}
+
+	.heist-steps-list {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(4rem, 9vw, 7.5rem);
+	}
+
+	.heist-step {
+		display: grid;
+		grid-template-columns: minmax(16rem, 0.72fr) minmax(0, 1.28fr);
+		gap: clamp(1.5rem, 5vw, 4rem);
+		align-items: center;
+	}
+
+	.heist-step--reversed {
+		grid-template-columns: minmax(0, 1.28fr) minmax(16rem, 0.72fr);
+	}
+
+	.heist-step--reversed .heist-step-copy {
+		grid-column: 2;
+		grid-row: 1;
+	}
+
+	.heist-step--reversed .heist-step-art {
+		grid-column: 1;
+		grid-row: 1;
+	}
+
+	.heist-step-copy {
+		position: relative;
+		min-width: 0;
+		padding: 1rem 0 1rem clamp(1rem, 2vw, 1.35rem);
+		opacity: 0;
+		transform: translateY(1.2rem);
+		transition:
+			opacity 520ms ease,
+			transform 640ms cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.heist-step-number {
+		display: inline-block;
+		margin-bottom: 1.1rem;
+		color: rgba(255, 229, 114, 0.82);
+		font-size: 1rem;
+		letter-spacing: 0.08em;
+	}
+
+	.heist-step-copy h3 {
+		margin: 0;
+		color: #dafbac;
+		font-size: clamp(1.65rem, 3.4vw, 2.7rem);
+		font-weight: 400;
+		line-height: 0.98;
+	}
+
+	.heist-step-copy p {
+		max-width: 28rem;
+		margin: 1.1rem 0 0;
+		color: rgba(218, 251, 172, 0.78);
+		font-size: clamp(0.95rem, 1.8vw, 1.12rem);
+		line-height: 1.35;
+	}
+
+	.heist-step-art {
+		position: relative;
+		overflow: hidden;
+		margin: 0;
+		background: rgba(7, 20, 14, 0.16);
+		box-shadow: 0 1.1rem 2.4rem rgba(0, 0, 0, 0.16);
+	}
+
+	.heist-step-art::before,
+	.heist-step-art::after {
+		position: absolute;
+		width: 1.45rem;
+		height: 1.45rem;
+		border-color: rgba(218, 251, 172, 0.82);
+		content: '';
+		opacity: 0;
+		pointer-events: none;
+		transition:
+			opacity 360ms ease 120ms,
+			left 1250ms cubic-bezier(0.16, 1, 0.3, 1) 160ms,
+			right 1250ms cubic-bezier(0.16, 1, 0.3, 1) 160ms;
+		will-change: left, right, opacity;
+		z-index: 1;
+	}
+
+	.heist-step-art::before {
+		top: 0;
+		left: 50%;
+		border-top: 3px solid;
+		border-left: 3px solid;
+	}
+
+	.heist-step-art::after {
+		right: 50%;
+		bottom: 0;
+		border-right: 3px solid;
+		border-bottom: 3px solid;
+	}
+
+	.heist-step-image-mask {
+		overflow: hidden;
+		clip-path: inset(0 50% 0 50%);
+		transition: clip-path 1250ms cubic-bezier(0.16, 1, 0.3, 1) 160ms;
+		will-change: clip-path;
+	}
+
+	.heist-step-image-mask img {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 900 / 520;
+		object-fit: cover;
+		opacity: 0;
+		transform: scale(1.018);
+		transition:
+			opacity 420ms ease 260ms,
+			transform 1250ms cubic-bezier(0.16, 1, 0.3, 1) 160ms;
+		user-select: none;
+		-webkit-user-drag: none;
+		will-change: transform, opacity;
+	}
+
+	:global(.heist-step--visible) .heist-step-copy,
+	:global(.heist-step--visible) .heist-step-image-mask img {
+		opacity: 1;
+		transform: none;
+	}
+
+	:global(.heist-step--visible) .heist-step-art::before,
+	:global(.heist-step--visible) .heist-step-art::after {
+		opacity: 1;
+	}
+
+	:global(.heist-step--visible) .heist-step-art::before {
+		left: 0;
+	}
+
+	:global(.heist-step--visible) .heist-step-art::after {
+		right: 0;
+	}
+
+	:global(.heist-step--visible) .heist-step-image-mask {
+		clip-path: inset(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.heist-step-copy,
+		.heist-step-art,
+		.heist-step-art::before,
+		.heist-step-art::after,
+		.heist-step-image-mask,
+		.heist-step-image-mask img {
+			transition: none;
+		}
+
+		.heist-step-copy,
+		.heist-step-image-mask img,
+		.heist-step-art::before,
+		.heist-step-art::after {
+			opacity: 1;
+			transform: none;
+		}
+
+		.heist-step-art {
+			clip-path: none;
+			transform: none;
+		}
+
+		.heist-step-image-mask {
+			clip-path: none;
+		}
+	}
+
 	.heist-footer {
 		--heist-grid: rgba(192, 244, 118, 0.032);
 		--heist-grid-major: rgba(222, 195, 95, 0.07);
@@ -456,19 +794,18 @@
 		--heist-amber: #dec35f;
 		position: relative;
 		overflow: hidden;
-		min-height: min(100vh, 46rem);
+		min-height: 0;
+		margin-top: -1px;
 		color: var(--heist-green);
 		background:
-			repeating-linear-gradient(to bottom, rgba(218, 251, 172, 0.035) 0 1px, transparent 1px 7px),
 			linear-gradient(to right, var(--heist-grid-major) 1px, transparent 1px),
 			linear-gradient(to bottom, var(--heist-grid-major) 1px, transparent 1px),
 			linear-gradient(to right, var(--heist-grid) 1px, transparent 1px),
 			linear-gradient(to bottom, var(--heist-grid) 1px, transparent 1px),
 			radial-gradient(ellipse 42rem 22rem at 86% 20%, rgba(222, 195, 95, 0.09), rgba(7, 18, 13, 0) 72%),
-			linear-gradient(180deg, rgba(19, 31, 19, 0.98) 0%, rgba(8, 18, 13, 1) 52%, rgba(3, 10, 8, 1) 100%),
+			linear-gradient(180deg, rgba(17, 31, 17, 0.98) 0%, rgba(12, 26, 16, 1) 34%, rgba(5, 14, 11, 1) 100%),
 			linear-gradient(90deg, rgba(9, 20, 14, 1) 0%, rgba(12, 24, 15, 1) 44%, rgba(5, 14, 11, 1) 100%);
 		background-size:
-			auto,
 			233.57px 233.57px,
 			233.57px 233.57px,
 			46.71px 46.71px,
@@ -481,14 +818,16 @@
 		position: absolute;
 		inset: 0;
 		background:
-			linear-gradient(to bottom, rgba(222, 195, 95, 0.12), transparent 10rem),
+			repeating-linear-gradient(to bottom, rgba(218, 251, 172, 0.03) 0 1px, transparent 1px 7px),
 			repeating-linear-gradient(
 				to right,
 				transparent 0 7.75rem,
 				rgba(218, 251, 172, 0.04) 7.75rem 7.82rem,
 				transparent 7.82rem 10.5rem
-			);
+			),
+			linear-gradient(to bottom, rgba(222, 195, 95, 0.035) 0%, transparent 18rem);
 		content: '';
+		mask-image: linear-gradient(to bottom, transparent 0, rgba(0, 0, 0, 0.15) 5rem, #000 14rem);
 		pointer-events: none;
 	}
 
@@ -496,8 +835,8 @@
 		position: absolute;
 		inset: 0;
 		background:
-			linear-gradient(to bottom, transparent 0%, rgba(3, 10, 8, 0.38) 100%),
-			linear-gradient(to right, rgba(3, 10, 8, 0.34), transparent 22%, transparent 76%, rgba(3, 10, 8, 0.42));
+			linear-gradient(to bottom, transparent 0%, rgba(5, 14, 11, 0.22) 100%),
+			linear-gradient(to right, rgba(5, 14, 11, 0.22), transparent 22%, transparent 76%, rgba(5, 14, 11, 0.28));
 		content: '';
 		pointer-events: none;
 	}
@@ -527,10 +866,9 @@
 		grid-template-columns: minmax(0, 1fr) minmax(22rem, 36rem);
 		gap: clamp(2rem, 7vw, 6rem);
 		width: min(100%, 78rem);
-		min-height: inherit;
 		margin: 0 auto;
-		padding: clamp(5rem, 12vh, 8rem) clamp(1.25rem, 4vw, 2.5rem) clamp(3rem, 8vh, 5rem);
-		align-items: end;
+		padding: clamp(2rem, 4.5vh, 3.25rem) clamp(1.25rem, 4vw, 2.5rem) clamp(3rem, 8vh, 5rem);
+		align-items: center;
 	}
 
 	.heist-footer-content {
@@ -566,7 +904,7 @@
 
 	.heist-footer-link-group h3 {
 		margin: 0 0 1.45rem;
-		color: #ffffff;
+		color: var(--heist-yellow);
 		font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 		font-size: clamp(1.1rem, 2vw, 1.35rem);
 		font-weight: 700;
@@ -583,7 +921,7 @@
 	}
 
 	.heist-footer-link-group a {
-		color: rgba(255, 255, 255, 0.92);
+		color: var(--heist-lime-soft);
 		font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 		font-size: 0.95rem;
 		line-height: 1.1;
@@ -637,6 +975,39 @@
 	}
 
 	@media (max-width: 899px) {
+		.heist-steps-inner {
+			padding-top: 10rem;
+		}
+
+		.heist-steps-intro {
+			display: block;
+		}
+
+		.heist-steps-title {
+			margin-top: 0.75rem;
+			width: min(100%, clamp(12rem, 45vw, 16rem));
+		}
+
+		.heist-step,
+		.heist-step--reversed {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+
+		.heist-step--reversed .heist-step-copy,
+		.heist-step--reversed .heist-step-art {
+			grid-column: auto;
+			grid-row: auto;
+		}
+
+		.heist-step-copy {
+			order: 1;
+		}
+
+		.heist-step-art {
+			order: 2;
+		}
+
 		.heist-landing-inner {
 			padding-top: clamp(4rem, 12vh, 6rem);
 		}
@@ -648,7 +1019,7 @@
 		.heist-footer-inner {
 			grid-template-columns: minmax(0, 1fr);
 			gap: 3rem;
-			padding-top: 4.5rem;
+			padding-top: 3rem;
 		}
 
 		.heist-footer-content {
@@ -673,6 +1044,23 @@
 			height: 7rem;
 			margin-top: -5.5rem;
 			margin-bottom: -2.75rem;
+		}
+
+		.heist-steps-inner {
+			padding: 7rem 1rem 5rem;
+		}
+
+		.heist-steps-list {
+			gap: 3.5rem;
+		}
+
+		.heist-step-copy {
+			padding-top: 0.75rem;
+			padding-bottom: 0.75rem;
+		}
+
+		.heist-step-copy p {
+			font-size: 0.92rem;
 		}
 
 		.heist-scrolled-header {
@@ -717,7 +1105,7 @@
 		}
 
 		.heist-footer-inner {
-			padding: 4rem 1rem 3rem;
+			padding: 2.75rem 1rem 3rem;
 		}
 
 		.heist-footer-kicker {
@@ -743,7 +1131,7 @@
 		}
 
 		.heist-footer-crts {
-			min-height: 15rem;
+			display: none;
 		}
 	}
 </style>
