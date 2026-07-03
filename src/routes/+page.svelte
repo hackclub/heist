@@ -892,10 +892,6 @@
 			0 0 30px rgba(192, 244, 118, 0.14);
 	}
 
-	.heist-footer-title span {
-		color: var(--heist-lime);
-	}
-
 	.heist-footer-links {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(8rem, 1fr));
@@ -1106,10 +1102,6 @@
 
 		.heist-footer-inner {
 			padding: 2.75rem 1rem 3rem;
-		}
-
-		.heist-footer-kicker {
-			font-size: 0.72rem;
 		}
 
 		.heist-footer-title {
